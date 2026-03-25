@@ -1,17 +1,65 @@
 ---
 containers: []
 virtualmachines:
-  - name: "host1"
-    image: "rhel-9.5"
-    memory: "2G"
-    cores: 1
-    image_size: "40G"
+  - name: "containerlab"
+    image: "ansiblebu-containerlab"
+    memory: "256Gi"
+    cores: 64
+    image_size: "200Gi"
     tags:
       - key: "AnsibleGroup"
         value: "bastions"
+    services:
+      - name: containerlab-fip
+        type: LoadBalancer
+        ports:
+          - port: 2222
+            protocol: TCP
+            targetPort: 2222
+            name: port2222
+          - port: 2223
+            protocol: TCP
+            targetPort: 2223
+            name: port2223
+
+          - port: 2224
+            protocol: TCP
+            targetPort: 2224
+            name: port2224
+          - port: 2225
+            protocol: TCP
+            targetPort: 2225
+            name: port2225
+          - port: 2226
+            protocol: TCP
+            targetPort: 2226
+            name: port2226
+          - port: 2227
+            protocol: TCP
+            targetPort: 2227
+            name: port2227
+          - port: 2228
+            protocol: TCP
+            targetPort: 2228
+            name: port2228
+          - port: 8181
+            protocol: TCP
+            targetPort: 8181
+            name: port8181
+          - port: 8282
+            protocol: TCP
+            targetPort: 8282
+            name: port8282
+          - port: 8383
+            protocol: TCP
+            targetPort: 8383
+            name: port8383
+          - port: 8484
+            protocol: TCP
+            targetPort: 8484
+            name: port8484
     networks:
       - default
-      - secondary
 
   - name: control
     image: aap-2.6-2-ceh-20251103

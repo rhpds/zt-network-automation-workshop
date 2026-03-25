@@ -15,7 +15,7 @@ antora:
 
 tabs:
   - name: ">_ terminal"
-    url: /wetty
-  - name: "Asciidoc Doc"
-    url: https://docs.asciidoctor.org/asciidoc/latest/syntax-quick-reference/
-    external: true
+    url: /wetty/root/ssh/containerlab/
+  - name: Ansible Automation Platform
+    url: https://control-${guid}.${domain}/
+    external: false

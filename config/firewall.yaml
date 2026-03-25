@@ -1,5 +1,29 @@
 ---
 # By default egress traffic is not allowed, define below the ports allowed.
+ingress:
+- ports:
+  - protocol: TCP
+    port: 2222
+  - protocol: TCP
+    port: 2223
+  - protocol: TCP
+    port: 2224
+  - protocol: TCP
+    port: 2225
+  - protocol: TCP
+    port: 2226
+  - protocol: TCP
+    port: 2227
+  - protocol: TCP
+    port: 2228
+  - protocol: TCP
+    port: 8181
+  - protocol: TCP
+    port: 8282
+  - protocol: TCP
+    port: 8383
+  - protocol: TCP
+    port: 8484
 egress:
   - ports:
       - protocol: TCP
