@@ -1,15 +1,14 @@
 ---
 site:
-  title: "Change me, your title lives as site.title in site.yml"
+  title: "Ansible Network Automation Workshop"
   url: https://github.com/rhpds/showroom_template_zero
-  start_page: modules::module-01.adoc
+  start_page: modules::index.adoc
 
 asciidoc:
   attributes:
-    lab_name: "I'm the lab_name var"
+    lab_name: "Ansible Network Automation Workshop"
     release-version: master
     page-pagination: true
-    my_var: "foo - this is an asciidoc attribute from `site.yml`"
 
 content:
   sources:
