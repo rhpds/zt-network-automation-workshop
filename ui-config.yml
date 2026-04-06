@@ -1,4 +1,9 @@
 ---
+type: showroom
+
+# Match RHDP showroom defaults so tabs resolve correctly (see showroom_template_zero).
+default_width: 30
+persist_url_state: true
 
 antora:
   name: modules
@@ -24,8 +29,9 @@ antora:
       label: "2-5: Workflows"
 
 tabs:
+  # Declarative terminal — do not use url: /wetty/root/ssh/... (not exposed by showroom proxy; causes "Cannot GET").
   - name: ">_ terminal"
-    url: /wetty/root/ssh/containerlab/
+    type: terminal
   - name: Ansible Automation Platform
     url: https://control-${guid}.${domain}/
     external: false
