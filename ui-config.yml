@@ -29,10 +29,13 @@ antora:
       label: "2-5: Workflows"
 
 tabs:
-  # Web shells on control (AAP) and containerlab. Paths match showroom WeTTY routes (wetty-control / wetty-containerlab).
+  # Terminal tabs do NOT map VMs here. This file only selects Showroom UI modes/paths that the
+  # RHDP Showroom Helm chart already exposes. Which VM each route SSHs to is wired at deploy time
+  # (sidecars like wetty-control / wetty-containerlab ↔ VMs named in config/instances.yaml).
+  # Verify in a live lab: if type: terminal lands on control, label that tab "AAP terminal"; use
+  # path tabs only for paths your cluster actually serves (otherwise black screen).
   - name: AAP terminal
-    path: /wetty-control
-    port: 443
+    type: terminal
   - name: Containerlab terminal
     path: /wetty-containerlab
     port: 443
