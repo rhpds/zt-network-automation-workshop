@@ -1,7 +1,7 @@
 ---
 site:
   title: "Ansible Network Automation Workshop"
-  url: https://github.com/rhpds/showroom_template_zero
+  url: https://rhpds.github.io/zt-network-automation-workshop/
   start_page: modules::index.adoc
 
 asciidoc:
@@ -14,10 +14,22 @@ content:
   sources:
     - url: ./
       start_path: content
+
 ui:
   bundle:
-    url: https://github.com/rhpds/nookbag-bundle/releases/download/v0.0.3/ui-bundle.zip
+    url: https://github.com/rhpds/rhdp_showroom_theme/releases/download/rh-one-2025/ui-bundle.zip
     snapshot: true
+  supplemental_files:
+    - path: ./content/supplemental-ui
+    - path: ./content/lib
+    - path: .nojekyll
+    - path: ui.yml
+      contents: "static_files: [ .nojekyll ]"
+
+antora:
+  extensions:
+    - require: ./content/lib/dev-mode.js
+      enabled: true
 
 output:
   dir: ./www/www
