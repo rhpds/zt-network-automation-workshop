@@ -1,4 +1,4 @@
-= Module 4: Ansible Network Resource Modules
+= 1-4: Ansible Network Resource Modules
 :source-highlighter: rouge
 :toc: macro
 :toclevels: 1

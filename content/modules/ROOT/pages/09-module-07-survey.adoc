@@ -1,4 +1,4 @@
-= Module 7: Creating a Survey
+= 2-3: Creating a Survey
 :source-highlighter: rouge
 :toc: macro
 :toclevels: 1

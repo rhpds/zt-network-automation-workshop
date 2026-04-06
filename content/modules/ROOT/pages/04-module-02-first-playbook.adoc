@@ -1,4 +1,4 @@
-= Module 2: First Ansible Playbook
+= 1-2: First Ansible Playbook
 :source-highlighter: rouge
 :toc: macro
 :toclevels: 1

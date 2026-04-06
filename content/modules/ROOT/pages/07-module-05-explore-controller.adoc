@@ -1,4 +1,4 @@
-= Module 5: Explore Ansible Automation Platform
+= 2-1: Explore Ansible Automation Platform
 :source-highlighter: rouge
 :toc: macro
 :toclevels: 1

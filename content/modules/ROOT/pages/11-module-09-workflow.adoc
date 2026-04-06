@@ -1,4 +1,4 @@
-= Module 9: Creating a Workflow
+= 2-5: Creating a Workflow
 :source-highlighter: rouge
 :toc: macro
 :toclevels: 1

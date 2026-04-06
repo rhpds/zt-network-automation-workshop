@@ -22,24 +22,24 @@ By the end of this workshop, you will be able to:
 
 The workshop is organized into two phases:
 
-=== Phase 1: Command-line automation (Modules 1--4)
+=== Phase 1: Module 1: Network Basics (1-1 through 1-4)
 
 Build foundational Ansible skills on the command line:
 
-* **Module 1** -- Explore the lab environment, tools, and inventory
-* **Module 2** -- Execute your first network automation playbook
-* **Module 3** -- Gather and use Ansible facts from network devices
-* **Module 4** -- Use network resource modules for multi-vendor configuration
+* **1-1** -- Explore the lab environment, tools, and inventory
+* **1-2** -- Execute your first network automation playbook
+* **1-3** -- Gather and use Ansible facts from network devices
+* **1-4** -- Use network resource modules for multi-vendor configuration
 
-=== Phase 2: Automation Platform (Modules 5--9)
+=== Phase 2: Module 2: Intro to AAP (2-1 through 2-5)
 
 Move to the Ansible Automation Platform web interface:
 
-* **Module 5** -- Explore the Automation controller: inventories, credentials, and projects
-* **Module 6** -- Create a job template for network configuration backup
-* **Module 7** -- Add surveys for user-friendly input to job templates
-* **Module 8** -- Configure RBAC for multi-user access control
-* **Module 9** -- Build automation workflows with conditional execution and failure handling
+* **2-1** -- Explore the Automation controller: inventories, credentials, and projects
+* **2-2** -- Create a job template for network configuration backup
+* **2-3** -- Add surveys for user-friendly input to job templates
+* **2-4** -- Configure RBAC for multi-user access control
+* **2-5** -- Build automation workflows with conditional execution and failure handling
 
 == Target audience
 

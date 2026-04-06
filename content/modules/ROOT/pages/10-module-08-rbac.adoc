@@ -1,4 +1,4 @@
-= Module 8: Understanding RBAC in Automation Controller
+= 2-4: Understanding RBAC in Automation Controller
 :source-highlighter: rouge
 :toc: macro
 :toclevels: 1

@@ -47,12 +47,13 @@ config/
 [source,shell]
 ----
 runtime-automation/
-├── module_1                            # The directory name should be the same as 
-│                                       # the module content page name
-│   ├── setup.sh                        # Setup playbook which run at start of module 
-│                                       # and when clicked on next button
-│   ├── solve.sh                        # Solve playbook, run when clicked on solve button
-│   └── validation.sh                   # Validation playbook, run when click on next button
+├── module-01                           # Directory name matches the content module (e.g. module-01)
+│   ├── setup-control.sh                # Optional per-VM scripts; name must match `virtualmachines[].name`
+│   ├── setup-containerlab.sh           # in config/instances.yaml (e.g. control, containerlab)
+│   ├── solve-control.sh
+│   ├── solve-containerlab.sh
+│   ├── validation-control.sh
+│   └── validation-containerlab.sh
 ├── ansible.cfg                         # Ansible configuration used with module playbooks
 └── main.yml                            # Playbook to be called in each step
 ----
@@ -63,7 +64,8 @@ runtime-automation/
 [source,shell]
 ----
 setup-automation/
-├── setup-vmname.sh                     # Script to be executed on vmname when is provisioned
+├── setup-control.sh                    # Executed on VM `control` when provisioned (see instances.yaml)
+├── setup-containerlab.sh             # Executed on VM `containerlab` when provisioned
 ├── ansible.cfg                         # Ansible configuration used with module playbooks
 └── main.yml                            # Playbook to be called in each step
 ----

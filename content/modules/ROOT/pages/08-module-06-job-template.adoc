@@ -1,4 +1,4 @@
-= Module 6: Creating an Ansible Automation Platform Job Template
+= 2-2: Creating an Ansible Automation Platform Job Template
 :source-highlighter: rouge
 :toc: macro
 :toclevels: 1

@@ -5,23 +5,23 @@ antora:
   dir: www
   modules:
     - name: 03-module-01-explore-lab
-      label: "Module 1: Explore the lab environment"
+      label: "1-1: Explore the lab environment"
     - name: 04-module-02-first-playbook
-      label: "Module 2: First Ansible Playbook"
+      label: "1-2: First Ansible Playbook"
     - name: 05-module-03-facts
-      label: "Module 3: Ansible facts"
+      label: "1-3: Ansible facts"
     - name: 06-module-04-resource-modules
-      label: "Module 4: Resource modules"
+      label: "1-4: Resource modules"
     - name: 07-module-05-explore-controller
-      label: "Module 5: Explore Automation controller"
+      label: "2-1: Explore Automation controller"
     - name: 08-module-06-job-template
-      label: "Module 6: Job templates"
+      label: "2-2: Job templates"
     - name: 09-module-07-survey
-      label: "Module 7: Surveys"
+      label: "2-3: Surveys"
     - name: 10-module-08-rbac
-      label: "Module 8: RBAC"
+      label: "2-4: RBAC"
     - name: 11-module-09-workflow
-      label: "Module 9: Workflows"
+      label: "2-5: Workflows"
 
 tabs:
   - name: ">_ terminal"

@@ -1,4 +1,4 @@
-= Module 1: Exploring the Lab Environment
+= 1-1: Exploring the Lab Environment
 :source-highlighter: rouge
 :toc: macro
 :toclevels: 1
