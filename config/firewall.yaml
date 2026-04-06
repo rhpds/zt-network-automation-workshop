@@ -24,7 +24,15 @@ ingress:
     port: 8383
   - protocol: TCP
     port: 8484
+  - from:
+      - podSelector:
+          matchLabels:
+            kubevirt.io: virt-launcher
 egress:
   - ports:
       - protocol: TCP
         port: 443
+  - to:
+      - podSelector:
+          matchLabels:
+            kubevirt.io: virt-launcher
