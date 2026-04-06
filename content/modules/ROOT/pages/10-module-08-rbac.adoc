@@ -1,0 +1,222 @@
+= Module 8: Understanding RBAC in Automation Controller
+:source-highlighter: rouge
+:toc: macro
+:toclevels: 1
+
+One of the key benefits of using Automation controller is the control of users that use the system. The objective of this module is to understand Role Based Access Controls (link:https://docs.ansible.com/automation-controller/latest/html/userguide/security.html#role-based-access-controls[RBACs^]) with which Automation controller admins can define tenancies, teams, roles and associate users to those roles. This gives organizations the ability to secure the automation system and satisfy compliance goals and requirements.
+
+== Learning objectives
+
+By the end of this module, you will be able to:
+
+* Understand the key RBAC concepts in Automation controller: Organizations, Teams, Users, and Roles
+* Configure organization-level administrators
+* Grant granular job template access to specific users
+* Verify that RBAC restrictions are properly enforced
+
+== Key terminology
+
+Before we begin, let us review some Automation controller terminology:
+
+* **Organizations:** Defines a tenancy for example __Network-org__, __Compute-org__. This might be reflective of internal organizational structure of the customer's organization.
+* **Teams:** Within each organization, there may be more than one team. For instance __tier1-helpdesk__, __tier2-support__, __tier3-support__, __build-team__ etc.
+* **Users:** Users typically belong to teams. What the user can do within Automation controller is controlled/defined using **roles**.
+* **Roles:** Roles define what actions a user may perform. This can map very nicely to typical network organizations that have restricted access based on whether the user is a Level-1 helpdesk person, Level-2 or senior admin. Automation controller link:https://docs.ansible.com/automation-controller/latest/html/userguide/security.html#built-in-roles[documentation^] defines a set of built-in roles.
+
+== Step 1: Opening up Organizations
+
+* Login to Automation controller with the **admin** user.
++
+[cols="1,1",options="header"]
+|===
+| Parameter | Value
+| username | `{controller_user}`
+| password | `{controller_password}`
+|===
+
+* Confirm that you are logged in as the **admin** user.
++
+// TODO: Copy image from ansible-workshops/exercises/ansible_network/8-controller-rbac/images/step_1.png
+image::step_1.png[Admin user,align="center",link=self,window=blank,width=600]
+
+* Under the **Access Management** section, click on **Organizations**
++
+As the `{controller_user}` user, you will be able to view all organizations configured for Automation controller.
++
+NOTE: The orgs, teams and users were auto-populated for this workshop.
+
+* Examine the organizations
++
+There are 2 organizations (other than Default):
++
+.. **Red Hat compute organization**
+.. **Red Hat network organization**
++
+// TODO: Copy image from ansible-workshops/exercises/ansible_network/8-controller-rbac/images/step1-organizations.png
+image::step1-organizations.png[Organizations,align="center",link=self,window=blank,width=600]
+
+NOTE: This page gives you a summary of all the teams, users, inventories, projects and job templates associated with it. If an Organization level admin is configured you will see that as well.
+
+== Step 2: Open the network organization
+
+. Click on the **Red Hat network organization**.
++
+This brings up a section that displays the details of the organization.
++
+// TODO: Copy image from ansible-workshops/exercises/ansible_network/8-controller-rbac/images/step2-network_org.png
+image::step2-network_org.png[Network organization,align="center",link=self,window=blank,width=600]
+
+== Step 3: Add network-admin as an administrator
+
+. Click on the **Administrators** tab
++
+// TODO: Copy image from ansible-workshops/exercises/ansible_network/8-controller-rbac/images/admin_tab.png
+image::admin_tab.png[Administrator tab,align="center",link=self,window=blank,width=600]
+
+. Click on the blue **Add administrators** button
++
+// TODO: Copy image from ansible-workshops/exercises/ansible_network/8-controller-rbac/images/admin_button.png
+image::admin_button.png[Add admin button,align="center",link=self,window=blank,width=600]
+
+. Select the **network-admin** user and then click the blue **Add administrators** button
++
+// TODO: Copy image from ansible-workshops/exercises/ansible_network/8-controller-rbac/images/select_admin_button.png
+image::select_admin_button.png[Select admin,align="center",link=self,window=blank,width=600]
+
+== Step 4: Login as network-admin
+
+. Log out from the admin user by clicking the admin button in the top right corner of the Automation controller UI.
++
+// TODO: Copy image from ansible-workshops/exercises/ansible_network/8-controller-rbac/images/step5_logout.png
+image::step5_logout.png[Logout,align="center",link=self,window=blank,width=600]
+
+. Login to the system with the **network-admin** user.
++
+[cols="1,1",options="header"]
+|===
+| Parameter | Value
+| username | network-admin
+| password | `{controller_password}`
+|===
+
+. Confirm that you are logged in as the **network-admin** user.
++
+// TODO: Copy image from ansible-workshops/exercises/ansible_network/8-controller-rbac/images/step5_network-admin.png
+image::step5_network-admin.png[Network admin user,align="center",link=self,window=blank,width=600]
+
+. Click on the **Organizations** link on the sidebar under the **Access Management** section.
++
+You will notice that you only have visibility to the organization you are an admin of, the **Red Hat network organization**.
++
+The following two Organizations are not seen anymore:
++
+* `Red Hat compute organization`
+* `Default`
+
+TIP: Try this as the network-operator user (same password as network-admin). What is the difference between `network-operator` and `network-admin`? As the `network-operator` are you able to view other users? Are you able to add a new user or edit user credentials?
+
+== Step 5: Give job template access to the network-operator user
+
+As the `network-admin` we can now setup access for the `network-operator` user.
+
+. Click on Templates on the left menu
++
+// TODO: Copy image from ansible-workshops/exercises/ansible_network/8-controller-rbac/images/job_templates.png
+image::job_templates.png[Job templates,align="center",link=self,window=blank,width=600]
+
+. Click on the **Network-Commands** job template.
++
+// TODO: Copy image from ansible-workshops/exercises/ansible_network/8-controller-rbac/images/network_commands.png
+image::network_commands.png[Network commands,align="center",link=self,window=blank,width=600]
+
+. Click on the **User Access** tab
++
+// TODO: Copy image from ansible-workshops/exercises/ansible_network/8-controller-rbac/images/user_access.png
+image::user_access.png[User access,align="center",link=self,window=blank,width=600]
+
+. Click on the blue **Add roles** button
++
+// TODO: Copy image from ansible-workshops/exercises/ansible_network/8-controller-rbac/images/add_roles.png
+image::add_roles.png[Add roles button,align="center",link=self,window=blank,width=600]
+
+. Click **network-operator** then click the blue **Next** button at the bottom
++
+// TODO: Copy image from ansible-workshops/exercises/ansible_network/8-controller-rbac/images/add_user_window.png
+image::add_user_window.png[Add user window,align="center",link=self,window=blank,width=600]
+
+. Click on **JobTemplate Execute** then click on the blue **Next** button at the bottom
++
+// TODO: Copy image from ansible-workshops/exercises/ansible_network/8-controller-rbac/images/add_role_user.png
+image::add_role_user.png[Add role to user,align="center",link=self,window=blank,width=600]
+
+. Review to make sure you set it up correctly, and click the blue **Finish** button at the bottom.
++
+// TODO: Copy image from ansible-workshops/exercises/ansible_network/8-controller-rbac/images/finish.png
+image::finish.png[Finish window,align="center",link=self,window=blank,width=600]
+
+. Click the **Close** button after the role is applied
++
+// TODO: Copy image from ansible-workshops/exercises/ansible_network/8-controller-rbac/images/close_window.png
+image::close_window.png[Close window,align="center",link=self,window=blank,width=600]
+
+== Step 6: Verify the Network-Commands job template
+
+. Navigate back to the **Network-Commands** Job Template
++
+// TODO: Copy image from ansible-workshops/exercises/ansible_network/8-controller-rbac/images/network-commands-job-template.png
+image::network-commands-job-template.png[Network commands job template,align="center",link=self,window=blank,width=600]
+
+. Verify the Survey is enabled
++
+// TODO: Copy image from ansible-workshops/exercises/ansible_network/8-controller-rbac/images/survey-enabled.png
+image::survey-enabled.png[Survey enabled,align="center",link=self,window=blank,width=600]
+
+. Verify the Survey questions
++
+// TODO: Copy image from ansible-workshops/exercises/ansible_network/8-controller-rbac/images/verify-survey.png
+image::verify-survey.png[Verify survey questions,align="center",link=self,window=blank,width=600]
+
+. Click on the blue **Save survey question**
+
+== Step 7: Login as network-operator
+
+Finally, to see the RBAC in action!
+
+. Log out and log back in as the **network-operator** user.
++
+[cols="1,1",options="header"]
+|===
+| Parameter | Value
+| username | `network-operator`
+| password | `{controller_password}`
+|===
+
+. Navigate to **Templates** under the Automation Execution section, and click on the **Network-Commands** Job Template.
++
+// TODO: Copy image from ansible-workshops/exercises/ansible_network/8-controller-rbac/images/step8_operator.png
+image::step8_operator.png[Network operator view,align="center",link=self,window=blank,width=600]
+
+NOTE: As the `network-operator` user, you will have no ability to change any of the fields. The **Edit** button is no longer available.
+
+== Step 8: Launching a Job Template
+
+. Launch the **Network-Commands** template by clicking on the **Launch** button.
+
+. You will be prompted by a dialog-box that lets you choose one of the pre-configured show commands.
++
+// TODO: Copy image from ansible-workshops/exercises/ansible_network/8-controller-rbac/images/step9_survey.png
+image::step9_survey.png[Pre-configured survey,align="center",link=self,window=blank,width=600]
+
+. Go ahead and choose a command and click **Next** and then **Launch** to see the playbook being executed and the results being displayed.
+
+== Bonus step
+
+If time permits, log back in as the network-admin and add another show command you would like the operator to run. This will also help you see how the __Admin__ Role of the network-admin user allows you to edit/update the job template.
+
+== Module summary
+
+In this module, you learned:
+
+* Using Ansible Automation Platform's powerful **RBAC** feature, it is easy to restrict access to operators to run prescribed commands on production systems without requiring them to have access to the systems themselves.
+* Ansible Automation Platform can support multiple `Organizations`, multiple `Teams`, and `Users`. We do not need to manage users directly in the platform -- we can use link:https://docs.redhat.com/en/documentation/red_hat_ansible_automation_platform/latest/html-single/access_management_and_authentication/index#gw-config-authentication-type[enterprise authentication^] including Active Directory, LDAP, RADIUS, SAML, and TACACS+.
+* If there needs to be an exception (a user needs access but not their entire team), this is also possible. The granularity of RBAC can be down to the credential, inventory, or Job Template for an individual user.

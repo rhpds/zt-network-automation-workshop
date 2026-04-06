@@ -1,0 +1,55 @@
+= Workshop details
+:toc:
+:toc-placement: preamble
+:icons: font
+
+== Timing and schedule
+
+=== Full workshop (6 hours)
+
+* **Module 1**: Explore the lab environment (30 minutes)
+* **Module 2**: First network automation playbook (30 minutes)
+* **Module 3**: Ansible facts on network devices (30 minutes)
+* **Module 4**: Network resource modules (45 minutes)
+* **Module 5**: Explore the Automation controller (30 minutes)
+* **Module 6**: Create a job template (30 minutes)
+* **Module 7**: Create a survey (30 minutes)
+* **Module 8**: Role Based Access Control (45 minutes)
+* **Module 9**: Create a workflow (45 minutes)
+* **Break time**: As needed between modules
+
+=== Abbreviated workshop (3 hours)
+
+* **Modules 1--4**: Command-line automation (90 minutes)
+* **Modules 5--6**: Automation controller basics (60 minutes)
+* **Module 9**: Workflow (30 minutes)
+
+== Technical environment
+
+=== Software versions
+
+* Red Hat Ansible Automation Platform 2.x
+* Ansible Navigator (latest)
+* Execution environment: `network-ee` (pre-built with all required network collections)
+
+=== Network collections included
+
+* `cisco.ios` -- Cisco IOS-XE modules
+* `arista.eos` -- Arista EOS modules
+* `junipernetworks.junos` -- Juniper Junos modules
+* `ansible.netcommon` -- Common network modules
+
+=== Environment access
+
+Participants have access to:
+
+* **Terminal tab** -- Web-based terminal to the Ansible control node
+* **Automation Platform tab** -- Ansible Automation Platform controller web UI
+
+All credentials are provided in the lab interface.
+
+== Authors and contributors
+
+**Based on**: link:https://github.com/ansible/workshops[Ansible Workshops^] by Red Hat
+
+**Workshop version**: 1.0
