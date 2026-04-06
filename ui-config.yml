@@ -29,9 +29,13 @@ antora:
       label: "2-5: Workflows"
 
 tabs:
-  # Declarative terminal — do not use url: /wetty/root/ssh/... (not exposed by showroom proxy; causes "Cannot GET").
-  - name: ">_ terminal"
-    type: terminal
+  # Web shells on control (AAP) and containerlab. Paths match showroom WeTTY routes (wetty-control / wetty-containerlab).
+  - name: AAP terminal
+    path: /wetty-control
+    port: 443
+  - name: Containerlab terminal
+    path: /wetty-containerlab
+    port: 443
   - name: Ansible Automation Platform
     url: https://control-${guid}.${domain}/
     external: false

@@ -43,10 +43,37 @@
 
 Participants have access to:
 
-* **Terminal tab** -- Web-based terminal to the Ansible control node
-* **Automation Platform tab** -- Ansible Automation Platform controller web UI
+* **AAP terminal** -- Web-based shell on the **control** VM (the host where Automation Platform runs)
+* **Containerlab terminal** -- Web-based shell on the **containerlab** VM (bastion: `ansible-navigator`, lab tooling, and access toward the network topology)
+* **Ansible Automation Platform** -- Controller web UI (`https://control-...`)
 
 All credentials are provided in the lab interface.
+
+=== Lab VMs and SSH between hosts
+
+The VMs are defined in the lab config by these **names** (they are the `virtualmachines[].name` values your provisioning system uses):
+
+[cols="1,2,2",options="header"]
+|===
+| Name | Typical role | Notes
+
+| **containerlab**
+| CLI / bastion side of the lab (AnsibleGroup `bastions` in `config/instances.yaml`)
+| Where most command-line exercises run; matches the **Containerlab terminal** tab. Workshop modules often show prompts with a bastion user and hostname supplied by the live lab (not fixed in this doc).
+
+| **control**
+| Automation Platform controller host (AnsibleGroup `isolated`)
+| Matches the **AAP terminal** tab and the **Ansible Automation Platform** web UI. Cloud-init in the lab commonly creates user `rhel` with password `ansible123!` unless your instructor says otherwise.
+|===
+
+**SSH from the control VM to containerlab:** try the same logical name the platform gives the VM, usually the short hostname **`containerlab`**:
+
+[source,bash]
+----
+ssh rhel@containerlab
+----
+
+If that does not resolve, check what your deployment actually injected: run `getent hosts containerlab`, inspect `/etc/hosts`, or read the bastion hostname in the lab **user-info** / launch page (it may be a short name, FQDN, or IP). RHDP naming can differ slightly by cluster; the authoritative value is whatever resolves from inside **control** on the shared lab network.
 
 == Authors and contributors
 
