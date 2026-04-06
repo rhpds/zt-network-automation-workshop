@@ -1,6 +1,7 @@
 ---
 
 name: modules
+title: Ansible Network Automation
 version: master
 nav:
   - modules/ROOT/nav.adoc
