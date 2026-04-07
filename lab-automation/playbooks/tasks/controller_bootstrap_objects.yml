@@ -116,7 +116,7 @@
         credential_type: Machine
         inputs:
           username: "{{ containerlab_ansible_user }}"
-          ssh_private_key: "{{ ssh_private_key_content | default(omit) }}"
+          ssh_key_data: "{{ ssh_private_key_content | default(omit) }}"
           become_method: sudo
         state: present
         controller_host: "{{ controller_endpoint.rstrip('/') }}"
