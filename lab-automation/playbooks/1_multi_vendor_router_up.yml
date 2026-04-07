@@ -4,25 +4,25 @@
   hosts: containerlab
   gather_facts: false
   vars:
-    clab_topology_dir: "{{ clab_topology_dir | default('/home/lab-user/1_multi_vendor_router') }}"
+    clab_dir: "/home/lab-user/1_multi_vendor_router"
 
   tasks:
     - name: Containerlab deploy (reconfigure)
       ansible.builtin.command:
         cmd: containerlab deploy --reconfigure
-        chdir: "{{ clab_topology_dir }}"
+        chdir: "{{ clab_dir }}"
       become: true
       register: clab_deploy
 
     - name: Wait for nodes to settle
       ansible.builtin.pause:
-        seconds: "{{ clab_deploy_wait_seconds | default(120) | int }}"
+        seconds: 120
       run_once: true
 
     - name: Containerlab inspect
       ansible.builtin.command:
         cmd: containerlab inspect
-        chdir: "{{ clab_topology_dir }}"
+        chdir: "{{ clab_dir }}"
       become: true
       register: clab_inspect
       changed_when: false
