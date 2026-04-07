@@ -36,7 +36,7 @@ workshop_inventory_name: "Network workshop lab"
 workshop_containerlab_group: containerlab
 workshop_containerlab_host_name: containerlab-vm
 containerlab_ansible_host: containerlab
-containerlab_ansible_user: lab-user
+containerlab_ansible_user: rhel
 
 workshop_jt_deploy_topology_name: "Deploy — 1_multi_vendor_router"
 workshop_playbook_topology_local: lab-automation/playbooks/1_multi_vendor_router_up_local.yml
