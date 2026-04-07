@@ -22,19 +22,21 @@
             msg: "bootstrap_aap is false; skipping."
         - ansible.builtin.meta: end_play
 
-    - name: Wait for Controller API
-      ansible.builtin.uri:
-        url: "{{ controller_endpoint.rstrip('/') }}/api/v2/ping/"
-        method: GET
-        url_username: "{{ controller_username }}"
-        url_password: "{{ controller_password }}"
-        force_basic_auth: true
-        validate_certs: "{{ controller_verify_ssl | default(false) }}"
-        status_code: [200]
+    - name: Wait for Controller API (curl — uri module hangs with AAP 2.6 gateway)
+      ansible.builtin.command:
+        argv:
+          - curl
+          - -sk
+          - -o
+          - /dev/null
+          - -w
+          - "%{http_code}"
+          - "{{ controller_endpoint.rstrip('/') }}/api/controller/v2/ping/"
       register: aap_ping
-      until: aap_ping.status == 200
+      until: aap_ping.stdout == "200"
       retries: 36
       delay: 10
+      changed_when: false
 
     - name: Optional OAuth token via ansible.platform (Gateway deployments)
       when:

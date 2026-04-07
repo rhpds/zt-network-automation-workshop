@@ -1,8 +1,8 @@
 ---
-# Controller API (run bootstrap from the control VM; controller listens locally).
-controller_endpoint: "https://127.0.0.1"
+# Controller API (AAP 2.6 gateway prefixes controller at /api/controller/).
+controller_endpoint: "https://aap.example.org"
 controller_username: admin
-controller_password: "{{ lookup('ansible.builtin.env', 'CONTROLLER_PASSWORD') | default('', true) }}"
+controller_password: "{{ lookup('ansible.builtin.env', 'CONTROLLER_PASSWORD') | default('ansible123!', true) }}"
 controller_verify_ssl: false
 
 # Optional: OAuth / gateway token via ansible.platform (set use_aap_gateway_token true + gateway env below).
