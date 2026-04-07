@@ -29,16 +29,13 @@ antora:
       label: "2-5: Workflows"
 
 tabs:
-  # Terminal tabs do NOT map VMs here. This file only selects Showroom UI modes/paths that the
-  # RHDP Showroom Helm chart already exposes. Which VM each route SSHs to is wired at deploy time
-  # (sidecars like wetty-control / wetty-containerlab ↔ VMs named in config/instances.yaml).
-  # Verify in a live lab: if type: terminal lands on control, label that tab "AAP terminal"; use
-  # path tabs only for paths your cluster actually serves (otherwise black screen).
+  # Browser terminals are all WeTTY; type: terminal = chart default route, url: /wetty_* = explicit VM.
+  # Mixing default + explicit URL is fine. If the default is not control, switch AAP to url: /wetty_control.
+  # Root: /wetty_control/ssh/root etc. Optional modules: list page stems on each tab.
   - name: AAP terminal
     type: terminal
   - name: Containerlab terminal
-    path: /wetty-containerlab
-    port: 443
+    url: /wetty_containerlab
   - name: Ansible Automation Platform
     url: https://control-${guid}.${domain}/
     external: false
