@@ -1,0 +1,85 @@
+---
+# Run on the control VM (localhost). Uses awx.awx for Controller CRUD.
+# Optional: ansible.platform.token when use_aap_gateway_token and gateway_* vars/env are set.
+- name: Bootstrap Automation controller (API)
+  hosts: aap_controller
+  gather_facts: false
+
+  tasks:
+    - name: Skip AAP bootstrap without controller password
+      when: controller_password | default('') | length == 0
+      block:
+        - ansible.builtin.debug:
+            msg: >-
+              CONTROLLER_PASSWORD is not set; skipping Controller API bootstrap.
+              Export the admin password and run playbooks/aap_bootstrap.yml again if needed.
+        - ansible.builtin.meta: end_play
+
+    - name: Skip when bootstrap disabled
+      when: not (bootstrap_aap | default(true) | bool)
+      block:
+        - ansible.builtin.debug:
+            msg: "bootstrap_aap is false; skipping."
+        - ansible.builtin.meta: end_play
+
+    - name: Wait for Controller API
+      ansible.builtin.uri:
+        url: "{{ controller_endpoint.rstrip('/') }}/api/v2/ping/"
+        method: GET
+        url_username: "{{ controller_username }}"
+        url_password: "{{ controller_password }}"
+        force_basic_auth: true
+        validate_certs: "{{ controller_verify_ssl | default(false) }}"
+        status_code: [200]
+      register: aap_ping
+      until: aap_ping.status == 200
+      retries: 36
+      delay: 10
+
+    - name: Optional OAuth token via ansible.platform (Gateway deployments)
+      when:
+        - use_aap_gateway_token | default(false) | bool
+        - gateway_hostname | default('') | length > 0
+      environment:
+        GATEWAY_HOSTNAME: "{{ gateway_hostname }}"
+        GATEWAY_USERNAME: "{{ gateway_username }}"
+        GATEWAY_PASSWORD: "{{ gateway_password }}"
+        GATEWAY_VERIFY_SSL: "{{ controller_verify_ssl | string }}"
+      ansible.platform.token:
+        description: Workshop automation
+        scope: write
+        state: present
+      register: workshop_gateway_token
+      failed_when: false
+
+    - name: Log gateway token creation result
+      when: workshop_gateway_token is defined
+      ansible.builtin.debug:
+        msg: >-
+          Gateway token module finished (check changed/failed). Use controller API modules below
+          for classic Controller configuration.
+
+    - name: Ensure Default organization exists
+      awx.awx.organization:
+        name: Default
+        state: present
+        controller_host: "{{ controller_endpoint.rstrip('/') }}"
+        controller_username: "{{ controller_username }}"
+        controller_password: "{{ controller_password }}"
+        validate_certs: "{{ controller_verify_ssl | default(false) }}"
+
+    - name: Ensure workshop project exists (SCM)
+      awx.awx.project:
+        name: "{{ workshop_project_name }}"
+        organization: Default
+        scm_type: git
+        scm_url: "{{ workshop_git_url }}"
+        scm_branch: "{{ workshop_scm_branch }}"
+        state: present
+        controller_host: "{{ controller_endpoint.rstrip('/') }}"
+        controller_username: "{{ controller_username }}"
+        controller_password: "{{ controller_password }}"
+        validate_certs: "{{ controller_verify_ssl | default(false) }}"
+
+    - name: Inventory, credentials, job template (containerlab topology)
+      ansible.builtin.include_tasks: tasks/controller_bootstrap_objects.yml

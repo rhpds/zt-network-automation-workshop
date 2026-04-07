@@ -13,6 +13,7 @@
 .
 ├── README.adoc                 # Readme file
 ├── config                      # Defines VMs, network and firewall
+├── lab-automation              # Ansible: containerlab up/down, optional router checks, Controller bootstrap
 ├── runtime-automation          # Scripts directory for setup/next/solve modules 
 ├── setup-automation            # Scripts directory when provisioning
 ├── ui-config.yml               # Configuration file
@@ -95,6 +96,29 @@ tabs:
     port: 443                                   # Port of the tt1 terminal
     path: /tty1                                 # Path to the tty1 terminal
 ----
+
+=== Lab automation (containerlab + Controller API)
+
+Playbooks under `lab-automation/` mirror the GitLab `network_workshop_containerlab` helpers, with fixes (correct `register`, no brittle `inspect` line slicing, configurable wait). They also include an optional *Automation controller* bootstrap using `awx.awx` (SCM project) and an optional `ansible.platform.token` task when Gateway env vars are set.
+
+For a full walkthrough (inventory options, test order, router checks vs AAP, boot integration, troubleshooting), see link:lab-automation/README.md[lab-automation/README.md].
+
+To bring up Containerlab **without Ansible** (manual CLI on the containerlab VM), see link:README-containerlab.md[README-containerlab.md].
+
+* Run manually on the **control** node (after `ansible-galaxy collection install -r lab-automation/requirements.yml`):
+
+[source,shell]
+----
+cd lab-automation
+export CONTROLLER_PASSWORD='...'   # admin password; omit to skip Controller API steps only
+ansible-playbook -i inventory/lab.yml playbooks/site.yml
+----
+
+* `setup-automation/setup-control.sh` runs `playbooks/site.yml` automatically when it finds `lab-automation/playbooks/site.yml` under `/home/rhel/zt-network-automation-workshop`, `/home/rhel/workshop`, or `$WORKSHOP_REPO_ROOT`.
+
+* Inventory defaults: SSH to **containerlab** as **lab-user**; Controller at **https://127.0.0.1**. Override with `-e` or edit `inventory/` and `inventory/group_vars/`.
+
+* Router smoke test (optional): `ansible-playbook -i inventory/lab.yml playbooks/gather_facts.yml -e containerlab_fip=<LoadBalancer IP>` (requires network collections).
 
 === Development Cycle
 

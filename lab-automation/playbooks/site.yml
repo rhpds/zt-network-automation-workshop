@@ -1,0 +1,9 @@
+---
+# Full lab bring-up from the control node: containerlab topology, then Controller project.
+# Run from lab-automation/: ansible-playbook -i inventory/lab.yml playbooks/site.yml
+#
+# Run only one half:
+#   ansible-playbook -i inventory/lab.yml playbooks/1_multi_vendor_router_up.yml
+#   ansible-playbook -i inventory/lab.yml playbooks/aap_bootstrap.yml
+- import_playbook: 1_multi_vendor_router_up.yml
+- import_playbook: aap_bootstrap.yml

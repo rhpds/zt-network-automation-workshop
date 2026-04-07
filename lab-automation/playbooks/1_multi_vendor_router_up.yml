@@ -1,0 +1,33 @@
+---
+# Deploy the 1_multi_vendor_router topology on the containerlab VM.
+- name: Deploy multi-vendor router containerlab topology
+  hosts: containerlab
+  gather_facts: false
+  vars:
+    clab_topology_dir: "{{ clab_topology_dir | default('/home/lab-user/1_multi_vendor_router') }}"
+
+  tasks:
+    - name: Containerlab deploy (reconfigure)
+      ansible.builtin.command:
+        cmd: containerlab deploy --reconfigure
+        chdir: "{{ clab_topology_dir }}"
+      become: true
+      register: clab_deploy
+
+    - name: Wait for nodes to settle
+      ansible.builtin.pause:
+        seconds: "{{ clab_deploy_wait_seconds | default(120) | int }}"
+      run_once: true
+
+    - name: Containerlab inspect
+      ansible.builtin.command:
+        cmd: containerlab inspect
+        chdir: "{{ clab_topology_dir }}"
+      become: true
+      register: clab_inspect
+      changed_when: false
+
+    - name: Show containerlab inspect output
+      ansible.builtin.debug:
+        msg: "{{ clab_inspect.stdout_lines | default([]) }}"
+      run_once: true
