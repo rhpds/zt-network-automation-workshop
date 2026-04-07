@@ -1,5 +1,5 @@
 ---
-# Run on the control VM (localhost). Uses awx.awx for Controller CRUD.
+# Run on the control VM (localhost). Uses ansible.controller for Controller CRUD (ships in ee-supported-rhel9).
 # Optional: ansible.platform.token when use_aap_gateway_token and gateway_* vars/env are set.
 - name: Bootstrap Automation controller (API)
   hosts: aap_controller
@@ -60,7 +60,7 @@
           for classic Controller configuration.
 
     - name: Ensure Default organization exists
-      awx.awx.organization:
+      ansible.controller.organization:
         name: Default
         state: present
         controller_host: "{{ controller_endpoint.rstrip('/') }}"
@@ -69,7 +69,7 @@
         validate_certs: "{{ controller_verify_ssl | default(false) }}"
 
     - name: Ensure workshop project exists (SCM)
-      awx.awx.project:
+      ansible.controller.project:
         name: "{{ workshop_project_name }}"
         organization: Default
         scm_type: git

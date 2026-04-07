@@ -5,7 +5,7 @@ To run **Containerlab only** (CLI on the VM, no Ansible), see [../README-contain
 This folder contains Ansible playbooks to:
 
 1. **Deploy** the `1_multi_vendor_router` Containerlab topology on the **containerlab** VM (same idea as [network_workshop_containerlab](https://gitlab.com/redhatautomation/network_workshop_containerlab), with fixes).
-2. **Bootstrap** Ansible Automation Platform (Controller) on the **control** VM: wait for the API, optionally use `ansible.platform.token` when Gateway env vars are set, then create/update a **Default** organization and a **git SCM project** via **`awx.awx`**.
+2. **Bootstrap** Ansible Automation Platform (Controller) on the **control** VM: wait for the API, optionally use `ansible.platform.token` when Gateway env vars are set, then create/update a **Default** organization and a **git SCM project** via **`ansible.controller`**.
 3. **Optionally** run **`gather_facts`** against the virtual routers (Cisco / Arista / Junos) once you know how traffic reaches them from Ansible.
 4. **Pre-provision Controller** with a **job template** that turns on **`1_multi_vendor_router`** (see next section).
 
@@ -175,7 +175,7 @@ For a first test, run the playbooks **manually** (sections above) until inventor
 | `containerlab deploy` fails | On containerlab VM: `sudo`, Podman/Docker, path `clab_topology_dir`, contents of `routers.clab.yml`. |
 | Controller tasks skipped | `CONTROLLER_PASSWORD` unset; set it and re-run `aap_bootstrap.yml`. |
 | `uri` ping never succeeds | `controller_endpoint` (https, correct hostname/IP), TLS (`controller_verify_ssl`), clock, Controller not finished installing. |
-| `awx.awx.*` errors | Collection version vs Controller version; user role must create org/project. |
+| `ansible.controller.*` errors | Collection version vs Controller version; user role must create org/project. |
 | `gather_facts` fails | `containerlab_fip` wrong; ports blocked; device credentials; collections missing. |
 
 ---

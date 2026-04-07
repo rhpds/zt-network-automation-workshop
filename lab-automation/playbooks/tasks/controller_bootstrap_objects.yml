@@ -1,7 +1,7 @@
 ---
 # Included from aap_bootstrap.yml after project exists.
 - name: Initial SCM sync for workshop project
-  awx.awx.project_update:
+  ansible.controller.project_update:
     project: "{{ workshop_project_name }}"
     wait: true
     timeout: 1200
@@ -23,7 +23,7 @@
   when: workshop_jt_mode | default('local') == 'local'
   block:
     - name: Inventory — workshop localhost
-      awx.awx.inventory:
+      ansible.controller.inventory:
         name: "{{ workshop_localhost_inventory_name }}"
         organization: Default
         state: present
@@ -33,7 +33,7 @@
         validate_certs: "{{ controller_verify_ssl | default(false) }}"
 
     - name: Host — localhost
-      awx.awx.host:
+      ansible.controller.host:
         name: localhost
         inventory: "{{ workshop_localhost_inventory_name }}"
         variables:
@@ -45,7 +45,7 @@
         validate_certs: "{{ controller_verify_ssl | default(false) }}"
 
     - name: Job template — deploy 1_multi_vendor_router (local + ssh)
-      awx.awx.job_template:
+      ansible.controller.job_template:
         name: "{{ workshop_jt_deploy_topology_name }}"
         job_type: run
         organization: Default
@@ -64,7 +64,7 @@
   when: workshop_jt_mode | default('local') == 'remote'
   block:
     - name: Inventory — workshop lab hosts
-      awx.awx.inventory:
+      ansible.controller.inventory:
         name: "{{ workshop_inventory_name }}"
         organization: Default
         state: present
@@ -74,7 +74,7 @@
         validate_certs: "{{ controller_verify_ssl | default(false) }}"
 
     - name: Group — containerlab
-      awx.awx.group:
+      ansible.controller.group:
         name: "{{ workshop_containerlab_group }}"
         inventory: "{{ workshop_inventory_name }}"
         state: present
@@ -84,7 +84,7 @@
         validate_certs: "{{ controller_verify_ssl | default(false) }}"
 
     - name: Host — containerlab VM (SSH target in inventory)
-      awx.awx.host:
+      ansible.controller.host:
         name: "{{ workshop_containerlab_host_name }}"
         inventory: "{{ workshop_inventory_name }}"
         variables:
@@ -98,7 +98,7 @@
         validate_certs: "{{ controller_verify_ssl | default(false) }}"
 
     - name: Associate host with group containerlab
-      awx.awx.group:
+      ansible.controller.group:
         name: "{{ workshop_containerlab_group }}"
         inventory: "{{ workshop_inventory_name }}"
         hosts:
@@ -110,7 +110,7 @@
         validate_certs: "{{ controller_verify_ssl | default(false) }}"
 
     - name: Machine credential — SSH to containerlab
-      awx.awx.credential:
+      ansible.controller.credential:
         name: "{{ workshop_credential_name }}"
         organization: Default
         credential_type: Machine
@@ -127,7 +127,7 @@
         validate_certs: "{{ controller_verify_ssl | default(false) }}"
 
     - name: Job template — deploy topology (Ansible SSH + become)
-      awx.awx.job_template:
+      ansible.controller.job_template:
         name: "{{ workshop_jt_deploy_topology_name }}"
         job_type: run
         organization: Default

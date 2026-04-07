@@ -1,5 +1,5 @@
 ---
-# Install on the control node before running playbooks (see setup-control.sh).
+# Collections needed (both ship inside ee-supported-rhel9; listed here for reference / non-EE runs).
 collections:
   - name: ansible.platform
-  - name: awx.awx
+  - name: ansible.controller
