@@ -9,27 +9,39 @@ echo "Setup vm control" > /tmp/progress.log
 chmod 666 /tmp/progress.log
 
 # ---------------------------------------------------------------------------
-# 1. Pull the EE image — retry up to 5 min waiting for registry auth.
+# 1. Log in to registry.redhat.io and pull the EE image.
 # ---------------------------------------------------------------------------
+registry_login() {
+  if [[ -n "${REG_USER:-}" && -n "${REG_PASS:-}" ]]; then
+    echo "Logging in to registry.redhat.io as ${REG_USER} (root + rhel)..." >> /tmp/progress.log
+    podman login registry.redhat.io -u "$REG_USER" -p "$REG_PASS" >> /tmp/progress.log 2>&1 || true
+    sudo -u rhel -H podman login registry.redhat.io -u "$REG_USER" -p "$REG_PASS" >> /tmp/progress.log 2>&1
+    if [[ $? -eq 0 ]]; then
+      echo "Registry login successful" >> /tmp/progress.log
+      return 0
+    else
+      echo "Registry login failed" >> /tmp/progress.log
+      return 1
+    fi
+  else
+    echo "REG_USER/REG_PASS not set; skipping registry login" >> /tmp/progress.log
+    return 0
+  fi
+}
+
 pull_ee() {
   if podman images --format '{{.Repository}}:{{.Tag}}' | grep -q "${EE_IMAGE}"; then
     echo "EE image ${EE_IMAGE} already present" >> /tmp/progress.log
     return 0
   fi
 
-  local max_attempts=30
-  local delay=10
-  for (( i=1; i<=max_attempts; i++ )); do
-    echo "Pulling EE image (attempt ${i}/${max_attempts})..." >> /tmp/progress.log
-    if podman pull "${EE_IMAGE}" >> /tmp/progress.log 2>&1; then
-      echo "EE image pulled successfully" >> /tmp/progress.log
-      return 0
-    fi
-    echo "Pull failed; retrying in ${delay}s (registry auth may not be ready yet)" >> /tmp/progress.log
-    sleep "${delay}"
-  done
+  echo "Pulling EE image ${EE_IMAGE}..." >> /tmp/progress.log
+  if podman pull "${EE_IMAGE}" >> /tmp/progress.log 2>&1; then
+    echo "EE image pulled successfully" >> /tmp/progress.log
+    return 0
+  fi
 
-  echo "ERROR: Could not pull EE image after ${max_attempts} attempts" >> /tmp/progress.log
+  echo "ERROR: Could not pull EE image" >> /tmp/progress.log
   return 1
 }
 
@@ -87,5 +99,6 @@ run_lab_automation() {
   || echo "lab-automation failed; see /tmp/lab-automation-site.log" >> /tmp/progress.log
 }
 
+registry_login || true
 pull_ee || true
 run_lab_automation || true
