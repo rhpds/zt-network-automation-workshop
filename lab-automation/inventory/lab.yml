@@ -9,10 +9,12 @@ all:
 
   children:
     containerlab:
+      vars:
+        ansible_ssh_common_args: "-o StrictHostKeyChecking=no"
       hosts:
         network_workshop:
           ansible_host: containerlab
-          ansible_user: lab-user
+          ansible_user: rhel
 
     aap_controller:
       hosts:

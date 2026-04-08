@@ -46,33 +46,62 @@ pull_ee() {
 }
 
 # ---------------------------------------------------------------------------
-# 2. Wait for the workshop repo to appear (showroom clones it asynchronously).
+# 2. Clone the workshop repo (it is not copied to the VM automatically).
 # ---------------------------------------------------------------------------
-find_lab_automation() {
-  local max_attempts=30
+REPO_URL="https://github.com/rhpds/zt-network-automation-workshop.git"
+REPO_DIR="/home/rhel/zt-network-automation-workshop"
+RHEL_SSH="/home/rhel/.ssh"
+
+# ---------------------------------------------------------------------------
+# Wait for SSH key to appear (setup-containerlab.sh pushes it here).
+# The platform puts the private key only on containerlab; that VM's setup
+# script SCPs it to control. We just wait for it to show up.
+# ---------------------------------------------------------------------------
+wait_for_ssh_key() {
+  if [[ -f "${RHEL_SSH}/config" ]] && ls "${RHEL_SSH}"/*.pem &>/dev/null 2>&1; then
+    echo "SSH key + config already present on control" >> /tmp/progress.log
+    return 0
+  fi
+
+  local max_attempts=60
   local delay=10
+  echo "Waiting for SSH key from containerlab (pushed by setup-containerlab.sh)..." >> /tmp/progress.log
   for (( i=1; i<=max_attempts; i++ )); do
-    for d in "/opt/workshop" "/home/rhel/zt-network-automation-workshop" "/home/rhel/workshop" "${WORKSHOP_REPO_ROOT:-}"; do
-      [[ -z "$d" ]] && continue
-      if [[ -f "$d/lab-automation/playbooks/site.yml" ]]; then
-        echo "$d/lab-automation"
-        return 0
-      fi
-    done
-    echo "Waiting for workshop repo (attempt ${i}/${max_attempts})..." >> /tmp/progress.log
+    if ls "${RHEL_SSH}"/*.pem &>/dev/null 2>&1; then
+      echo "SSH key appeared on control after ${i} checks" >> /tmp/progress.log
+      return 0
+    fi
     sleep "${delay}"
   done
+
+  echo "WARNING: SSH key never arrived after ${max_attempts} checks (~10 min). Containerlab playbooks will fail." >> /tmp/progress.log
   return 1
+}
+
+clone_repo() {
+  if [[ -f "${REPO_DIR}/lab-automation/playbooks/site.yml" ]]; then
+    echo "Workshop repo already present at ${REPO_DIR}" >> /tmp/progress.log
+    return 0
+  fi
+
+  echo "Cloning ${REPO_URL} to ${REPO_DIR}..." >> /tmp/progress.log
+  sudo -u rhel -H git clone "${REPO_URL}" "${REPO_DIR}" >> /tmp/progress.log 2>&1
+  if [[ $? -eq 0 ]]; then
+    echo "Repo cloned successfully" >> /tmp/progress.log
+    return 0
+  else
+    echo "ERROR: git clone failed" >> /tmp/progress.log
+    return 1
+  fi
 }
 
 # ---------------------------------------------------------------------------
 # 3. Run lab-automation playbooks inside the EE via podman.
 # ---------------------------------------------------------------------------
 run_lab_automation() {
-  local la_dir
-  la_dir=$(find_lab_automation)
-  if [[ -z "$la_dir" ]]; then
-    echo "lab-automation/playbooks/site.yml not found after waiting; skipping" >> /tmp/progress.log
+  local la_dir="${REPO_DIR}/lab-automation"
+  if [[ ! -f "${la_dir}/playbooks/site.yml" ]]; then
+    echo "lab-automation/playbooks/site.yml not found at ${la_dir}; skipping" >> /tmp/progress.log
     return 0
   fi
   if ! command -v podman &>/dev/null; then
@@ -101,4 +130,6 @@ run_lab_automation() {
 
 registry_login || true
 pull_ee || true
+wait_for_ssh_key || true
+clone_repo || true
 run_lab_automation || true
