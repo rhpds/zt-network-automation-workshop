@@ -9,32 +9,58 @@ echo "Setup vm control" > /tmp/progress.log
 chmod 666 /tmp/progress.log
 
 # ---------------------------------------------------------------------------
-# 1. Pull the EE image if not already present.
+# 1. Pull the EE image — retry up to 5 min waiting for registry auth.
 # ---------------------------------------------------------------------------
 pull_ee() {
   if podman images --format '{{.Repository}}:{{.Tag}}' | grep -q "${EE_IMAGE}"; then
     echo "EE image ${EE_IMAGE} already present" >> /tmp/progress.log
     return 0
   fi
-  echo "Pulling EE image ${EE_IMAGE}..." >> /tmp/progress.log
-  podman pull "${EE_IMAGE}" >> /tmp/progress.log 2>&1
+
+  local max_attempts=30
+  local delay=10
+  for (( i=1; i<=max_attempts; i++ )); do
+    echo "Pulling EE image (attempt ${i}/${max_attempts})..." >> /tmp/progress.log
+    if podman pull "${EE_IMAGE}" >> /tmp/progress.log 2>&1; then
+      echo "EE image pulled successfully" >> /tmp/progress.log
+      return 0
+    fi
+    echo "Pull failed; retrying in ${delay}s (registry auth may not be ready yet)" >> /tmp/progress.log
+    sleep "${delay}"
+  done
+
+  echo "ERROR: Could not pull EE image after ${max_attempts} attempts" >> /tmp/progress.log
+  return 1
 }
 
 # ---------------------------------------------------------------------------
-# 2. Run lab-automation playbooks inside the EE via podman (no pip/dnf needed).
-#    The EE has ansible-playbook + awx.awx + ansible.platform + network collections.
+# 2. Wait for the workshop repo to appear (showroom clones it asynchronously).
+# ---------------------------------------------------------------------------
+find_lab_automation() {
+  local max_attempts=30
+  local delay=10
+  for (( i=1; i<=max_attempts; i++ )); do
+    for d in "/opt/workshop" "/home/rhel/zt-network-automation-workshop" "/home/rhel/workshop" "${WORKSHOP_REPO_ROOT:-}"; do
+      [[ -z "$d" ]] && continue
+      if [[ -f "$d/lab-automation/playbooks/site.yml" ]]; then
+        echo "$d/lab-automation"
+        return 0
+      fi
+    done
+    echo "Waiting for workshop repo (attempt ${i}/${max_attempts})..." >> /tmp/progress.log
+    sleep "${delay}"
+  done
+  return 1
+}
+
+# ---------------------------------------------------------------------------
+# 3. Run lab-automation playbooks inside the EE via podman.
 # ---------------------------------------------------------------------------
 run_lab_automation() {
-  local la_dir=""
-  for d in "/home/rhel/zt-network-automation-workshop" "/home/rhel/workshop" "${WORKSHOP_REPO_ROOT:-}"; do
-    [[ -z "$d" ]] && continue
-    if [[ -f "$d/lab-automation/playbooks/site.yml" ]]; then
-      la_dir="$d/lab-automation"
-      break
-    fi
-  done
+  local la_dir
+  la_dir=$(find_lab_automation)
   if [[ -z "$la_dir" ]]; then
-    echo "lab-automation/playbooks/site.yml not found; skipping" >> /tmp/progress.log
+    echo "lab-automation/playbooks/site.yml not found after waiting; skipping" >> /tmp/progress.log
     return 0
   fi
   if ! command -v podman &>/dev/null; then
@@ -63,4 +89,3 @@ run_lab_automation() {
 
 pull_ee || true
 run_lab_automation || true
-
