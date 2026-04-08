@@ -9,6 +9,7 @@
   tasks:
   - name: Add bastion host
     ansible.builtin.add_host:
+      name: "{{ item }}"
       name: "{{ lookup('ansible.builtin.env', 'BASTION_HOST') }}"
       ansible_ssh_host: "{{ lookup('ansible.builtin.env', 'BASTION_HOST') }}"
       ansible_ssh_port: "{{ lookup('ansible.builtin.env', 'BASTION_PORT') }}"
