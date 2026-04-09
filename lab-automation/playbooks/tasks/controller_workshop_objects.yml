@@ -218,7 +218,6 @@
     organization: Default
     scm_type: git
     scm_url: "https://github.com/network-automation/toolkit"
-    scm_branch: main
     state: present
     controller_host: "{{ controller_endpoint.rstrip('/') }}"
     controller_username: "{{ controller_username }}"

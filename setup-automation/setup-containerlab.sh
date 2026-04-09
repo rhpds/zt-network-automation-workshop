@@ -90,21 +90,51 @@ SSHCFG
   chmod 600 "${lab_ssh}/config"
   chown -R lab-user:lab-user "${lab_ssh}"
 
-  # Install sshpass for passwordless router access if available.
-  if command -v dnf &>/dev/null; then
-    dnf install -y sshpass >> /tmp/progress.log 2>&1 || true
-  fi
+  # Python-based sshpass alternative (no EPEL needed).
+  cat > /usr/local/bin/sshpass-py <<'PYEOF'
+#!/usr/bin/env python3
+import sys, os, pty, select, time
+password = sys.argv[1]
+cmd = sys.argv[2:]
+pid, fd = pty.fork()
+if pid == 0:
+    os.execvp(cmd[0], cmd)
+buf = b""
+sent = False
+while True:
+    r, _, _ = select.select([fd], [], [], 1)
+    if r:
+        try:
+            data = os.read(fd, 1024)
+        except OSError:
+            break
+        if not data:
+            break
+        buf += data
+        sys.stdout.buffer.write(data)
+        sys.stdout.buffer.flush()
+        if not sent and b"assword:" in buf:
+            time.sleep(0.1)
+            os.write(fd, (password + "\n").encode())
+            sent = True
+            buf = b""
+    elif sent:
+        continue
+_, status = os.waitpid(pid, 0)
+sys.exit(os.WEXITSTATUS(status))
+PYEOF
+  chmod 755 /usr/local/bin/sshpass-py
 
-  # Create wrapper scripts so `ssh rtr1` is fully passwordless.
+  # Wrapper scripts: just type `rtr1` to connect passwordlessly.
   for rtr in rtr1 rtr2 rtr3 rtr4; do
     cat > "/usr/local/bin/${rtr}" <<WRAPPER
 #!/bin/bash
-exec sshpass -p 'admin@123' ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null admin@${rtr} "\$@"
+exec /usr/local/bin/sshpass-py 'admin@123' ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null admin@${rtr} "\$@"
 WRAPPER
     chmod 755 "/usr/local/bin/${rtr}"
   done
 
-  echo "Router access configured (rtr1-rtr4)" >> /tmp/progress.log
+  echo "Router access configured — rtr1/rtr2/rtr3/rtr4 (passwordless)" >> /tmp/progress.log
 }
 
 setup_router_access || echo "setup_router_access failed" >> /tmp/progress.log
