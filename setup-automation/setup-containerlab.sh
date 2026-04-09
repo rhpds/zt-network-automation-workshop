@@ -63,3 +63,48 @@ REMOTE
 }
 
 push_ssh_key_to_control || echo "push_ssh_key_to_control failed; see above" >> /tmp/progress.log
+
+# ---------------------------------------------------------------------------
+# Set up /etc/hosts and SSH config so students can just `ssh rtr1` etc.
+# IPs are static from the containerlab topology (172.20.20.0/24 Docker bridge).
+# ---------------------------------------------------------------------------
+setup_router_access() {
+  echo "Setting up router name resolution and SSH config..." >> /tmp/progress.log
+
+  grep -q "rtr1" /etc/hosts 2>/dev/null || cat >> /etc/hosts <<'HOSTS'
+172.20.20.10 rtr1
+172.20.20.20 rtr2
+172.20.20.30 rtr3
+172.20.20.40 rtr4
+HOSTS
+
+  local lab_ssh="/home/lab-user/.ssh"
+  mkdir -p "${lab_ssh}"
+
+  cat > "${lab_ssh}/config" <<'SSHCFG'
+Host rtr1 rtr2 rtr3 rtr4
+  User admin
+  StrictHostKeyChecking no
+  UserKnownHostsFile /dev/null
+SSHCFG
+  chmod 600 "${lab_ssh}/config"
+  chown -R lab-user:lab-user "${lab_ssh}"
+
+  # Install sshpass for passwordless router access if available.
+  if command -v dnf &>/dev/null; then
+    dnf install -y sshpass >> /tmp/progress.log 2>&1 || true
+  fi
+
+  # Create wrapper scripts so `ssh rtr1` is fully passwordless.
+  for rtr in rtr1 rtr2 rtr3 rtr4; do
+    cat > "/usr/local/bin/${rtr}" <<WRAPPER
+#!/bin/bash
+exec sshpass -p 'admin@123' ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null admin@${rtr} "\$@"
+WRAPPER
+    chmod 755 "/usr/local/bin/${rtr}"
+  done
+
+  echo "Router access configured (rtr1-rtr4)" >> /tmp/progress.log
+}
+
+setup_router_access || echo "setup_router_access failed" >> /tmp/progress.log

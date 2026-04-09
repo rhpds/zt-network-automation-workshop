@@ -52,3 +52,6 @@ workshop_containerlab_ssh_private_key: ""
 workshop_containerlab_become_password: "{{ lookup('ansible.builtin.env', 'WORKSHOP_CONTAINERLAB_BECOME_PASSWORD') | default('', true) }}"
 
 workshop_project_sync_on_bootstrap: true
+
+# Password for workshop user accounts (network-operator, network-admin, bbelcher, etc.)
+workshop_admin_password: "ansible123!"
