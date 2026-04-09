@@ -90,46 +90,28 @@ SSHCFG
   chmod 600 "${lab_ssh}/config"
   chown -R lab-user:lab-user "${lab_ssh}"
 
-  # Python-based sshpass alternative (no EPEL needed).
-  cat > /usr/local/bin/sshpass-py <<'PYEOF'
-#!/usr/bin/env python3
-import sys, os, pty, select, time
-password = sys.argv[1]
-cmd = sys.argv[2:]
-pid, fd = pty.fork()
-if pid == 0:
-    os.execvp(cmd[0], cmd)
-buf = b""
-sent = False
-while True:
-    r, _, _ = select.select([fd], [], [], 1)
-    if r:
-        try:
-            data = os.read(fd, 1024)
-        except OSError:
-            break
-        if not data:
-            break
-        buf += data
-        sys.stdout.buffer.write(data)
-        sys.stdout.buffer.flush()
-        if not sent and b"assword:" in buf:
-            time.sleep(0.1)
-            os.write(fd, (password + "\n").encode())
-            sent = True
-            buf = b""
-    elif sent:
-        continue
-_, status = os.waitpid(pid, 0)
-sys.exit(os.WEXITSTATUS(status))
-PYEOF
-  chmod 755 /usr/local/bin/sshpass-py
+  # Install sshpass from bundled RPM (needed for router SCP and passwordless SSH).
+  if ! command -v sshpass &>/dev/null; then
+    local repo_root=""
+    for d in "/opt/workshop" "/home/rhel/zt-network-automation-workshop" "/tmp/setup-scripts"; do
+      if [[ -f "$d/rpms/sshpass-1.09-4.el9.x86_64.rpm" ]]; then
+        repo_root="$d"
+        break
+      fi
+    done
+    if [[ -n "$repo_root" ]]; then
+      rpm -ivh "${repo_root}/rpms/sshpass-1.09-4.el9.x86_64.rpm" >> /tmp/progress.log 2>&1 || true
+      echo "sshpass installed from bundled RPM" >> /tmp/progress.log
+    else
+      echo "sshpass RPM not found; wrapper scripts will use Python fallback" >> /tmp/progress.log
+    fi
+  fi
 
   # Wrapper scripts: just type `rtr1` to connect passwordlessly.
   for rtr in rtr1 rtr2 rtr3 rtr4; do
     cat > "/usr/local/bin/${rtr}" <<WRAPPER
 #!/bin/bash
-exec /usr/local/bin/sshpass-py 'admin@123' ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null admin@${rtr} "\$@"
+exec sshpass -p 'admin@123' ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null admin@${rtr} "\$@"
 WRAPPER
     chmod 755 "/usr/local/bin/${rtr}"
   done
