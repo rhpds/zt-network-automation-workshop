@@ -74,6 +74,20 @@
     controller_password: "{{ controller_password }}"
     validate_certs: "{{ controller_verify_ssl | default(false) }}"
 
+- name: "Group — network (parent of cisco, arista, juniper)"
+  ansible.controller.group:
+    name: network
+    inventory: "Workshop Inventory"
+    children:
+      - cisco
+      - arista
+      - juniper
+    state: present
+    controller_host: "{{ controller_endpoint.rstrip('/') }}"
+    controller_username: "{{ controller_username }}"
+    controller_password: "{{ controller_password }}"
+    validate_certs: "{{ controller_verify_ssl | default(false) }}"
+
 # Router hosts — accessed from AAP/control via containerlab port forwarding
 - name: "Host — rtr1 (Cisco IOS)"
   ansible.controller.host:
