@@ -506,6 +506,11 @@
     credentials:
       - "Workshop Credential"
       - "Controller Credential"
+    extra_vars:
+      restore_inventory: "Workshop Inventory"
+      restore_project: "Workshop Project"
+      restore_credential: "Workshop Credential"
+      restore_ee: "Default execution environment"
     state: present
     controller_host: "{{ controller_endpoint.rstrip('/') }}"
     controller_username: "{{ controller_username }}"
