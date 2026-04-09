@@ -120,6 +120,8 @@ run_lab_automation() {
     -e GATEWAY_HOSTNAME="${GATEWAY_HOSTNAME:-}" \
     -e GATEWAY_USERNAME="${GATEWAY_USERNAME:-}" \
     -e GATEWAY_PASSWORD="${GATEWAY_PASSWORD:-}" \
+    -e GUID="${GUID:-}" \
+    -e DOMAIN="${DOMAIN:-}" \
     "${EE_IMAGE}" \
     ansible-playbook \
       -i /runner/project/inventory/lab.yml \

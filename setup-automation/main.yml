@@ -66,6 +66,8 @@
     environment:
       REG_USER: "{{ reg_user }}"
       REG_PASS: "{{ reg_pass }}"
+      GUID: "{{ guid }}"
+      DOMAIN: "{{ domain }}"
 
   - name: Output script result
     ansible.builtin.debug:

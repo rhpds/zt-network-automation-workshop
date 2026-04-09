@@ -21,13 +21,24 @@
     controller_password: "{{ controller_password }}"
     validate_certs: "{{ controller_verify_ssl | default(false) }}"
 
+- name: Build external AAP hostname from GUID/DOMAIN
+  ansible.builtin.set_fact:
+    controller_external_host: >-
+      {{ 'https://control-' + lookup('ansible.builtin.env', 'GUID') + '.' + lookup('ansible.builtin.env', 'DOMAIN')
+         if lookup('ansible.builtin.env', 'GUID') | length > 0 and lookup('ansible.builtin.env', 'DOMAIN') | length > 0
+         else controller_endpoint }}
+
+- name: Log Controller Credential host
+  ansible.builtin.debug:
+    msg: "Controller Credential host will be: {{ controller_external_host }}"
+
 - name: Controller Credential — AAP API access for backup/restore jobs
   ansible.controller.credential:
     name: "Controller Credential"
     organization: Default
     credential_type: "Red Hat Ansible Automation Platform"
     inputs:
-      host: "https://host.containers.internal"
+      host: "{{ controller_external_host }}"
       username: "{{ controller_username }}"
       password: "{{ controller_password }}"
       verify_ssl: false
