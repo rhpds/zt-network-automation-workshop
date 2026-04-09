@@ -21,6 +21,22 @@
     controller_password: "{{ controller_password }}"
     validate_certs: "{{ controller_verify_ssl | default(false) }}"
 
+- name: Controller Credential — AAP API access for backup/restore jobs
+  ansible.controller.credential:
+    name: "Controller Credential"
+    organization: Default
+    credential_type: "Red Hat Ansible Automation Platform"
+    inputs:
+      host: "{{ controller_endpoint.rstrip('/') }}"
+      username: "{{ controller_username }}"
+      password: "{{ controller_password }}"
+      verify_ssl: false
+    state: present
+    controller_host: "{{ controller_endpoint.rstrip('/') }}"
+    controller_username: "{{ controller_username }}"
+    controller_password: "{{ controller_password }}"
+    validate_certs: "{{ controller_verify_ssl | default(false) }}"
+
 # ── Workshop Inventory ──────────────────────────────────────────────────────
 - name: Workshop Inventory
   ansible.controller.inventory:
@@ -478,6 +494,7 @@
     inventory: "Workshop Inventory"
     credentials:
       - "Workshop Credential"
+      - "Controller Credential"
     state: present
     controller_host: "{{ controller_endpoint.rstrip('/') }}"
     controller_username: "{{ controller_username }}"
@@ -494,6 +511,7 @@
     inventory: "Workshop Inventory"
     credentials:
       - "Workshop Credential"
+      - "Controller Credential"
     state: present
     controller_host: "{{ controller_endpoint.rstrip('/') }}"
     controller_username: "{{ controller_username }}"
