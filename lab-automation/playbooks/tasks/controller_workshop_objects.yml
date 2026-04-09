@@ -195,13 +195,13 @@
     controller_password: "{{ controller_password }}"
     validate_certs: "{{ controller_verify_ssl | default(false) }}"
 
-- name: "Host — backup-server (same as control, via SSH)"
+- name: "Host — backup-server (containerlab VM — reachable from EE)"
   ansible.controller.host:
     name: backup-server
     description: "this server is where we backup network configuration"
     inventory: "Workshop Inventory"
     variables:
-      ansible_host: control
+      ansible_host: containerlab
       ansible_connection: ssh
       ansible_user: rhel
       ansible_ssh_common_args: "-o StrictHostKeyChecking=no"
