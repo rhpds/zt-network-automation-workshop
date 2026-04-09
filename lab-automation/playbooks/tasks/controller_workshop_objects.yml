@@ -195,15 +195,16 @@
     controller_password: "{{ controller_password }}"
     validate_certs: "{{ controller_verify_ssl | default(false) }}"
 
-- name: "Host — backup-server (same as control)"
+- name: "Host — backup-server (same as control, via SSH)"
   ansible.controller.host:
     name: backup-server
     description: "this server is where we backup network configuration"
     inventory: "Workshop Inventory"
     variables:
-      ansible_host: localhost
-      ansible_connection: local
+      ansible_host: control
+      ansible_connection: ssh
       ansible_user: rhel
+      ansible_ssh_common_args: "-o StrictHostKeyChecking=no"
       note: "in production these passwords would be encrypted in vault"
     state: present
     controller_host: "{{ controller_endpoint.rstrip('/') }}"
