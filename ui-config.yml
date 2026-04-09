@@ -35,7 +35,7 @@ tabs:
   - name: AAP terminal
     type: terminal
   - name: Containerlab terminal
-    url: /wetty_containerlab
+    url: /wetty_containerlab/ssh/lab-user
   - name: Ansible Automation Platform
     url: https://control-${guid}.${domain}/
     external: false
