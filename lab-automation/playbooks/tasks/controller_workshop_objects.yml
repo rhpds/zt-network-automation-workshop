@@ -27,7 +27,7 @@
     organization: Default
     credential_type: "Red Hat Ansible Automation Platform"
     inputs:
-      host: "{{ controller_endpoint.rstrip('/') }}"
+      host: "https://localhost"
       username: "{{ controller_username }}"
       password: "{{ controller_password }}"
       verify_ssl: false
