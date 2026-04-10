@@ -8,7 +8,7 @@ virtualmachines:
     image_size: "200Gi"
     tags:
       - key: "AnsibleGroup"
-        value: "bastions"
+        value: "isolated"
     networks:
       - default
     services:
@@ -158,7 +158,7 @@ virtualmachines:
     image_size: 40G
     tags:
       - key: AnsibleGroup
-        value: nodes
+        value: isolated
     networks:
       - default
     services:
