@@ -28,6 +28,10 @@ ingress:
     port: 8383
   - protocol: TCP
     port: 8484
+  - protocol: TCP
+    port: 8080
+  - protocol: TCP
+    port: 8088
   - from:
       - podSelector:
           matchLabels:

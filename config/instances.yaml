@@ -58,6 +58,19 @@ virtualmachines:
             protocol: TCP
             targetPort: 8484
             name: port8484
+      - name: containerlab-report
+        ports:
+          - port: 8088
+            protocol: TCP
+            targetPort: 8088
+            name: containerlab-report
+    routes:
+      - name: containerlab-report
+        host: containerlab-report
+        service: containerlab-report
+        targetPort: 8088
+        tls: true
+        tls_termination: Edge
     networks:
       - default
 
@@ -85,12 +98,6 @@ virtualmachines:
             protocol: TCP
             targetPort: 443
             name: control-https
-      - name: control-report
-        ports:
-          - port: 8088
-            protocol: TCP
-            targetPort: 8088
-            name: control-report
     routes:
       - name: control-https
         host: control
@@ -133,9 +140,36 @@ virtualmachines:
           wMQ+MKwOpgDyuy79XKvsPanlAfP8WgJi79pJdHu3BGTLlDFil9CK8l2sncM1FdaE
           57Ys1npOUx+oxw==
           -----END CERTIFICATE-----
-      - name: control-report
-        host: control-report
-        service: control-report
-        targetPort: 8088
+
+  - name: vscode
+    image: devtools-ansible
+    memory: 8G
+    cores: 2
+    image_size: 20Gi
+    tags:
+      - key: AnsibleGroup
+        value: isolated
+    networks:
+      - default
+    services:
+      - name: vscode-8080
+        ports:
+          - port: 8080
+            protocol: TCP
+            targetPort: 8080
+            name: vscode
+    routes:
+      - name: vscode-8080
+        host: vscode
+        service: vscode-8080
+        targetPort: 8080
         tls: true
         tls_termination: Edge
+    userdata: |-
+      #cloud-config
+      user: rhel
+      password: ansible123!
+      chpasswd: { expire: False }
+      runcmd:
+        - echo "PasswordAuthentication yes" > /etc/ssh/sshd_config.d/50-cloud-init.conf
+        - systemctl reload sshd

@@ -1,0 +1,16 @@
+---
+ansible-navigator:
+  ansible:
+    inventory:
+      entries:
+      - /home/rhel/network-workshop/lab_inventory/hosts
+
+  execution-environment:
+    image: quay.io/acme_corp/network-ee:latest
+    enabled: true
+    container-engine: podman
+    pull:
+      policy: missing
+    volume-mounts:
+    - src: "/etc/ansible/"
+      dest: "/etc/ansible/"
