@@ -18,7 +18,7 @@
     loop:
       - control
       - containerlab
-      - vscode
+      - vscode-server
     
 - name: Demo Playbook for the ansible-runner API
   hosts: all:!localhost
