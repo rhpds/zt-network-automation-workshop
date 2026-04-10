@@ -9,6 +9,8 @@ virtualmachines:
     tags:
       - key: "AnsibleGroup"
         value: "bastions"
+    networks:
+      - default
     services:
       - name: containerlab-fip
         type: LoadBalancer
@@ -71,7 +73,7 @@ virtualmachines:
         targetPort: 8088
         tls: true
         tls_termination: Edge
-    userdata: >-
+    userdata: |-
       #cloud-config
       user: rhel
       password: ansible123!
@@ -79,8 +81,6 @@ virtualmachines:
       runcmd:
         - echo "PasswordAuthentication yes" > /etc/ssh/sshd_config.d/50-cloud-init.conf
         - systemctl reload sshd
-    networks:
-      - default
 
   - name: control
     image: aap-2.6-2-ceh-20251103
@@ -93,14 +93,6 @@ virtualmachines:
     networks:
       - default
       - secondary
-    userdata: >-
-      #cloud-config
-      user: rhel
-      password: ansible123!
-      chpasswd: { expire: False }
-      runcmd:
-        - echo "PasswordAuthentication yes" > /etc/ssh/sshd_config.d/50-cloud-init.conf
-        - systemctl reload sshd
     services:
       - name: control-https
         ports:
@@ -150,6 +142,14 @@ virtualmachines:
           wMQ+MKwOpgDyuy79XKvsPanlAfP8WgJi79pJdHu3BGTLlDFil9CK8l2sncM1FdaE
           57Ys1npOUx+oxw==
           -----END CERTIFICATE-----
+    userdata: |-
+      #cloud-config
+      user: rhel
+      password: ansible123!
+      chpasswd: { expire: False }
+      runcmd:
+        - echo "PasswordAuthentication yes" > /etc/ssh/sshd_config.d/50-cloud-init.conf
+        - systemctl reload sshd
 
   - name: vscode
     image: rhel-9.6
@@ -175,7 +175,7 @@ virtualmachines:
         targetPort: 8080
         tls: true
         tls_termination: Edge
-    userdata: >-
+    userdata: |-
       #cloud-config
       user: rhel
       password: ansible123!
