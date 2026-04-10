@@ -141,7 +141,7 @@ virtualmachines:
           57Ys1npOUx+oxw==
           -----END CERTIFICATE-----
 
-  - name: vscode
+  - name: vscode-server
     image: devtools-ansible
     memory: 8G
     cores: 2
@@ -157,10 +157,10 @@ virtualmachines:
           - port: 8080
             protocol: TCP
             targetPort: 8080
-            name: vscode
+            name: vscode-8080
     routes:
       - name: vscode-8080
-        host: vscode
+        host: vscode-8080
         service: vscode-8080
         targetPort: 8080
         tls: true
