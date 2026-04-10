@@ -181,12 +181,12 @@
     controller_password: "{{ controller_password }}"
     validate_certs: "{{ controller_verify_ssl | default(false) }}"
 
-- name: "Host — ansible-1 (control node via SSH from EE)"
+- name: "Host — ansible-1 (containerlab VM — reachable from EE)"
   ansible.controller.host:
     name: ansible-1
     inventory: "Workshop Inventory"
     variables:
-      ansible_host: host.containers.internal
+      ansible_host: containerlab
       ansible_connection: ssh
       ansible_user: rhel
       ansible_ssh_common_args: "-o StrictHostKeyChecking=no"

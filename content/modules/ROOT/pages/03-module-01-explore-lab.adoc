@@ -10,7 +10,6 @@ Explore and understand the lab environment. These first few lab exercises will b
 * link:https://docs.ansible.com/automation-controller/latest/html/userguide/execution_environments.html[Execution Environments^] -- not specifically covered in this workshop because the built-in Ansible Execution Environments already included all the Red Hat supported collections which includes all the network collections we use for this workshop. Execution Environments are container images that can be utilized as Ansible execution.
 * link:https://github.com/ansible/ansible-builder[ansible-builder^] -- not specifically covered in this workshop, `ansible-builder` is a command line utility to automate the process of building Execution Environments.
 
-If you need more information on new Ansible Automation Platform components bookmark this landing page link:https://red.ht/AAP-20[https://red.ht/AAP-20^]
 
 == Learning objectives
 
@@ -22,11 +21,6 @@ By the end of this module, you will be able to:
 * Understand the inventory structure for command-line exercises
 * Use the ansible-navigator TUI (Text-based User Interface)
 * Connect to network devices via SSH
-
-== Diagram
-
-// TODO: Copy image from ansible-workshops/exercises/ansible_network/images/ansible_network_diagram.png
-image::ansible_network_diagram.png[Red Hat Ansible Automation,align="center",link=self,window=blank,width=600]
 
 == Step 1: Connecting via VS Code
 
