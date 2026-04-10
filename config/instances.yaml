@@ -158,7 +158,7 @@ virtualmachines:
     image_size: 40G
     tags:
       - key: AnsibleGroup
-        value: bastions
+        value: nodes
     networks:
       - default
     services:
