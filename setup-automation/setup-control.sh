@@ -1,6 +1,7 @@
 #!/bin/bash
 USER=rhel
 EE_IMAGE="registry.redhat.io/ansible-automation-platform-26/ee-supported-rhel9:latest"
+NETWORK_EE_IMAGE="quay.io/acme_corp/network-ee"
 
 echo "Adding wheel" > /root/post-run.log
 usermod -aG wheel rhel
@@ -138,8 +139,16 @@ install_rpms() {
   fi
 }
 
+pull_network_ee() {
+  echo "Pulling Network EE image ${NETWORK_EE_IMAGE}..." >> /tmp/progress.log
+  sudo -u rhel -H podman pull "${NETWORK_EE_IMAGE}" >> /tmp/progress.log 2>&1 \
+    && echo "Network EE image pulled successfully" >> /tmp/progress.log \
+    || echo "WARNING: Could not pull Network EE image (AAP will try at job runtime)" >> /tmp/progress.log
+}
+
 registry_login || true
 pull_ee || true
+pull_network_ee || true
 wait_for_ssh_key || true
 clone_repo || true
 install_rpms

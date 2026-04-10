@@ -254,6 +254,19 @@
     controller_password: "{{ controller_password }}"
     validate_certs: "{{ controller_verify_ssl | default(false) }}"
 
+# ── Execution Environment ──────────────────────────────────────────────────
+- name: "Execution Environment — Network EE"
+  ansible.controller.execution_environment:
+    name: "Network EE"
+    image: "quay.io/acme_corp/network-ee"
+    pull: missing
+    organization: Default
+    state: present
+    controller_host: "{{ controller_endpoint.rstrip('/') }}"
+    controller_username: "{{ controller_username }}"
+    controller_password: "{{ controller_password }}"
+    validate_certs: "{{ controller_verify_ssl | default(false) }}"
+
 # ── Toolkit Project ─────────────────────────────────────────────────────────
 - name: "Project — Workshop Project (network-automation/toolkit)"
   ansible.controller.project:
@@ -422,6 +435,7 @@
     inventory: "Workshop Inventory"
     credentials:
       - "Workshop Credential"
+    execution_environment: "Network EE"
     state: present
     controller_host: "{{ controller_endpoint.rstrip('/') }}"
     controller_username: "{{ controller_username }}"
