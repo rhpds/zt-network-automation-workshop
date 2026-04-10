@@ -130,8 +130,17 @@ run_lab_automation() {
   || echo "lab-automation failed; see /tmp/lab-automation-site.log" >> /tmp/progress.log
 }
 
+install_rpms() {
+  local rpm_dir="${REPO_DIR}/rpms"
+  if [[ -d "${rpm_dir}" ]]; then
+    echo "Installing bundled RPMs from ${rpm_dir}..." >> /tmp/progress.log
+    rpm -ivh "${rpm_dir}"/*.rpm >> /tmp/progress.log 2>&1 || true
+  fi
+}
+
 registry_login || true
 pull_ee || true
 wait_for_ssh_key || true
 clone_repo || true
+install_rpms
 run_lab_automation || true

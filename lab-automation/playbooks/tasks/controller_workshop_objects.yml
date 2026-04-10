@@ -181,14 +181,15 @@
     controller_password: "{{ controller_password }}"
     validate_certs: "{{ controller_verify_ssl | default(false) }}"
 
-- name: "Host — ansible-1 (control node)"
+- name: "Host — ansible-1 (control node via SSH)"
   ansible.controller.host:
     name: ansible-1
     inventory: "Workshop Inventory"
     variables:
-      ansible_host: localhost
-      ansible_connection: local
+      ansible_host: control
+      ansible_connection: ssh
       ansible_user: rhel
+      ansible_ssh_common_args: "-o StrictHostKeyChecking=no"
     state: present
     controller_host: "{{ controller_endpoint.rstrip('/') }}"
     controller_username: "{{ controller_username }}"
