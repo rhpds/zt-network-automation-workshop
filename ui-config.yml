@@ -37,7 +37,7 @@ tabs:
   - name: Containerlab terminal
     url: /wetty_containerlab
   - name: VS Code
-    url: https://vscode-8080-${guid}.${domain}/
+    url: https://vscode-${guid}.${domain}/
     external: false
   - name: Ansible Automation Platform
     url: https://control-${guid}.${domain}/

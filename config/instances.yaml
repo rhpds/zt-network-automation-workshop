@@ -141,27 +141,27 @@ virtualmachines:
           57Ys1npOUx+oxw==
           -----END CERTIFICATE-----
 
-  - name: vscode-server
-    image: devtools-ansible
+  - name: vscode
+    image: rhel-9.6
     memory: 8G
     cores: 2
-    image_size: 20Gi
+    image_size: 40G
     tags:
       - key: AnsibleGroup
-        value: isolated
+        value: bastions
     networks:
       - default
     services:
-      - name: vscode-8080
+      - name: vscode
         ports:
           - port: 8080
             protocol: TCP
             targetPort: 8080
-            name: vscode-8080
+            name: vscode
     routes:
-      - name: vscode-8080
-        host: vscode-8080
-        service: vscode-8080
+      - name: vscode
+        host: vscode
+        service: vscode
         targetPort: 8080
         tls: true
         tls_termination: Edge
@@ -170,6 +170,4 @@ virtualmachines:
       user: rhel
       password: ansible123!
       chpasswd: { expire: False }
-      runcmd:
-        - echo "PasswordAuthentication yes" > /etc/ssh/sshd_config.d/50-cloud-init.conf
-        - systemctl reload sshd
+      ssh_pwauth: true
