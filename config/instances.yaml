@@ -71,6 +71,12 @@ virtualmachines:
         targetPort: 8088
         tls: true
         tls_termination: Edge
+    userdata: |-
+      #cloud-config
+      user: rhel
+      password: ansible123!
+      chpasswd: { expire: False }
+      ssh_pwauth: true
     networks:
       - default
 
