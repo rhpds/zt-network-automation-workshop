@@ -71,12 +71,14 @@ virtualmachines:
         targetPort: 8088
         tls: true
         tls_termination: Edge
-    userdata: |-
+    userdata: >-
       #cloud-config
       user: rhel
       password: ansible123!
       chpasswd: { expire: False }
-      ssh_pwauth: true
+      runcmd:
+        - echo "PasswordAuthentication yes" > /etc/ssh/sshd_config.d/50-cloud-init.conf
+        - systemctl reload sshd
     networks:
       - default
 
@@ -91,12 +93,14 @@ virtualmachines:
     networks:
       - default
       - secondary
-    userdata: |-
+    userdata: >-
       #cloud-config
       user: rhel
       password: ansible123!
       chpasswd: { expire: False }
-      ssh_pwauth: true
+      runcmd:
+        - echo "PasswordAuthentication yes" > /etc/ssh/sshd_config.d/50-cloud-init.conf
+        - systemctl reload sshd
     services:
       - name: control-https
         ports:
@@ -171,9 +175,11 @@ virtualmachines:
         targetPort: 8080
         tls: true
         tls_termination: Edge
-    userdata: |-
+    userdata: >-
       #cloud-config
       user: rhel
       password: ansible123!
       chpasswd: { expire: False }
-      ssh_pwauth: true
+      runcmd:
+        - echo "PasswordAuthentication yes" > /etc/ssh/sshd_config.d/50-cloud-init.conf
+        - systemctl reload sshd

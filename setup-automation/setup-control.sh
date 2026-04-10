@@ -13,7 +13,7 @@ echo "Setup vm control" > /tmp/progress.log
 chmod 666 /tmp/progress.log
 
 # ---------------------------------------------------------------------------
-# Functions (all defined up front, called at the bottom).
+# 1. Registry login.
 # ---------------------------------------------------------------------------
 registry_login() {
   if [[ -n "${REG_USER:-}" && -n "${REG_PASS:-}" ]]; then
@@ -22,17 +22,32 @@ registry_login() {
     sudo -u rhel -H podman login registry.redhat.io -u "$REG_USER" -p "$REG_PASS" >> /tmp/progress.log 2>&1
     if [[ $? -eq 0 ]]; then
       echo "Registry login successful" >> /tmp/progress.log
-      return 0
     else
       echo "Registry login failed" >> /tmp/progress.log
-      return 1
     fi
   else
     echo "REG_USER/REG_PASS not set; skipping registry login" >> /tmp/progress.log
-    return 0
   fi
 }
 
+# ---------------------------------------------------------------------------
+# 2. Pull EE images.
+# ---------------------------------------------------------------------------
+pull_images() {
+  echo "Pulling EE image ${EE_IMAGE}..." >> /tmp/progress.log
+  sudo -u rhel -H podman pull "${EE_IMAGE}" >> /tmp/progress.log 2>&1 \
+    && echo "EE image pulled" >> /tmp/progress.log \
+    || echo "WARNING: EE pull failed" >> /tmp/progress.log
+
+  echo "Pulling Network EE image ${NETWORK_EE_IMAGE}..." >> /tmp/progress.log
+  sudo -u rhel -H podman pull "${NETWORK_EE_IMAGE}" >> /tmp/progress.log 2>&1 \
+    && echo "Network EE pulled" >> /tmp/progress.log \
+    || echo "WARNING: Network EE pull failed" >> /tmp/progress.log
+}
+
+# ---------------------------------------------------------------------------
+# 3. Clone the workshop repo.
+# ---------------------------------------------------------------------------
 clone_repo() {
   if [[ -f "${REPO_DIR}/lab-automation/playbooks/site.yml" ]]; then
     echo "Workshop repo already present at ${REPO_DIR}" >> /tmp/progress.log
@@ -44,10 +59,12 @@ clone_repo() {
     echo "Repo cloned successfully" >> /tmp/progress.log
   else
     echo "ERROR: git clone failed" >> /tmp/progress.log
-    return 1
   fi
 }
 
+# ---------------------------------------------------------------------------
+# 4. Install bundled RPMs.
+# ---------------------------------------------------------------------------
 install_rpms() {
   local rpm_dir="${REPO_DIR}/rpms"
   if [[ -d "${rpm_dir}" ]]; then
@@ -57,83 +74,57 @@ install_rpms() {
 }
 
 # ---------------------------------------------------------------------------
-# Heavy lifting — runs in the background so the platform doesn't timeout.
-# Everything below here logs to /tmp/progress.log for monitoring.
+# 5. Wait for SSH key from containerlab, then run lab-automation.
 # ---------------------------------------------------------------------------
-background_setup() {
-  echo "=== Background setup started ===" >> /tmp/progress.log
-
-  # Pull EE images.
-  echo "Pulling EE image ${EE_IMAGE}..." >> /tmp/progress.log
-  sudo -u rhel -H podman pull "${EE_IMAGE}" >> /tmp/progress.log 2>&1 \
-    && echo "EE image pulled" >> /tmp/progress.log \
-    || echo "WARNING: EE pull failed" >> /tmp/progress.log
-
-  echo "Pulling Network EE image ${NETWORK_EE_IMAGE}..." >> /tmp/progress.log
-  sudo -u rhel -H podman pull "${NETWORK_EE_IMAGE}" >> /tmp/progress.log 2>&1 \
-    && echo "Network EE pulled" >> /tmp/progress.log \
-    || echo "WARNING: Network EE pull failed" >> /tmp/progress.log
-
-  # Wait for SSH key from containerlab (pushed by setup-containerlab.sh).
+wait_for_ssh_key() {
   if [[ -f "${RHEL_SSH}/config" ]] && ls "${RHEL_SSH}"/*.pem &>/dev/null 2>&1; then
-    echo "SSH key already present" >> /tmp/progress.log
-  else
-    echo "Waiting for SSH key from containerlab..." >> /tmp/progress.log
-    for (( i=1; i<=60; i++ )); do
-      if ls "${RHEL_SSH}"/*.pem &>/dev/null 2>&1; then
-        echo "SSH key arrived after ${i} checks" >> /tmp/progress.log
-        break
-      fi
-      sleep 10
-    done
+    echo "SSH key already present on control" >> /tmp/progress.log
+    return 0
   fi
+  echo "Waiting for SSH key from containerlab..." >> /tmp/progress.log
+  for (( i=1; i<=60; i++ )); do
+    if ls "${RHEL_SSH}"/*.pem &>/dev/null 2>&1; then
+      echo "SSH key arrived after ${i} checks" >> /tmp/progress.log
+      return 0
+    fi
+    sleep 10
+  done
+  echo "WARNING: SSH key never arrived (~10 min). Containerlab playbooks will fail." >> /tmp/progress.log
+}
 
-  # Run lab-automation playbooks (AAP bootstrap + topology).
+run_lab_automation() {
   local la_dir="${REPO_DIR}/lab-automation"
-  if [[ -f "${la_dir}/playbooks/site.yml" ]] && command -v podman &>/dev/null; then
-    echo "Running lab-automation via EE..." >> /tmp/progress.log
-    sudo -u rhel -H podman run --rm \
-      --network host \
-      -v "${la_dir}:/runner/project:Z" \
-      -v "/home/rhel/.ssh:/home/runner/.ssh:Z" \
-      -e CONTROLLER_PASSWORD="${CONTROLLER_PASSWORD:-}" \
-      -e GATEWAY_HOSTNAME="${GATEWAY_HOSTNAME:-}" \
-      -e GATEWAY_USERNAME="${GATEWAY_USERNAME:-}" \
-      -e GATEWAY_PASSWORD="${GATEWAY_PASSWORD:-}" \
-      -e GUID="${GUID:-}" \
-      -e DOMAIN="${DOMAIN:-}" \
-      "${EE_IMAGE}" \
-      ansible-playbook \
-        -i /runner/project/inventory/lab.yml \
-        /runner/project/playbooks/site.yml \
-      >> /tmp/lab-automation-site.log 2>&1 \
-    || echo "lab-automation failed; see /tmp/lab-automation-site.log" >> /tmp/progress.log
-  else
-    echo "Skipping lab-automation (site.yml not found or podman unavailable)" >> /tmp/progress.log
+  if [[ ! -f "${la_dir}/playbooks/site.yml" ]]; then
+    echo "lab-automation/playbooks/site.yml not found; skipping" >> /tmp/progress.log
+    return 0
   fi
-
-  echo "=== Background setup complete ===" >> /tmp/progress.log
+  echo "Running lab-automation via EE..." >> /tmp/progress.log
+  sudo -u rhel -H podman run --rm \
+    --network host \
+    -v "${la_dir}:/runner/project:Z" \
+    -v "/home/rhel/.ssh:/home/runner/.ssh:Z" \
+    -e CONTROLLER_PASSWORD="${CONTROLLER_PASSWORD:-}" \
+    -e GATEWAY_HOSTNAME="${GATEWAY_HOSTNAME:-}" \
+    -e GATEWAY_USERNAME="${GATEWAY_USERNAME:-}" \
+    -e GATEWAY_PASSWORD="${GATEWAY_PASSWORD:-}" \
+    -e GUID="${GUID:-}" \
+    -e DOMAIN="${DOMAIN:-}" \
+    "${EE_IMAGE}" \
+    ansible-playbook \
+      -i /runner/project/inventory/lab.yml \
+      /runner/project/playbooks/site.yml \
+    >> /tmp/lab-automation-site.log 2>&1 \
+  || echo "lab-automation failed; see /tmp/lab-automation-site.log" >> /tmp/progress.log
 }
 
 # ---------------------------------------------------------------------------
-# Execution: fast stuff synchronously, slow stuff in background.
+# Run everything sequentially. No backgrounding — keep it simple.
 # ---------------------------------------------------------------------------
-registry_login || true
-clone_repo || true
+registry_login
+pull_images
+clone_repo
 install_rpms
+wait_for_ssh_key
+run_lab_automation
 
-# Background the slow work (image pulls, SSH key wait, lab-automation).
-# Export env vars so the background function inherits them.
-export REG_USER REG_PASS CONTROLLER_PASSWORD GATEWAY_HOSTNAME
-export GATEWAY_USERNAME GATEWAY_PASSWORD GUID DOMAIN
-nohup bash -c "$(declare -f background_setup); \
-  EE_IMAGE='${EE_IMAGE}' NETWORK_EE_IMAGE='${NETWORK_EE_IMAGE}' \
-  REPO_DIR='${REPO_DIR}' RHEL_SSH='${RHEL_SSH}' \
-  CONTROLLER_PASSWORD='${CONTROLLER_PASSWORD:-}' \
-  GATEWAY_HOSTNAME='${GATEWAY_HOSTNAME:-}' \
-  GATEWAY_USERNAME='${GATEWAY_USERNAME:-}' \
-  GATEWAY_PASSWORD='${GATEWAY_PASSWORD:-}' \
-  GUID='${GUID:-}' DOMAIN='${DOMAIN:-}' \
-  background_setup" >> /tmp/progress.log 2>&1 &
-
-echo "Fast setup done; background tasks running (PID $!). Monitor: tail -f /tmp/progress.log" >> /tmp/progress.log
+echo "setup-control.sh complete" >> /tmp/progress.log
