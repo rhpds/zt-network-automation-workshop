@@ -27,11 +27,18 @@ clone_repo() {
 
 # ---------------------------------------------------------------------------
 # Push SSH key + config to 'control' so control can SSH back to containerlab.
+# Generates a fresh key pair if none is baked into the image.
+# Uses sshpass for the push since key-based auth between VMs is not available.
 # ---------------------------------------------------------------------------
 push_ssh_key_to_control() {
   local key_user="rhel"
   local key_home="/home/${key_user}"
   local ssh_dir="${key_home}/.ssh"
+  local password="ansible123!"
+
+  mkdir -p "${ssh_dir}"
+  chown "${key_user}:${key_user}" "${ssh_dir}"
+  chmod 700 "${ssh_dir}"
 
   local privkey=""
   for f in "${ssh_dir}"/*.pem "${ssh_dir}/id_rsa" "${ssh_dir}/id_ed25519"; do
@@ -40,37 +47,55 @@ push_ssh_key_to_control() {
       break
     fi
   done
+
   if [[ -z "$privkey" ]]; then
-    echo "No private key found under ${ssh_dir}; skipping key push to control" >> /tmp/progress.log
-    return 0
+    echo "No existing key found; generating containerlab.pem..." >> /tmp/progress.log
+    privkey="${ssh_dir}/containerlab.pem"
+    sudo -u "${key_user}" ssh-keygen -t ed25519 \
+      -f "${privkey}" -N "" -q -C "containerlab-to-control"
+    cat "${privkey}.pub" >> "${ssh_dir}/authorized_keys"
+    chmod 600 "${ssh_dir}/authorized_keys"
+    chown "${key_user}:${key_user}" "${ssh_dir}/authorized_keys"
+    echo "Generated ${privkey}, added pubkey to local authorized_keys" >> /tmp/progress.log
+  fi
+
+  if ! command -v sshpass &>/dev/null; then
+    echo "ERROR: sshpass not available; cannot push key to control" >> /tmp/progress.log
+    return 1
   fi
 
   local pubkey=""
-  if [[ -f "${privkey%.pem}.pub" ]]; then
-    pubkey="${privkey%.pem}.pub"
-  elif [[ -f "${privkey}.pub" ]]; then
-    pubkey="${privkey}.pub"
-  fi
+  for candidate in "${privkey%.pem}.pub" "${privkey}.pub"; do
+    [[ -f "$candidate" ]] && pubkey="$candidate" && break
+  done
 
   local keybase
   keybase="$(basename "${privkey}")"
-  echo "Pushing SSH key (${privkey}) to control:~${key_user}/.ssh/" >> /tmp/progress.log
+  echo "Pushing SSH key (${privkey}) to control..." >> /tmp/progress.log
 
-  sudo -u "${key_user}" ssh -o StrictHostKeyChecking=no -o ConnectTimeout=30 control \
+  sshpass -p "${password}" ssh -o StrictHostKeyChecking=no \
+    -o ConnectTimeout=30 "${key_user}@control" \
     "mkdir -p ~/.ssh && chmod 700 ~/.ssh" 2>>/tmp/progress.log
   if [[ $? -ne 0 ]]; then
-    echo "SSH to control failed; skipping key push" >> /tmp/progress.log
-    return 0
+    echo "ERROR: SSH to control failed" >> /tmp/progress.log
+    return 1
   fi
 
-  sudo -u "${key_user}" scp -o StrictHostKeyChecking=no \
-    "${privkey}" "control:${ssh_dir}/${keybase}" 2>>/tmp/progress.log || true
+  sshpass -p "${password}" scp -o StrictHostKeyChecking=no \
+    "${privkey}" "${key_user}@control:${ssh_dir}/${keybase}" 2>>/tmp/progress.log
+  if [[ $? -ne 0 ]]; then
+    echo "ERROR: SCP private key to control failed" >> /tmp/progress.log
+    return 1
+  fi
+
   if [[ -n "$pubkey" ]]; then
-    sudo -u "${key_user}" scp -o StrictHostKeyChecking=no \
-      "${pubkey}" "control:${ssh_dir}/$(basename "${pubkey}")" 2>>/tmp/progress.log || true
+    sshpass -p "${password}" scp -o StrictHostKeyChecking=no \
+      "${pubkey}" "${key_user}@control:${ssh_dir}/$(basename "${pubkey}")" \
+      2>>/tmp/progress.log || true
   fi
 
-  sudo -u "${key_user}" ssh -o StrictHostKeyChecking=no control bash -s -- "${keybase}" <<'REMOTE'
+  sshpass -p "${password}" ssh -o StrictHostKeyChecking=no \
+    "${key_user}@control" bash -s -- "${keybase}" <<'REMOTE'
     chmod 600 ~/.ssh/"$1" 2>/dev/null
     cat > ~/.ssh/config <<EOF
 Host *
@@ -183,9 +208,10 @@ install_rpms() {
 
 # ---------------------------------------------------------------------------
 # Run each step independently — failures in one must not block the rest.
+# install_rpms runs before push_ssh_key_to_control because sshpass is needed.
 # ---------------------------------------------------------------------------
 clone_repo
-push_ssh_key_to_control || echo "push_ssh_key_to_control failed" >> /tmp/progress.log
 install_rpms
+push_ssh_key_to_control || echo "push_ssh_key_to_control failed" >> /tmp/progress.log
 setup_router_access || echo "setup_router_access failed" >> /tmp/progress.log
 echo "setup-containerlab.sh complete" >> /tmp/progress.log
