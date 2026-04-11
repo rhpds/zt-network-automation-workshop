@@ -73,7 +73,9 @@ fi
 # ---------------------------------------------------------------------------
 if [[ -d "${REPO_DIR}/rpms" ]]; then
   echo "Installing bundled RPMs on vscode VM..." >> /tmp/progress.log
-  rpm -ivh "${REPO_DIR}"/rpms/*.rpm >> /tmp/progress.log 2>&1 || true
+  for rpm_file in "${REPO_DIR}"/rpms/*.rpm; do
+    rpm -Uvh "${rpm_file}" >> /tmp/progress.log 2>&1 || true
+  done
 fi
 
 # ---------------------------------------------------------------------------

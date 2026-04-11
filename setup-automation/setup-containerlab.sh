@@ -202,7 +202,9 @@ install_rpms() {
   local rpm_dir="${REPO_DIR}/rpms"
   if [[ -d "${rpm_dir}" ]]; then
     echo "Installing bundled RPMs on containerlab..." >> /tmp/progress.log
-    rpm -ivh "${rpm_dir}"/*.rpm >> /tmp/progress.log 2>&1 || true
+    for rpm_file in "${rpm_dir}"/*.rpm; do
+      rpm -Uvh "${rpm_file}" >> /tmp/progress.log 2>&1 || true
+    done
   fi
 }
 
