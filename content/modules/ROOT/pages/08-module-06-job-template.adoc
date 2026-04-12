@@ -24,12 +24,10 @@ By the end of this module, you will be able to:
 
 * Open the web UI at `{controller_url}` and click on the `Templates` link on the left menu under the Automation Execution section.
 +
-// TODO: Copy image from ansible-workshops/exercises/ansible_network/6-controller-job-template/images/controller_templates.png
 image::controller_templates.png[Templates link,align="center",link=self,window=blank,width=600]
 
 * Click on the blue **Add** button to create a new job template
 +
-// TODO: Copy image from ansible-workshops/exercises/ansible_network/6-controller-job-template/images/controller_add.png
 image::controller_add.png[Add template button,align="center",link=self,window=blank,width=600]
 
 WARNING: Make sure to select `job template` and not `workflow template`
@@ -64,14 +62,12 @@ WARNING: Make sure to select `job template` and not `workflow template`
 +
 Screenshot of the job template parameters filled out:
 +
-// TODO: Copy image from ansible-workshops/exercises/ansible_network/6-controller-job-template/images/controller_backup.png
 image::controller_backup.png[Backup job template,align="center",link=self,window=blank,width=600]
 
 * Add a second credential to the Job Template.
 +
 The **Controller Credential** also must be added to this particular Job Template. This is so Automation controller can update the pool of backups the **Network-Restore** Job Template will use. Automation controller can be programmatically updated with Job Templates to add or update configurations dynamically. Select the 2nd credential:
 +
-// TODO: Copy image from ansible-workshops/exercises/ansible_network/6-controller-job-template/images/controller_cred.png
 image::controller_cred.png[Switch credential type,align="center",link=self,window=blank,width=600]
 
 * Scroll down and click the blue `Save job template` button.
@@ -82,7 +78,6 @@ image::controller_cred.png[Switch credential type,align="center",link=self,windo
 
 . Launch the `Backup network configurations` Job Template by clicking the Rocket button.
 +
-// TODO: Copy image from ansible-workshops/exercises/ansible_network/6-controller-job-template/images/controller_rocket.png
 image::controller_rocket.png[Rocket button,align="center",link=self,window=blank,width=600]
 +
 When the rocket button is clicked this will launch the job. The job will open in a new window called the **Job Details View**. More info about link:https://docs.redhat.com/en/documentation/red_hat_ansible_automation_platform/latest/html/automation_controller_user_guide/controller-jobs[Automation controller jobs^] can be found in the documentation.
@@ -91,7 +86,6 @@ When the rocket button is clicked this will launch the job. The job will open in
 
 After executing the Job Template it will automatically open the Standard Out pane.
 
-// TODO: Copy image from ansible-workshops/exercises/ansible_network/6-controller-job-template/images/controller_job_output.png
 image::controller_job_output.png[Job details view,align="center",link=self,window=blank,width=600]
 
 . Examine the **Standard Out pane**
@@ -102,7 +96,6 @@ The Standard Out pane will display the output from the Ansible Playbook. Every t
 +
 TIP: Click on any line where there is a **changed** or **ok**
 +
-// TODO: Copy image from ansible-workshops/exercises/ansible_network/6-controller-job-template/images/controller_details.png
 image::controller_details.png[Task details window,align="center",link=self,window=blank,width=600]
 
 . Click on the **Details** tab to open the **Details pane**
@@ -117,14 +110,12 @@ Any **Job Template** that has been run or is currently running will show up unde
 
 . Click the Jobs button on the left menu.
 +
-// TODO: Copy image from ansible-workshops/exercises/ansible_network/6-controller-job-template/images/controller_jobs.png
 image::controller_jobs.png[Jobs button,align="center",link=self,window=blank,width=600]
 +
 The Jobs link displays a list of jobs and their status -- shown as completed successfully or failed, or as an active (running) job. Actions you can take from this screen include viewing the details and standard output of a particular job, relaunch jobs, or remove jobs.
 
 . Click on the **Backup network configurations** Job
 +
-// TODO: Copy image from ansible-workshops/exercises/ansible_network/6-controller-job-template/images/controller_jobs_link.png
 image::controller_jobs_link.png[Jobs link,align="center",link=self,window=blank,width=600]
 +
 The **Backup network configurations** job was the most recent (unless you have been launching more jobs). Click on this job to return to the **Standard Out pane**. Automation controller will save the history of every job launched.

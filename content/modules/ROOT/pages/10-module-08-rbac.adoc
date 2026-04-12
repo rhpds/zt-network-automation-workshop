@@ -36,7 +36,6 @@ Before we begin, let us review some Automation controller terminology:
 
 * Confirm that you are logged in as the **admin** user.
 +
-// TODO: Copy image from ansible-workshops/exercises/ansible_network/8-controller-rbac/images/step_1.png
 image::step_1.png[Admin user,align="center",link=self,window=blank,width=600]
 
 * Under the **Access Management** section, click on **Organizations**
@@ -52,7 +51,6 @@ There are 2 organizations (other than Default):
 .. **Red Hat compute organization**
 .. **Red Hat network organization**
 +
-// TODO: Copy image from ansible-workshops/exercises/ansible_network/8-controller-rbac/images/step1-organizations.png
 image::step1-organizations.png[Organizations,align="center",link=self,window=blank,width=600]
 
 NOTE: This page gives you a summary of all the teams, users, inventories, projects and job templates associated with it. If an Organization level admin is configured you will see that as well.
@@ -63,31 +61,26 @@ NOTE: This page gives you a summary of all the teams, users, inventories, projec
 +
 This brings up a section that displays the details of the organization.
 +
-// TODO: Copy image from ansible-workshops/exercises/ansible_network/8-controller-rbac/images/step2-network_org.png
 image::step2-network_org.png[Network organization,align="center",link=self,window=blank,width=600]
 
 == Step 3: Add network-admin as an administrator
 
 . Click on the **Administrators** tab
 +
-// TODO: Copy image from ansible-workshops/exercises/ansible_network/8-controller-rbac/images/admin_tab.png
 image::admin_tab.png[Administrator tab,align="center",link=self,window=blank,width=600]
 
 . Click on the blue **Add administrators** button
 +
-// TODO: Copy image from ansible-workshops/exercises/ansible_network/8-controller-rbac/images/admin_button.png
 image::admin_button.png[Add admin button,align="center",link=self,window=blank,width=600]
 
 . Select the **network-admin** user and then click the blue **Add administrators** button
 +
-// TODO: Copy image from ansible-workshops/exercises/ansible_network/8-controller-rbac/images/select_admin_button.png
 image::select_admin_button.png[Select admin,align="center",link=self,window=blank,width=600]
 
 == Step 4: Login as network-admin
 
 . Log out from the admin user by clicking the admin button in the top right corner of the Automation controller UI.
 +
-// TODO: Copy image from ansible-workshops/exercises/ansible_network/8-controller-rbac/images/step5_logout.png
 image::step5_logout.png[Logout,align="center",link=self,window=blank,width=600]
 
 . Login to the system with the **network-admin** user.
@@ -101,7 +94,6 @@ image::step5_logout.png[Logout,align="center",link=self,window=blank,width=600]
 
 . Confirm that you are logged in as the **network-admin** user.
 +
-// TODO: Copy image from ansible-workshops/exercises/ansible_network/8-controller-rbac/images/step5_network-admin.png
 image::step5_network-admin.png[Network admin user,align="center",link=self,window=blank,width=600]
 
 . Click on the **Organizations** link on the sidebar under the **Access Management** section.
@@ -121,59 +113,48 @@ As the `network-admin` we can now setup access for the `network-operator` user.
 
 . Click on Templates on the left menu
 +
-// TODO: Copy image from ansible-workshops/exercises/ansible_network/8-controller-rbac/images/job_templates.png
 image::job_templates.png[Job templates,align="center",link=self,window=blank,width=600]
 
 . Click on the **Network-Commands** job template.
 +
-// TODO: Copy image from ansible-workshops/exercises/ansible_network/8-controller-rbac/images/network_commands.png
 image::network_commands.png[Network commands,align="center",link=self,window=blank,width=600]
 
 . Click on the **User Access** tab
 +
-// TODO: Copy image from ansible-workshops/exercises/ansible_network/8-controller-rbac/images/user_access.png
 image::user_access.png[User access,align="center",link=self,window=blank,width=600]
 
 . Click on the blue **Add roles** button
 +
-// TODO: Copy image from ansible-workshops/exercises/ansible_network/8-controller-rbac/images/add_roles.png
 image::add_roles.png[Add roles button,align="center",link=self,window=blank,width=600]
 
 . Click **network-operator** then click the blue **Next** button at the bottom
 +
-// TODO: Copy image from ansible-workshops/exercises/ansible_network/8-controller-rbac/images/add_user_window.png
 image::add_user_window.png[Add user window,align="center",link=self,window=blank,width=600]
 
 . Click on **JobTemplate Execute** then click on the blue **Next** button at the bottom
 +
-// TODO: Copy image from ansible-workshops/exercises/ansible_network/8-controller-rbac/images/add_role_user.png
 image::add_role_user.png[Add role to user,align="center",link=self,window=blank,width=600]
 
 . Review to make sure you set it up correctly, and click the blue **Finish** button at the bottom.
 +
-// TODO: Copy image from ansible-workshops/exercises/ansible_network/8-controller-rbac/images/finish.png
 image::finish.png[Finish window,align="center",link=self,window=blank,width=600]
 
 . Click the **Close** button after the role is applied
 +
-// TODO: Copy image from ansible-workshops/exercises/ansible_network/8-controller-rbac/images/close_window.png
 image::close_window.png[Close window,align="center",link=self,window=blank,width=600]
 
 == Step 6: Verify the Network-Commands job template
 
 . Navigate back to the **Network-Commands** Job Template
 +
-// TODO: Copy image from ansible-workshops/exercises/ansible_network/8-controller-rbac/images/network-commands-job-template.png
 image::network-commands-job-template.png[Network commands job template,align="center",link=self,window=blank,width=600]
 
 . Verify the Survey is enabled
 +
-// TODO: Copy image from ansible-workshops/exercises/ansible_network/8-controller-rbac/images/survey-enabled.png
 image::survey-enabled.png[Survey enabled,align="center",link=self,window=blank,width=600]
 
 . Verify the Survey questions
 +
-// TODO: Copy image from ansible-workshops/exercises/ansible_network/8-controller-rbac/images/verify-survey.png
 image::verify-survey.png[Verify survey questions,align="center",link=self,window=blank,width=600]
 
 . Click on the blue **Save survey question**
@@ -193,7 +174,6 @@ Finally, to see the RBAC in action!
 
 . Navigate to **Templates** under the Automation Execution section, and click on the **Network-Commands** Job Template.
 +
-// TODO: Copy image from ansible-workshops/exercises/ansible_network/8-controller-rbac/images/step8_operator.png
 image::step8_operator.png[Network operator view,align="center",link=self,window=blank,width=600]
 
 NOTE: As the `network-operator` user, you will have no ability to change any of the fields. The **Edit** button is no longer available.
@@ -204,7 +184,6 @@ NOTE: As the `network-operator` user, you will have no ability to change any of 
 
 . You will be prompted by a dialog-box that lets you choose one of the pre-configured show commands.
 +
-// TODO: Copy image from ansible-workshops/exercises/ansible_network/8-controller-rbac/images/step9_survey.png
 image::step9_survey.png[Pre-configured survey,align="center",link=self,window=blank,width=600]
 
 . Go ahead and choose a command and click **Next** and then **Launch** to see the playbook being executed and the results being displayed.

@@ -34,29 +34,24 @@ Direct SSH access is available as a backup, or if Visual Studio Code is not suff
 
 Connect to Visual Studio Code from the Workshop launch page (provided by your instructor). The password is provided below the WebUI link.
 
-// TODO: Copy image from ansible-workshops/exercises/ansible_network/1-explore/images/launch_page.png
 image::launch_page.png[Launch page,align="center",link=self,window=blank,width=600]
 
 Type in the provided password to connect.
 
-// TODO: Copy image from ansible-workshops/exercises/ansible_network/1-explore/images/vscode_login.png
 image::vscode_login.png[Login to VS Code,align="center",link=self,window=blank,width=600]
 
 Open the `network-workshop` directory in Visual Studio Code:
 
-// TODO: Copy image from ansible-workshops/exercises/ansible_network/1-explore/images/vscode-networkworkshop.png
 image::vscode-networkworkshop.png[File browser,align="center",link=self,window=blank,width=600]
 
 Click on the `playbook.yml` to view the content.
 
-// TODO: Copy image from ansible-workshops/exercises/ansible_network/1-explore/images/vscode-playbook.png
 image::vscode-playbook.png[Playbook,align="center",link=self,window=blank,width=600]
 
 == Step 2: Using the Terminal
 
 Open a terminal in Visual Studio Code:
 
-// TODO: Copy image from ansible-workshops/exercises/ansible_network/1-explore/images/vscode-new-terminal.png
 image::vscode-new-terminal.png[New terminal,align="center",link=self,window=blank,width=600]
 
 Navigate to the `network-workshop` directory on the Ansible control node terminal.
@@ -82,19 +77,16 @@ Run the `ansible-navigator` command with the `images` argument to look at execut
 $ ansible-navigator images
 ----
 
-// TODO: Copy image from ansible-workshops/exercises/ansible_network/1-explore/images/navigator-images.png
 image::navigator-images.png[ansible-navigator images,align="center",link=self,window=blank,width=600]
 
 NOTE: The output you see might differ from the above output.
 
 This command gives you information about all currently installed Execution Environments or EEs for short. Investigate an EE by pressing the corresponding number. For example pressing **0** with the above example will open the `network-ee` execution environment:
 
-// TODO: Copy image from ansible-workshops/exercises/ansible_network/1-explore/images/navigator-ee-menu.png
 image::navigator-ee-menu.png[EE main menu,align="center",link=self,window=blank,width=600]
 
 Selecting `2` for `Ansible version and collections` will show us all Ansible Collections installed on that particular EE, and the version of `ansible-core`:
 
-// TODO: Copy image from ansible-workshops/exercises/ansible_network/1-explore/images/navigator-ee-collections.png
 image::navigator-ee-collections.png[EE collections info,align="center",link=self,window=blank,width=600]
 
 == Step 4: Examining the ansible-navigator configuration
@@ -232,17 +224,14 @@ We can also use the `ansible-navigator` TUI to explore inventory.
 
 Run the `ansible-navigator inventory` command to bring up inventory in the TUI:
 
-// TODO: Copy image from ansible-workshops/exercises/ansible_network/1-explore/images/ansible-navigator.png
 image::ansible-navigator.png[ansible-navigator TUI,align="center",link=self,window=blank,width=600]
 
 Pressing **0** or **1** on your keyboard will open groups or hosts respectively.
 
-// TODO: Copy image from ansible-workshops/exercises/ansible_network/1-explore/images/ansible-navigator-groups.png
 image::ansible-navigator-groups.png[ansible-navigator groups,align="center",link=self,window=blank,width=600]
 
 Press the **Esc** key to go up a level, or you can zoom in to an individual host:
 
-// TODO: Copy image from ansible-workshops/exercises/ansible_network/1-explore/images/ansible-navigator-rtr-1.png
 image::ansible-navigator-rtr-1.png[ansible-navigator host,align="center",link=self,window=blank,width=600]
 
 == Step 8: Connecting to network devices

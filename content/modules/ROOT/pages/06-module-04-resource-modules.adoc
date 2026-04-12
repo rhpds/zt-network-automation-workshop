@@ -60,8 +60,7 @@ As you can see in the output above there is no VLAN configuration outside of the
 
 * Create a new file in Visual Studio Code named `resource.yml`
 
-// TODO: Copy image from ansible-workshops/exercises/ansible_network/4-resource-module/images/step1_blank_file.png
-image::step1_blank_file.png[New file in VS Code,align="center",link=self,window=blank,width=600]
+image::step1_new_file.png[New file in VS Code,align="center",link=self,window=blank,width=600]
 
 * Copy the following Ansible Playbook into your `resource.yml`
 
@@ -90,7 +89,6 @@ image::step1_blank_file.png[New file in VS Code,align="center",link=self,window=
 
 * Setup will look similar to the following in Visual Studio Code:
 
-// TODO: Copy image from ansible-workshops/exercises/ansible_network/4-resource-module/images/setup_vs_code.png
 image::setup_vs_code.png[VS Code setup,align="center",link=self,window=blank,width=600]
 
 == Step 3: Examine the Ansible Playbook
@@ -307,7 +305,6 @@ rtr4                       : ok=2    changed=1    unreachable=0    failed=0    s
 
 * Here is a screenshot:
 
-// TODO: Copy image from ansible-workshops/exercises/ansible_network/4-resource-module/images/step8_examine.png
 image::step8_examine.png[Examine VLAN YAML files,align="center",link=self,window=blank,width=600]
 
 == Solution
