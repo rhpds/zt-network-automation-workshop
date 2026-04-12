@@ -54,11 +54,25 @@ echo "%rhel ALL=(ALL:ALL) NOPASSWD:ALL" > /etc/sudoers.d/rhel_sudoers
 chmod 440 /etc/sudoers.d/rhel_sudoers
 
 # ---------------------------------------------------------------------------
-# Install git (not present on rhel-9.6 base image).
+# Install packages not present on rhel-9.6 base image.
 # ---------------------------------------------------------------------------
-if ! command -v git &>/dev/null; then
-  echo "Installing git..." >> /tmp/progress.log
-  dnf install -y git-core >> /tmp/progress.log 2>&1 || true
+echo "Installing system packages (git, podman)..." >> /tmp/progress.log
+dnf install -y git-core podman >> /tmp/progress.log 2>&1 || true
+
+# ---------------------------------------------------------------------------
+# Install pip + ansible-navigator for the rhel user.
+# ---------------------------------------------------------------------------
+echo "Installing pip and ansible-navigator..." >> /tmp/progress.log
+curl -sL https://bootstrap.pypa.io/get-pip.py | python3 >> /tmp/progress.log 2>&1
+chown -R $USER:$USER /home/$USER/.local 2>/dev/null
+sudo -u $USER /usr/local/bin/pip3 install ansible-navigator --user >> /tmp/progress.log 2>&1 \
+  && echo "ansible-navigator installed" >> /tmp/progress.log \
+  || echo "WARNING: ansible-navigator install failed" >> /tmp/progress.log
+
+# Add ~/.local/bin to PATH for the rhel user.
+if ! grep -q '.local/bin' /home/$USER/.bashrc 2>/dev/null; then
+  echo 'export PATH="$HOME/.local/bin:$PATH"' >> /home/$USER/.bashrc
+  chown $USER:$USER /home/$USER/.bashrc
 fi
 
 # ---------------------------------------------------------------------------

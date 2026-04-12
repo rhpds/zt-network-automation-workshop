@@ -11,6 +11,3 @@ ansible-navigator:
     container-engine: podman
     pull:
       policy: missing
-    volume-mounts:
-    - src: "/etc/ansible/"
-      dest: "/etc/ansible/"
