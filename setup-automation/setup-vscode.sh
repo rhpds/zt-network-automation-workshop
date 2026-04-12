@@ -38,7 +38,9 @@ cat > /home/$USER/.local/share/code-server/User/settings.json <<EOL
 }
 EOL
 
-chown $USER.$USER /home/$USER/.config/code-server/config.yaml /home/$USER/.local/share/code-server/User/settings.json
+# Own the entire .config and .local trees now. The script runs as root and
+# creates these dirs, but podman/pip later run as $USER and need write access.
+chown -R $USER:$USER /home/$USER/.config /home/$USER/.local
 
 echo "Installing code-server..." >> /tmp/progress.log
 curl -fsSL https://code-server.dev/install.sh | sh >> /tmp/progress.log 2>&1
