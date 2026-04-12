@@ -533,14 +533,17 @@
     controller_password: "{{ controller_password }}"
     validate_certs: "{{ controller_verify_ssl | default(false) }}"
 
-- name: "Remove static Network-Restore (dynamic one is created by Network-Backup)"
+- name: "Remove stale restore templates (dynamic one is created by Network-Backup)"
   ansible.controller.job_template:
-    name: "Network-Restore"
+    name: "{{ item }}"
     state: absent
     controller_host: "{{ controller_endpoint.rstrip('/') }}"
     controller_username: "{{ controller_username }}"
     controller_password: "{{ controller_password }}"
     validate_certs: "{{ controller_verify_ssl | default(false) }}"
+  loop:
+    - "Network-Restore"
+    - "Network Automation - Restore"
 
 # ── Organizations ────────────────────────────────────────────────────────────
 - name: "Organization — Red Hat network organization"
