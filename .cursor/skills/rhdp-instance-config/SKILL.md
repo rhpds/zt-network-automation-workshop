@@ -73,19 +73,28 @@ block with cloud-config for user, password, chpasswd, and the sshd runcmd.
 
 ### 4. UI Config Terminal Routing
 
-In `ui-config.yml`, terminal tabs must point to the correct VM:
+In `ui-config.yml`, terminal tabs use two different keys:
+
+- `type:` accepts only predefined values like `terminal` (chart default route)
+- `url:` accepts explicit paths like `/wetty_control`
+
+**Never put a path in `type:`** — it causes "Port and url not defined" errors.
 
 ```yaml
-# Explicit route to the control VM's WeTTY instance
+# CORRECT — explicit WeTTY path goes in url:
+- name: AAP terminal
+  url: /wetty_control
+
+# WRONG — type: only accepts predefined values, not paths
 - name: AAP terminal
   type: /wetty_control
 
-# NOT this — "terminal" resolves to the chart default, which may be wrong
+# RISKY — "terminal" resolves to whatever the chart default is (often containerlab)
 - name: AAP terminal
   type: terminal
 ```
 
-Use explicit `/wetty_<vmname>` paths for every terminal tab. Only use
+Use explicit `url: /wetty_<vmname>` for every terminal tab. Only use
 `type: terminal` if you're certain the chart default route points where you want.
 
 ### 5. VSCode Service Naming
