@@ -72,6 +72,27 @@ dnf install -y git podman sshpass >> /tmp/progress.log 2>&1 \
   || echo "WARNING: dnf install failed (RHSM may not be registered)" >> /tmp/progress.log
 
 # ---------------------------------------------------------------------------
+# Kick off slow background tasks now that podman is available.
+# ---------------------------------------------------------------------------
+EE_PULL_PID=""
+if command -v podman &>/dev/null; then
+  echo "Starting network EE pull in background..." >> /tmp/progress.log
+  nohup sudo -u $USER -H podman pull quay.io/acme_corp/network-ee:latest \
+    >> /tmp/progress.log 2>&1 &
+  EE_PULL_PID=$!
+fi
+
+PIP_PID=""
+(
+  curl -sL https://bootstrap.pypa.io/get-pip.py | python3 >> /tmp/progress.log 2>&1
+  chown -R $USER:$USER /home/$USER/.local 2>/dev/null
+  sudo -u $USER /usr/local/bin/pip3 install ansible-navigator --user >> /tmp/progress.log 2>&1 \
+    && echo "ansible-navigator installed" >> /tmp/progress.log \
+    || echo "WARNING: ansible-navigator install failed" >> /tmp/progress.log
+) &
+PIP_PID=$!
+
+# ---------------------------------------------------------------------------
 # Download workshop repo and copy exercise + bundled RPM files.
 # ---------------------------------------------------------------------------
 TARBALL_URL="https://github.com/rhpds/zt-network-automation-workshop/archive/refs/heads/main.tar.gz"
@@ -99,28 +120,11 @@ else
 fi
 
 # ---------------------------------------------------------------------------
-# Install pip + ansible-navigator for the rhel user.
+# Add ~/.local/bin to PATH for the rhel user.
 # ---------------------------------------------------------------------------
-echo "Installing pip and ansible-navigator..." >> /tmp/progress.log
-curl -sL https://bootstrap.pypa.io/get-pip.py | python3 >> /tmp/progress.log 2>&1
-chown -R $USER:$USER /home/$USER/.local 2>/dev/null
-sudo -u $USER /usr/local/bin/pip3 install ansible-navigator --user >> /tmp/progress.log 2>&1 \
-  && echo "ansible-navigator installed" >> /tmp/progress.log \
-  || echo "WARNING: ansible-navigator install failed" >> /tmp/progress.log
-
 if ! grep -q '.local/bin' /home/$USER/.bashrc 2>/dev/null; then
   echo 'export PATH="$HOME/.local/bin:$PATH"' >> /home/$USER/.bashrc
   chown $USER:$USER /home/$USER/.bashrc
-fi
-
-# ---------------------------------------------------------------------------
-# Pre-pull network EE (best effort, 3 min timeout).
-# ---------------------------------------------------------------------------
-if command -v podman &>/dev/null; then
-  echo "Pulling network EE image..." >> /tmp/progress.log
-  timeout 180 sudo -u $USER -H podman pull quay.io/acme_corp/network-ee:latest >> /tmp/progress.log 2>&1 \
-    && echo "Network EE pulled" >> /tmp/progress.log \
-    || echo "WARNING: Could not pull network EE" >> /tmp/progress.log
 fi
 
 # ---------------------------------------------------------------------------
@@ -166,6 +170,20 @@ PROFILE
   echo "Router access configured on vscode — rtr1/rtr2/rtr3/rtr4 via containerlab ports" >> /tmp/progress.log
 }
 setup_router_access
+
+# ---------------------------------------------------------------------------
+# Wait for background tasks to finish.
+# ---------------------------------------------------------------------------
+if [[ -n "$PIP_PID" ]]; then
+  echo "Waiting for pip/ansible-navigator install (pid $PIP_PID)..." >> /tmp/progress.log
+  wait $PIP_PID 2>/dev/null
+fi
+if [[ -n "$EE_PULL_PID" ]]; then
+  echo "Waiting for EE pull (pid $EE_PULL_PID)..." >> /tmp/progress.log
+  wait $EE_PULL_PID 2>/dev/null \
+    && echo "Network EE pulled" >> /tmp/progress.log \
+    || echo "WARNING: Network EE pull failed" >> /tmp/progress.log
+fi
 
 # ---------------------------------------------------------------------------
 # Final ownership fix — ensure everything under ~rhel is owned by rhel.
