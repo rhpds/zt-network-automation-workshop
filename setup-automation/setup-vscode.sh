@@ -75,7 +75,9 @@ dnf install -y git podman sshpass >> /tmp/progress.log 2>&1 \
 
 # ---------------------------------------------------------------------------
 # Kick off slow background tasks now that podman is available.
+# Re-chown in case dnf/podman install created new files under ~rhel.
 # ---------------------------------------------------------------------------
+chown -R $USER:$USER /home/$USER/.config /home/$USER/.local 2>/dev/null
 EE_PULL_PID=""
 if command -v podman &>/dev/null; then
   echo "Starting network EE pull in background..." >> /tmp/progress.log
