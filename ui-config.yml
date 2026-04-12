@@ -33,7 +33,7 @@ tabs:
   # Mixing default + explicit URL is fine. If the default is not control, switch AAP to url: /wetty_control.
   # Root: /wetty_control/ssh/root etc. Optional modules: list page stems on each tab.
   - name: AAP terminal
-    type: /wetty_control
+    url: /wetty_control
   - name: Containerlab terminal
     url: /wetty_containerlab
   - name: VS Code
