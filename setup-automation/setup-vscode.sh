@@ -1,7 +1,5 @@
 #!/bin/bash
 USER=rhel
-REPO_URL="https://github.com/rhpds/zt-network-automation-workshop.git"
-REPO_DIR="/tmp/zt-network-automation-workshop"
 
 echo "Setup vscode" > /tmp/progress.log
 chmod 666 /tmp/progress.log
@@ -54,10 +52,32 @@ echo "%rhel ALL=(ALL:ALL) NOPASSWD:ALL" > /etc/sudoers.d/rhel_sudoers
 chmod 440 /etc/sudoers.d/rhel_sudoers
 
 # ---------------------------------------------------------------------------
-# Install packages not present on rhel-9.6 base image.
+# Download workshop repo (tarball, no git required) and install bundled RPMs
+# first so podman/sshpass are available for later steps.
 # ---------------------------------------------------------------------------
-echo "Installing system packages (git, podman)..." >> /tmp/progress.log
-dnf install -y git-core podman >> /tmp/progress.log 2>&1 || true
+TARBALL_URL="https://github.com/rhpds/zt-network-automation-workshop/archive/refs/heads/main.tar.gz"
+echo "Downloading workshop repo tarball..." >> /tmp/progress.log
+curl -sL "${TARBALL_URL}" | tar xz -C /tmp >> /tmp/progress.log 2>&1
+REPO_DIR="/tmp/zt-network-automation-workshop-main"
+
+if [[ -d "${REPO_DIR}/rpms" ]]; then
+  echo "Installing bundled RPMs (podman, sshpass, etc.)..." >> /tmp/progress.log
+  for rpm_file in "${REPO_DIR}"/rpms/*.rpm; do
+    rpm -Uvh "${rpm_file}" >> /tmp/progress.log 2>&1 || true
+  done
+fi
+
+# ---------------------------------------------------------------------------
+# Copy exercise files to ~rhel/network-workshop.
+# ---------------------------------------------------------------------------
+if [[ -d "${REPO_DIR}/network-workshop" ]]; then
+  cp -r "${REPO_DIR}/network-workshop" /home/$USER/network-workshop
+  cp "${REPO_DIR}/network-workshop/.ansible-navigator.yml" /home/$USER/.ansible-navigator.yml
+  chown -R $USER:$USER /home/$USER/network-workshop /home/$USER/.ansible-navigator.yml
+  echo "Exercise files copied to /home/$USER/network-workshop" >> /tmp/progress.log
+else
+  echo "WARNING: network-workshop directory not found in repo" >> /tmp/progress.log
+fi
 
 # ---------------------------------------------------------------------------
 # Install pip + ansible-navigator for the rhel user.
@@ -69,35 +89,9 @@ sudo -u $USER /usr/local/bin/pip3 install ansible-navigator --user >> /tmp/progr
   && echo "ansible-navigator installed" >> /tmp/progress.log \
   || echo "WARNING: ansible-navigator install failed" >> /tmp/progress.log
 
-# Add ~/.local/bin to PATH for the rhel user.
 if ! grep -q '.local/bin' /home/$USER/.bashrc 2>/dev/null; then
   echo 'export PATH="$HOME/.local/bin:$PATH"' >> /home/$USER/.bashrc
   chown $USER:$USER /home/$USER/.bashrc
-fi
-
-# ---------------------------------------------------------------------------
-# Clone workshop repo and copy exercise files to ~rhel/network-workshop.
-# ---------------------------------------------------------------------------
-echo "Cloning workshop repo for exercise files..." >> /tmp/progress.log
-timeout 120 git clone "${REPO_URL}" "${REPO_DIR}" >> /tmp/progress.log 2>&1 || true
-
-if [[ -d "${REPO_DIR}/network-workshop" ]]; then
-  cp -r "${REPO_DIR}/network-workshop" /home/$USER/network-workshop
-  cp "${REPO_DIR}/network-workshop/.ansible-navigator.yml" /home/$USER/.ansible-navigator.yml
-  chown -R $USER:$USER /home/$USER/network-workshop /home/$USER/.ansible-navigator.yml
-  echo "Exercise files copied to /home/$USER/network-workshop" >> /tmp/progress.log
-else
-  echo "WARNING: network-workshop directory not found in repo" >> /tmp/progress.log
-fi
-
-# ---------------------------------------------------------------------------
-# Install bundled RPMs (podman, sshpass, etc.).
-# ---------------------------------------------------------------------------
-if [[ -d "${REPO_DIR}/rpms" ]]; then
-  echo "Installing bundled RPMs on vscode VM..." >> /tmp/progress.log
-  for rpm_file in "${REPO_DIR}"/rpms/*.rpm; do
-    rpm -Uvh "${rpm_file}" >> /tmp/progress.log 2>&1 || true
-  done
 fi
 
 # ---------------------------------------------------------------------------
