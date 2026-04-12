@@ -46,10 +46,11 @@ systemctl enable --now code-server@$USER
 echo "code-server installed and started on port 8080" >> /tmp/progress.log
 
 # ---------------------------------------------------------------------------
-# Sudoers for rhel user.
+# Sudoers and lingering for rhel user.
 # ---------------------------------------------------------------------------
 echo "%rhel ALL=(ALL:ALL) NOPASSWD:ALL" > /etc/sudoers.d/rhel_sudoers
 chmod 440 /etc/sudoers.d/rhel_sudoers
+loginctl enable-linger $USER 2>/dev/null || true
 
 # ---------------------------------------------------------------------------
 # Register with RHSM so dnf repos are available, then install packages.
@@ -165,5 +166,11 @@ PROFILE
   echo "Router access configured on vscode — rtr1/rtr2/rtr3/rtr4 via containerlab ports" >> /tmp/progress.log
 }
 setup_router_access
+
+# ---------------------------------------------------------------------------
+# Final ownership fix — ensure everything under ~rhel is owned by rhel.
+# The script runs as root and may have created dirs before chowning.
+# ---------------------------------------------------------------------------
+chown -R $USER:$USER /home/$USER/.config /home/$USER/.local 2>/dev/null
 
 echo "setup-vscode.sh complete" >> /tmp/progress.log
