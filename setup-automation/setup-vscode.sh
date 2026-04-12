@@ -52,8 +52,26 @@ echo "%rhel ALL=(ALL:ALL) NOPASSWD:ALL" > /etc/sudoers.d/rhel_sudoers
 chmod 440 /etc/sudoers.d/rhel_sudoers
 
 # ---------------------------------------------------------------------------
-# Download workshop repo (tarball, no git required) and install bundled RPMs
-# first so podman/sshpass are available for later steps.
+# Register with RHSM so dnf repos are available, then install packages.
+# Uses the same REG_USER/REG_PASS env vars as setup-control.sh.
+# ---------------------------------------------------------------------------
+if [[ -n "${REG_USER:-}" && -n "${REG_PASS:-}" ]]; then
+  echo "Registering with subscription-manager..." >> /tmp/progress.log
+  subscription-manager register --username "$REG_USER" --password "$REG_PASS" \
+    --auto-attach --force >> /tmp/progress.log 2>&1 \
+    && echo "RHSM registration successful" >> /tmp/progress.log \
+    || echo "WARNING: RHSM registration failed" >> /tmp/progress.log
+else
+  echo "REG_USER/REG_PASS not set; skipping RHSM registration" >> /tmp/progress.log
+fi
+
+echo "Installing packages via dnf (git, podman, sshpass)..." >> /tmp/progress.log
+dnf install -y git podman sshpass >> /tmp/progress.log 2>&1 \
+  && echo "System packages installed" >> /tmp/progress.log \
+  || echo "WARNING: dnf install failed (RHSM may not be registered)" >> /tmp/progress.log
+
+# ---------------------------------------------------------------------------
+# Download workshop repo and copy exercise + bundled RPM files.
 # ---------------------------------------------------------------------------
 TARBALL_URL="https://github.com/rhpds/zt-network-automation-workshop/archive/refs/heads/main.tar.gz"
 echo "Downloading workshop repo tarball..." >> /tmp/progress.log
@@ -61,7 +79,7 @@ curl -sL "${TARBALL_URL}" | tar xz -C /tmp >> /tmp/progress.log 2>&1
 REPO_DIR="/tmp/zt-network-automation-workshop-main"
 
 if [[ -d "${REPO_DIR}/rpms" ]]; then
-  echo "Installing bundled RPMs (podman, sshpass, etc.)..." >> /tmp/progress.log
+  echo "Installing any bundled RPMs..." >> /tmp/progress.log
   for rpm_file in "${REPO_DIR}"/rpms/*.rpm; do
     rpm -Uvh "${rpm_file}" >> /tmp/progress.log 2>&1 || true
   done
