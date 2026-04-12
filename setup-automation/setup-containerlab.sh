@@ -117,16 +117,16 @@ REMOTE
 setup_router_access() {
   echo "Setting up router name resolution and SSH config..." >> /tmp/progress.log
 
-  # /etc/hosts — system-wide, works for all users.
-  if ! grep -q "rtr1" /etc/hosts 2>/dev/null; then
-    cat >> /etc/hosts <<'HOSTS'
+  # /etc/hosts — system-wide. Always rewrite the block; the VM image may
+  # contain stale containerlab-managed entries that fool a simple grep check.
+  sed -i '/rtr[1-4]/d' /etc/hosts 2>/dev/null
+  cat >> /etc/hosts <<'HOSTS'
 172.20.20.10 rtr1
 172.20.20.20 rtr2
 172.20.20.30 rtr3
 172.20.20.40 rtr4
 HOSTS
-    echo "Added rtr1-4 to /etc/hosts" >> /tmp/progress.log
-  fi
+  echo "Written rtr1-4 to /etc/hosts (172.20.20.x)" >> /tmp/progress.log
 
   # SSH config for both rhel and lab-user.
   for u in rhel lab-user; do
@@ -135,7 +135,26 @@ HOSTS
     if id "${u}" &>/dev/null; then
       mkdir -p "${ussh}"
       cat > "${ussh}/config.d-routers" <<'SSHCFG'
-Host rtr1 rtr2 rtr3 rtr4
+Host rtr1
+  Hostname 172.20.20.10
+  User admin
+  StrictHostKeyChecking no
+  UserKnownHostsFile /dev/null
+
+Host rtr2
+  Hostname 172.20.20.20
+  User admin
+  StrictHostKeyChecking no
+  UserKnownHostsFile /dev/null
+
+Host rtr3
+  Hostname 172.20.20.30
+  User admin
+  StrictHostKeyChecking no
+  UserKnownHostsFile /dev/null
+
+Host rtr4
+  Hostname 172.20.20.40
   User admin
   StrictHostKeyChecking no
   UserKnownHostsFile /dev/null
