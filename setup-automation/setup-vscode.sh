@@ -54,6 +54,14 @@ echo "%rhel ALL=(ALL:ALL) NOPASSWD:ALL" > /etc/sudoers.d/rhel_sudoers
 chmod 440 /etc/sudoers.d/rhel_sudoers
 
 # ---------------------------------------------------------------------------
+# Install git (not present on rhel-9.6 base image).
+# ---------------------------------------------------------------------------
+if ! command -v git &>/dev/null; then
+  echo "Installing git..." >> /tmp/progress.log
+  dnf install -y git-core >> /tmp/progress.log 2>&1 || true
+fi
+
+# ---------------------------------------------------------------------------
 # Clone workshop repo and copy exercise files to ~rhel/network-workshop.
 # ---------------------------------------------------------------------------
 echo "Cloning workshop repo for exercise files..." >> /tmp/progress.log

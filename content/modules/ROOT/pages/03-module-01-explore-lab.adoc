@@ -32,6 +32,8 @@ It is highly encouraged to use Visual Studio Code to complete the workshop exerc
 
 Direct SSH access is available as a backup, or if Visual Studio Code is not sufficient to the student.
 
+TIP: For the best experience (especially copy/paste in the terminal), open VS Code in its own browser tab instead of using the embedded Showroom frame. Click the **VS Code** tab in Showroom, then right-click and copy the URL, or navigate directly to `https://vscode-{guid}.{bastion_domain}/`
+
 Connect to Visual Studio Code from the Workshop launch page (provided by your instructor). The password is provided below the WebUI link.
 
 image::launch_page.png[Launch page,align="center",link=self,window=blank,width=600]
