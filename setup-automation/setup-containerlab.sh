@@ -231,6 +231,10 @@ install_rpms() {
 # Run each step independently — failures in one must not block the rest.
 # install_rpms runs before push_ssh_key_to_control because sshpass is needed.
 # ---------------------------------------------------------------------------
+# Suppress the "Register this system with Red Hat Insights" MOTD.
+rm -f /etc/profile.d/insights-client.sh 2>/dev/null
+rm -f /etc/motd.d/insights-client 2>/dev/null
+
 clone_repo
 install_rpms
 push_ssh_key_to_control || echo "push_ssh_key_to_control failed" >> /tmp/progress.log

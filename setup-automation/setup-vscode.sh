@@ -54,6 +54,10 @@ echo "%rhel ALL=(ALL:ALL) NOPASSWD:ALL" > /etc/sudoers.d/rhel_sudoers
 chmod 440 /etc/sudoers.d/rhel_sudoers
 loginctl enable-linger $USER 2>/dev/null || true
 
+# Suppress the "Register this system with Red Hat Insights" MOTD.
+rm -f /etc/profile.d/insights-client.sh 2>/dev/null
+rm -f /etc/motd.d/insights-client 2>/dev/null
+
 # ---------------------------------------------------------------------------
 # Register with RHSM so dnf repos are available, then install packages.
 # Uses the same REG_USER/REG_PASS env vars as setup-control.sh.
