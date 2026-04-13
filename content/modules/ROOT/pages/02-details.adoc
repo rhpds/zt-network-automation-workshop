@@ -92,6 +92,8 @@ If that does not resolve, check what your deployment actually injected: run `get
 
 == Authors and contributors
 
+**Adapted and maintained by**: link:https://github.com/IPvSean[Sean Cavanaugh (@IPvSean)^]
+
 **Based on**: link:https://github.com/ansible/workshops[Ansible Workshops^] by Red Hat
 
 **Workshop version**: 1.0
