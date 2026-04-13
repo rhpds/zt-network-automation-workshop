@@ -7,8 +7,7 @@ Explore and understand the lab environment. These first few lab exercises will b
 
 * link:https://github.com/ansible/ansible-navigator[ansible-navigator^] -- a command line utility and text-based user interface (TUI) for running and developing Ansible automation content.
 * link:https://docs.ansible.com/core.html[ansible-core^] -- the base executable that provides the framework, language and functions that underpin the Ansible Automation Platform. It also includes various CLI tools like `ansible`, `ansible-playbook` and `ansible-doc`. Ansible Core acts as the bridge between the upstream community with the free and open source Ansible and connects it to the downstream enterprise automation offering from Red Hat, the Ansible Automation Platform.
-* link:https://docs.ansible.com/automation-controller/latest/html/userguide/execution_environments.html[Execution Environments^] -- not specifically covered in this workshop because the built-in Ansible Execution Environments already included all the Red Hat supported collections which includes all the network collections we use for this workshop. Execution Environments are container images that can be utilized as Ansible execution.
-* link:https://github.com/ansible/ansible-builder[ansible-builder^] -- not specifically covered in this workshop, `ansible-builder` is a command line utility to automate the process of building Execution Environments.
+* link:https://docs.ansible.com/automation-controller/latest/html/userguide/execution_environments.html[Execution Environments^] -- container images that can be utilized as Ansible execution.
 
 
 == Learning objectives
@@ -23,6 +22,8 @@ By the end of this module, you will be able to:
 * Connect to network devices via SSH
 
 TIP: You can open these workshop directions in a separate browser window for easier reference: link:https://rhpds.github.io/zt-network-automation-workshop[https://rhpds.github.io/zt-network-automation-workshop^]
+
+NOTE: Subscribe to our link:https://www.youtube.com/ansibleautomation[Ansible YouTube channel^] to stay connected with the Tech Marketing team and get the latest videos on Ansible automation.
 
 == Step 1: Connecting via VS Code
 

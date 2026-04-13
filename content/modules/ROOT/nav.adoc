@@ -9,7 +9,7 @@
 * xref:06-module-04-resource-modules.adoc[1-4: Resource modules]
 
 .Module 2: Intro to AAP
-* xref:07-module-05-explore-controller.adoc[2-1: Explore Automation controller]
+* xref:07-module-05-explore-controller.adoc[2-1: Explore Ansible Automation Platform]
 * xref:08-module-06-job-template.adoc[2-2: Job templates]
 * xref:09-module-07-survey.adoc[2-3: Surveys]
 * xref:10-module-08-rbac.adoc[2-4: RBAC]

@@ -20,8 +20,8 @@ By the end of this module, you will be able to:
 +
 image::automation_controller_login.png[Ansible Automation Platform login window,align="center",link=self,window=blank,width=600]
 +
-* The username will be `{controller_user}`
-* The password will be `{controller_password}`
+* The username will be `admin`
+* The password will be `ansible123!`
 
 . After logging in the Job Dashboard will be the default view as shown below.
 +

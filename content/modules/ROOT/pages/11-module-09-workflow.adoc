@@ -19,7 +19,7 @@ By the end of this module, you will be able to:
 
 == Step 1: Create a workflow template
 
-. Make sure you are logged in as the **{controller_user}** user.
+. Make sure you are logged in as the **admin** user.
 
 . Click on the **Templates** link on the left menu.
 +

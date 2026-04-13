@@ -27,7 +27,7 @@ Navigate to the `network-workshop` directory if you are not already there.
 /home/{user}/network-workshop
 ----
 
-Examine the provided Ansible Playbook named `playbook.yml`. Either open the file in Visual Studio Code or `cat` the file:
+Examine the provided link:https://www.redhat.com/en/topics/automation/what-is-an-ansible-playbook[Ansible Playbook^] named `playbook.yml`. Either open the file in Visual Studio Code or `cat` the file:
 
 [source,yaml]
 ----

@@ -30,8 +30,8 @@ Before we begin, let us review some Automation controller terminology:
 [cols="1,1",options="header"]
 |===
 | Parameter | Value
-| username | `{controller_user}`
-| password | `{controller_password}`
+| username | `admin`
+| password | `ansible123!`
 |===
 
 * Confirm that you are logged in as the **admin** user.
@@ -40,7 +40,7 @@ image::step_1.png[Admin user,align="center",link=self,window=blank,width=600]
 
 * Under the **Access Management** section, click on **Organizations**
 +
-As the `{controller_user}` user, you will be able to view all organizations configured for Automation controller.
+As the `admin` user, you will be able to view all organizations configured for Automation controller.
 +
 NOTE: The orgs, teams and users were auto-populated for this workshop.
 
@@ -89,7 +89,7 @@ image::step5_logout.png[Logout,align="center",link=self,window=blank,width=600]
 |===
 | Parameter | Value
 | username | network-admin
-| password | `{controller_password}`
+| password | `ansible123!`
 |===
 
 . Confirm that you are logged in as the **network-admin** user.
@@ -169,7 +169,7 @@ Finally, to see the RBAC in action!
 |===
 | Parameter | Value
 | username | `network-operator`
-| password | `{controller_password}`
+| password | `ansible123!`
 |===
 
 . Navigate to **Templates** under the Automation Execution section, and click on the **Network-Commands** Job Template.
