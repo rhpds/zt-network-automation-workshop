@@ -59,13 +59,13 @@ Navigate to the `network-workshop` directory in the VS Code terminal.
 
 [source,bash]
 ----
-[{user}@{hostname} ~]$ cd ~/network-workshop/
-[{user}@{hostname} network-workshop]$ pwd
-/home/{user}/network-workshop
-[{user}@{hostname} network-workshop]$
+[rhel@vscode ~]$ cd ~/network-workshop/
+[rhel@vscode network-workshop]$ pwd
+/home/rhel/network-workshop
+[rhel@vscode network-workshop]$
 ----
 
-* `~` -- the tilde in this context is a shortcut for the home directory, i.e. `/home/{user}`
+* `~` -- the tilde in this context is a shortcut for the home directory, i.e. `/home/rhel`
 * `cd` -- Linux command to change directory
 * `pwd` -- Linux command for print working directory. This will show the full path to the current working directory.
 
