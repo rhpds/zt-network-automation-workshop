@@ -43,6 +43,10 @@ If you need more information on new Ansible Automation Platform components bookm
 
 
 
+> **Tip**
+>
+> You can open these workshop directions in a separate browser window for easier reference: <a target="_blank" href="https://rhpds.github.io/zt-network-automation-workshop">https://rhpds.github.io/zt-network-automation-workshop</a>
+
 ## Guide
 
 ### Step 1 - Connecting via VS Code
@@ -84,7 +88,7 @@ If you need more information on new Ansible Automation Platform components bookm
 
   ![picture of new terminal](images/vscode-new-terminal.png)
 
-Navigate to the `network-workshop` directory on the Ansible control node terminal.
+Navigate to the `network-workshop` directory in the VS Code terminal.
 
 ```bash
 [student@ansible-1 ~]$ cd ~/network-workshop/
@@ -99,7 +103,7 @@ Navigate to the `network-workshop` directory on the Ansible control node termina
 
 ### Step 3 - Examining Execution Environments
 
-Run the `ansible-navigator` command with the `images` argument to look at execution environments configured on the control node:
+Run the `ansible-navigator` command with the `images` argument to look at execution environments:
 
 ```bash
 $ ansible-navigator images
@@ -260,9 +264,9 @@ Press the **Esc** key to go up a level, or you can zoom in to an individual host
 
 ### Step 8 - Connecting to network devices
 
-There are four routers, named rtr1, rtr2, rtr3 and rtr4.  The network diagram is always available on the [network automation workshop table of contents](../README.md).  The SSH configuration file (`~/.ssh/config`) is already setup on the control node.  This means you can SSH to any router from the control node without a login:
+There are four routers, named rtr1, rtr2, rtr3 and rtr4.  The network diagram is always available on the [network automation workshop table of contents](../README.md).  The SSH configuration file (`~/.ssh/config`) is already setup so you can SSH to any router from the VS Code terminal without a login:
 
-For example to connect to rtr1 from the Ansible control node, type:
+For example to connect to rtr1, type:
 
 ```bash
 $ ssh rtr1

@@ -2,8 +2,6 @@
 
 **Read this in other languages**: ![uk](https://github.com/ansible/workshops/raw/devel/images/uk.png) [English](README.md), ![japan](https://github.com/ansible/workshops/raw/devel/images/japan.png) [日本語](README.ja.md), ![Español](https://github.com/ansible/workshops/raw/devel/images/es.png) [Español](README.es.md), ![Français](https://github.com/ansible/workshops/raw/devel/images/fr.png) [Français](README.fr.md).
 
-If you are using an **all Cisco workbench** (all four routers are Cisco IOS routers) please [switch to these directions](../supplemental/4-resource-module-cisco/README.md).
-
 ## Table of Contents
 
 - [Exercise 4: Ansible Network Resource Modules](#exercise-4-ansible-network-resource-modules)
@@ -52,7 +50,7 @@ This exercise will cover:
 
 * Login to an Arista switch and verify the current VLAN configuration.
 
-* From the control node terminal, you can `ssh rtr2` and type `enable`
+* From the VS Code terminal, you can `ssh rtr2` and type `enable`
 
   ```bash
   $ ssh rtr2
@@ -108,10 +106,6 @@ As you can see in the output above there is no VLAN configuration outside of the
               vlan_id: 50
   ```
 
-* Setup will look similar to the following in Visual Studio Code:
-
-   ![picture of vs code setup](images/setup_vs_code.png)
-
 ### Step 3 - Examine the Ansible Playbook
 
 * First lets examine the first four lines:
@@ -158,7 +152,7 @@ As you can see in the output above there is no VLAN configuration outside of the
     * gathered
     * parsed
 
-    Only two of these parameters will be covered in this exercise, but additional are available in the [supplemental exercises](../supplemental/README.md).
+    Only two of these parameters will be covered in this exercise.
   * `config:` - this is the supplied VLAN configuration.  It is a list of dictionaries. The most important takeaway is that if the module was change from `arista.eos.vlans` to `junipernetworks.junos.vlans` it would work identically.  This allows network engineers to focus on the network (e.g. VLAN configuration) versus the vendor syntax and implementation.
 
 ### Step 4 - Execute the Ansible Playbook
@@ -207,7 +201,7 @@ As you can see in the output above there is no VLAN configuration outside of the
 
 * Login to an Arista switch and verify the current VLAN configuration.
 
-* From the control node terminal, you can `ssh rtr2` and type `enable`
+* From the VS Code terminal, you can `ssh rtr2` and type `enable`
 
   ```bash
   $ ssh rtr2
@@ -336,8 +330,6 @@ The finished Ansible Playbook is provided here for an answer key:
 ## Complete
 
 You have completed lab exercise 4
-
-As stated previously only two of the resource modules parameters were covered in this exercise, but additional are available in the [supplemental exercises](../supplemental/README.md).
 
 In the next exercise we will start using Automation controller.
 ---
