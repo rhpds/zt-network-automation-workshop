@@ -32,7 +32,7 @@ It is highly encouraged to use Visual Studio Code to complete the workshop exerc
 
 Direct SSH access is available as a backup, or if Visual Studio Code is not sufficient to the student.
 
-TIP: For the best experience (especially copy/paste in the terminal), open VS Code in its own browser tab instead of using the embedded Showroom frame. Click the **VS Code** tab in Showroom, then right-click and copy the URL, or navigate directly to `https://vscode-{guid}.{bastion_domain}/`
+TIP: For the best experience (especially copy/paste in the terminal), open VS Code in its own browser tab instead of using the embedded Showroom frame. Click the **VS Code** tab in Showroom, then right-click and copy the URL, or navigate directly to `https://vscode-{guid}.{domain}/`
 
 Connect to Visual Studio Code from the Workshop launch page (provided by your instructor). The password is provided below the WebUI link.
 
@@ -60,13 +60,13 @@ Navigate to the `network-workshop` directory on the Ansible control node termina
 
 [source,bash]
 ----
-[{bastion_user}@{bastion_hostname} ~]$ cd ~/network-workshop/
-[{bastion_user}@{bastion_hostname} network-workshop]$ pwd
-/home/{bastion_user}/network-workshop
-[{bastion_user}@{bastion_hostname} network-workshop]$
+[{user}@{hostname} ~]$ cd ~/network-workshop/
+[{user}@{hostname} network-workshop]$ pwd
+/home/{user}/network-workshop
+[{user}@{hostname} network-workshop]$
 ----
 
-* `~` -- the tilde in this context is a shortcut for the home directory, i.e. `/home/{bastion_user}`
+* `~` -- the tilde in this context is a shortcut for the home directory, i.e. `/home/{user}`
 * `cd` -- Linux command to change directory
 * `pwd` -- Linux command for print working directory. This will show the full path to the current working directory.
 
@@ -85,7 +85,7 @@ NOTE: The output you see might differ from the above output.
 
 This command gives you information about all currently installed Execution Environments or EEs for short. Investigate an EE by pressing the corresponding number. For example pressing **0** with the above example will open the `network-ee` execution environment:
 
-image::navigator-ee-menu.png[EE main menu,align="center",link=self,window=blank,width=600]
+image::navigator-ee-menu.png[EE main menu,align="center",link=self,window=_blank,width=600]
 
 Selecting `2` for `Ansible version and collections` will show us all Ansible Collections installed on that particular EE, and the version of `ansible-core`:
 
@@ -107,7 +107,7 @@ ansible-navigator:
   ansible:
     inventory:
       entries:
-      - /home/{bastion_user}/lab_inventory/hosts
+      - /home/rhel/network-workshop/lab_inventory/hosts
 
   execution-environment:
     image: quay.io/acme_corp/network-ee:latest
@@ -115,9 +115,6 @@ ansible-navigator:
     container-engine: podman
     pull:
       policy: missing
-    volume-mounts:
-    - src: "/etc/ansible/"
-      dest: "/etc/ansible/"
 ----
 
 Note the following parameters within the `ansible-navigator.yml` file:
@@ -125,17 +122,17 @@ Note the following parameters within the `ansible-navigator.yml` file:
 * `inventories`: shows the location of the ansible inventory being used
 * `execution-environment`: where the default execution environment is set
 
-For a full listing of every configurable knob checkout the link:https://ansible-navigator.readthedocs.io/en/latest/settings/[documentation^].
+For a full listing of every configurable knob checkout the link:https://docs.ansible.com/projects/navigator/settings/[documentation^].
 
 == Step 5: Examining inventory
 
 The scope of a `play` within a `playbook` is limited to the groups of hosts declared within an Ansible **inventory**. Ansible supports multiple link:http://docs.ansible.com/ansible/latest/intro_inventory.html[inventory^] types. An inventory could be a simple flat file with a collection of hosts defined within it or it could be a dynamic script (potentially querying a CMDB backend) that generates a list of devices to run the playbook against.
 
-In this lab you will work with a file based inventory written in the **ini** format. Either use Visual Studio Code to open or use the `cat` command to view the contents of the `~/lab_inventory/hosts` file.
+In this lab you will work with a file based inventory written in the **ini** format. Either use Visual Studio Code to open or use the `cat` command to view the contents of the `~/network-workshop/lab_inventory/hosts` file.
 
 [source,bash]
 ----
-$ cat ~/lab_inventory/hosts
+$ cat ~/network-workshop/lab_inventory/hosts
 ----
 
 [source,ini]
@@ -182,7 +179,7 @@ rtr2
 rtr4
 
 [control]
-ansible ansible_host=13.58.149.157 ansible_user={bastion_user} private_ip=172.16.240.184
+ansible ansible_host=13.58.149.157 ansible_user=rhel private_ip=172.16.240.184
 ----
 
 == Step 6: Understanding inventory

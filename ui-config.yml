@@ -1,10 +1,4 @@
 ---
-type: showroom
-
-# Match RHDP showroom defaults so tabs resolve correctly (see showroom_template_zero).
-default_width: 30
-persist_url_state: true
-
 antora:
   name: modules
   dir: www
