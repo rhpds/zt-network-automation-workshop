@@ -182,15 +182,12 @@ image::step6_complete_workflow.png[Save button,align="center",link=self,window=b
 image::step7_launch.png[Launch workflow,align="center",link=self,window=blank,width=600]
 
 . Watch the **Workshop Workflow**.
-+
-image::step7_final.png[Workflow job launched,align="center",link=self,window=blank,width=600]
-+
 At any time during the workflow job you can select an individual job template by clicking on the node to see the status.
 
 == Module summary
 
 In this module, you successfully:
 
-* Created a **Workflow template** that creates a backup, then attempts to create a user and banner for all network nodes
-* Made the workflow **robust** -- if either job template fails it will restore to the specified backup
-* Launched the Workflow template and explored the **Workflow Visualizer**
+* Built a reusable automation workflow that orchestrates backup, user provisioning, and banner configuration across all network nodes in a single run
+* Made the workflow **self-healing** -- if any change fails, the network automatically rolls back to its last known-good state
+* Validated the end-to-end workflow and used the **Workflow Visualizer** to verify each stage completed as expected
