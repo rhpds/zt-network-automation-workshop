@@ -57,7 +57,7 @@ image::workshop_inventory_hosts.png[Workshop inventory hosts,align="center",link
 +
 image::workshop_inventory_hosts_rtr1.png[Workshop inventory host rtr1,align="center",link=self,window=blank,width=600]
 +
-Take note of the **VARIABLES** field. The `host_vars` are set here including the `ansible_host` variable.
+Take note of the **VARIABLES** field. The `host_vars` are set here including the `ansible_host` variable. Since rtr1 is running as a container on Containerlab, the `ansible_host` is set to `containerlab` and `ansible_port` is set to `2222` — this is because Ansible connects to the router via port forwarding through the Containerlab host rather than directly to a public IP.
 
 . Click on **GROUPS**. There will be multiple groups here including `routers` and `cisco`. Click on one of the groups.
 +
