@@ -3,7 +3,7 @@
 :toc: macro
 :toclevels: 1
 
-In this module you will create and launch a network backup configuration job template with Ansible Automation Platform. This job template will save the running configuration from all four routers and store them under `/backup` on the control node with a timestamp.
+In this module you will create and launch a network backup configuration job template with Ansible Automation Platform. This job template will save the running configuration from all four routers and store them under `/backup` on the containerlab host (which acts as the backup server) with a timestamp.
 
 To run an Ansible Playbook in Automation controller we need to create a **Job Template**. A **Job Template** requires:
 
@@ -122,38 +122,48 @@ The **Backup network configurations** job was the most recent (unless you have b
 
 == Step 5: Verify the backups were created
 
-* On the Ansible control node command line, run `ls /backup` to view the time stamped folder (or folders if you created multiple backups)
+The backups are stored on the containerlab host, which acts as the backup server for this lab. From the VS Code terminal or Containerlab terminal, run `ls /backup` to view the time stamped folder (or folders if you created multiple backups):
 
 [source,bash]
 ----
-[{user}@{hostname} ~]$ ls /backup
-2021-08-31-12-58  2021-08-31-13-04  2021-08-31-13-11
+[rhel@containerlab ~]$ ls /backup
+2026-04-13-14-00
 ----
 
-`ls` is a command to list computer files in Linux operating systems.
-
-* Either open `/backup` with Visual Studio Code or use the `cat` command to view the contents of one of the time stamped network devices
+* Use the `cat` command to view the contents of one of the backed up network devices:
 
 [source,bash]
 ----
-[{user}@{hostname} ~]$ cat /backup/2021-08-31-12-58/rtr1.txt
-Building configuration...
+[rhel@containerlab ~]$ cat /backup/2026-04-13-14-00/rtr1.txt
 
-Current configuration : 5072 bytes
+Current configuration : 7099 bytes
 !
-! Last configuration change at 12:53:30 UTC Tue Aug 31 2021 by ec2-user
+! Last configuration change at 12:46:59 UTC Mon Apr 13 2026
 !
-version 16.9
+version 17.13
 service timestamps debug datetime msec
 service timestamps log datetime msec
 platform qfp utilization monitor load 80
-no platform punt-keepalive disable-kernel-core
-platform console virtual
+platform punt-keepalive disable-kernel-core
+platform sslvpn use-pd
+platform console serial
 !
 hostname rtr1
+!
+boot-start-marker
+boot-end-marker
+!
+!
+vrf definition clab-mgmt
+ description Containerlab management VRF (DO NOT DELETE)
+ !
+ address-family ipv4
+ exit-address-family
+!
+no aaa new-model
 ----
 
-* Examine the remaining routers. Your instructor may have setup multiple vendors for this exercise including Juniper and Arista. Ansible Playbooks can be written to be vendor agnostic -- in this case we provided the Ansible Playbook via the GitHub repo: link:https://github.com/network-automation/toolkit[https://github.com/network-automation/toolkit^]
+* Examine the remaining routers (`rtr2.txt`, `rtr3.txt`, `rtr4.txt`). This lab includes multiple vendors (Cisco, Arista, and Juniper). Ansible Playbooks can be written to be vendor agnostic -- in this case we provided the Ansible Playbook via the GitHub repo: link:https://github.com/network-automation/toolkit[https://github.com/network-automation/toolkit^]
 
 == Module summary
 
@@ -163,4 +173,4 @@ In this module, you learned how to:
 * Launch a Job Template from the Automation controller UI and monitor its execution
 * Examine the **Standard Out pane** and **Details pane** to review job output and metadata
 * Navigate the **Jobs** window to view job history and status
-* Verify that network configuration backups are correctly stored on the control node with timestamps
+* Verify that network configuration backups are correctly stored on the containerlab host with timestamps

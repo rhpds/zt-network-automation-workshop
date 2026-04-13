@@ -9,7 +9,7 @@ In this module you will explore and understand the lab environment. You will log
 
 By the end of this module, you will be able to:
 
-* Log into Ansible Automation Platform and determine the version running on the control node
+* Log into Ansible Automation Platform and determine the version running
 * Navigate and understand the **Inventory** configuration
 * Locate and examine **Projects** and their source control integration
 * Understand how **Credentials** are stored and used
@@ -49,7 +49,7 @@ image::automation_controller_inventories.png[Inventories Button,align="center",l
 +
 image::automation_controller_workshop_inventory.png[Workshop Inventory Link,align="center",link=self,window=blank,width=600]
 
-. Under the `Workshop Inventory` click the **Hosts** button at the top. There will be four hosts here, rtr1 through rtr4 as well as the ansible control node.
+. Under the `Workshop Inventory` click the **Hosts** button at the top. There will be four hosts here, rtr1 through rtr4 as well as the containerlab host.
 +
 image::workshop_inventory_hosts.png[Workshop inventory hosts,align="center",link=self,window=blank,width=600]
 
@@ -108,8 +108,8 @@ image::workshop_credential.png[Workshop Credential Link,align="center",link=self
 . Under the `Workshop Credential` examine the following:
 +
 * The **Credential type** is a **Machine** credential.
-* The **Username** is set to `ec2-user`.
-* The **SSH Private Key** is already configured, and is **Encrypted**.
+* The **Username** is set to `admin`.
+* The **Password** is already configured, and is **Encrypted**.
 
 == Module summary
 

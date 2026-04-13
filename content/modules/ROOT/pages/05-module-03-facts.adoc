@@ -191,7 +191,7 @@ Using less than 20 lines of "code" you have just automated version and serial nu
 
 In this module, you learned how to:
 
-* Use `ansible-navigator :doc` to access module documentation directly from the terminal without an internet connection, with documentation that matches the version of Ansible on the control node
+* Use `ansible-navigator :doc` to access module documentation directly from the terminal without an internet connection
 * Build an Ansible Playbook from scratch to gather network device facts
 * Use the link:https://docs.ansible.com/ansible/latest/collections/cisco/ios/ios_facts_module.html[cisco.ios.ios_facts module^] to gather structured data specific to Cisco IOS -- with relevant modules available for each network platform (e.g. `junos_facts` for Juniper Junos, `eos_facts` for Arista EOS)
 * Use the link:https://docs.ansible.com/ansible/latest/modules/debug_module.html[debug module^] to display specific fact values such as OS version and serial number in the terminal output
