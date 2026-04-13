@@ -40,17 +40,17 @@ TIP: For the best experience (especially copy/paste in the terminal), open VS Co
 
 Open the `network-workshop` directory in Visual Studio Code:
 
-image::vscode-networkworkshop.png[File browser,align="center",link=self,window=blank,width=600]
+image::vscode-networkworkshop.png[File browser,align="center",link=self,window=_blank,width=600]
 
 Click on the `playbook.yml` to view the content.
 
-image::vscode-playbook.png[Playbook,align="center",link=self,window=blank,width=600]
+image::vscode-playbook.png[Playbook,align="center",link=self,window=_blank,width=600]
 
 == Step 2: Using the Terminal
 
 Open a terminal in Visual Studio Code:
 
-image::vscode-new-terminal.png[New terminal,align="center",link=self,window=blank,width=600]
+image::vscode-new-terminal.png[New terminal,align="center",link=self,window=_blank,width=600]
 
 Navigate to the `network-workshop` directory on the Ansible control node terminal.
 
@@ -75,7 +75,7 @@ Run the `ansible-navigator` command with the `images` argument to look at execut
 $ ansible-navigator images
 ----
 
-image::navigator-images.png[ansible-navigator images,align="center",link=self,window=blank,width=600]
+image::navigator-images.png[ansible-navigator images,align="center",link=self,window=_blank,width=600]
 
 NOTE: The output you see might differ from the above output.
 
@@ -85,7 +85,7 @@ image::navigator-ee-menu.png[EE main menu,align="center",link=self,window=_blank
 
 Selecting `2` for `Ansible version and collections` will show us all Ansible Collections installed on that particular EE, and the version of `ansible-core`:
 
-image::navigator-ee-collections.png[EE collections info,align="center",link=self,window=blank,width=600]
+image::navigator-ee-collections.png[EE collections info,align="center",link=self,window=_blank,width=600]
 
 == Step 4: Examining the ansible-navigator configuration
 
@@ -219,15 +219,15 @@ We can also use the `ansible-navigator` TUI to explore inventory.
 
 Run the `ansible-navigator inventory` command to bring up inventory in the TUI:
 
-image::ansible-navigator.png[ansible-navigator TUI,align="center",link=self,window=blank,width=600]
+image::ansible-navigator.png[ansible-navigator TUI,align="center",link=self,window=_blank,width=600]
 
 Pressing **0** or **1** on your keyboard will open groups or hosts respectively.
 
-image::ansible-navigator-groups.png[ansible-navigator groups,align="center",link=self,window=blank,width=600]
+image::ansible-navigator-groups.png[ansible-navigator groups,align="center",link=self,window=_blank,width=600]
 
 Press the **Esc** key to go up a level, or you can zoom in to an individual host:
 
-image::ansible-navigator-rtr-1.png[ansible-navigator host,align="center",link=self,window=blank,width=600]
+image::ansible-navigator-rtr-1.png[ansible-navigator host,align="center",link=self,window=_blank,width=600]
 
 == Step 8: Connecting to network devices
 
