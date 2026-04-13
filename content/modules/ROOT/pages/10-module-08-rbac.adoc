@@ -139,9 +139,7 @@ image::add_role_user.png[Add role to user,align="center",link=self,window=blank,
 +
 image::finish.png[Finish window,align="center",link=self,window=blank,width=600]
 
-. Click the **Close** button after the role is applied
-+
-image::close_window.png[Close window,align="center",link=self,window=blank,width=600]
+. Click the **Close** button after the role is applied.
 
 == Step 6: Verify the Network-Commands job template
 
