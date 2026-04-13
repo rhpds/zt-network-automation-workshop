@@ -584,7 +584,39 @@
     - { name: "Compute T2", description: "Computer T2 Team", organization: "Red Hat compute organization" }
 
 # ── Users ────────────────────────────────────────────────────────────────────
-- name: Create workshop users
+# AAP 2.6: gateway handles authentication, so users must exist at the
+# platform/gateway level to log in.  Create there first, then mirror into
+# Controller for RBAC object ownership.
+
+- name: Workshop user list
+  ansible.builtin.set_fact:
+    workshop_users:
+      - { username: "network-operator", email: "nwops@redhat.com", first_name: "Issac", last_name: "Assimov" }
+      - { username: "network-admin", email: "nwadmin@redhat.com", first_name: "Larry", last_name: "Niven" }
+      - { username: "bbelcher", email: "bbelcher@redhat.com", first_name: "Bob", last_name: "Belcher", superuser: true }
+      - { username: "tbelcher", email: "tbelcher@redhat.com", first_name: "Tina", last_name: "Belcher" }
+      - { username: "lbelcher", email: "lbelcher@redhat.com", first_name: "Louise", last_name: "Belcher" }
+      - { username: "libelcher", email: "libelcher@redhat.com", first_name: "Linda", last_name: "Belcher" }
+      - { username: "gbelcher", email: "gbelcher@redhat.com", first_name: "Gene", last_name: "Belcher" }
+
+- name: Create workshop users (gateway — required for AAP 2.6 login)
+  ansible.platform.user:
+    username: "{{ item.username }}"
+    password: "{{ workshop_admin_password }}"
+    email: "{{ item.email }}"
+    first_name: "{{ item.first_name }}"
+    last_name: "{{ item.last_name }}"
+    is_superuser: "{{ item.superuser | default(false) }}"
+    state: present
+    aap_host: "{{ controller_endpoint.rstrip('/') }}"
+    aap_username: "{{ controller_username }}"
+    aap_password: "{{ controller_password }}"
+    aap_verify_ssl: "{{ controller_verify_ssl | default(false) }}"
+  loop: "{{ workshop_users }}"
+  loop_control:
+    label: "{{ item.username }}"
+
+- name: Create workshop users (controller — for RBAC object ownership)
   ansible.controller.user:
     username: "{{ item.username }}"
     password: "{{ workshop_admin_password }}"
@@ -597,13 +629,6 @@
     controller_username: "{{ controller_username }}"
     controller_password: "{{ controller_password }}"
     validate_certs: "{{ controller_verify_ssl | default(false) }}"
-  loop:
-    - { username: "network-operator", email: "nwops@redhat.com", first_name: "Issac", last_name: "Assimov" }
-    - { username: "network-admin", email: "nwadmin@redhat.com", first_name: "Larry", last_name: "Niven" }
-    - { username: "bbelcher", email: "bbelcher@redhat.com", first_name: "Bob", last_name: "Belcher", superuser: true }
-    - { username: "tbelcher", email: "tbelcher@redhat.com", first_name: "Tina", last_name: "Belcher" }
-    - { username: "lbelcher", email: "lbelcher@redhat.com", first_name: "Louise", last_name: "Belcher" }
-    - { username: "libelcher", email: "libelcher@redhat.com", first_name: "Linda", last_name: "Belcher" }
-    - { username: "gbelcher", email: "gbelcher@redhat.com", first_name: "Gene", last_name: "Belcher" }
+  loop: "{{ workshop_users }}"
   loop_control:
     label: "{{ item.username }}"
