@@ -174,7 +174,7 @@ Finally, to see the RBAC in action!
 +
 image::step8_operator.png[Network operator view,align="center",link=self,window=blank,width=600]
 
-NOTE: As the `network-operator` user, you will have no ability to change any of the fields. The **Edit** button is no longer available.
+IMPORTANT: Notice that the **Edit** button is no longer available and none of the fields can be modified. This is RBAC in action — the `network-operator` can _execute_ the job template but cannot alter its configuration. This is exactly the guardrail organizations need: operators can safely run pre-approved automation against production systems without the risk of accidentally (or intentionally) changing what that automation does.
 
 == Step 8: Launching a Job Template
 
