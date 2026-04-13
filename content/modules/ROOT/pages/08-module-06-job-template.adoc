@@ -30,7 +30,7 @@ image::controller_templates.png[Templates link,align="center",link=self,window=b
 +
 image::controller_add.png[Add template button,align="center",link=self,window=blank,width=600]
 
-WARNING: Make sure to select `job template` and not `workflow template`
+WARNING: Make sure to select *Job Template* and not *Workflow Template*
 
 * Fill out the job template parameters as follows:
 +
@@ -51,7 +51,7 @@ WARNING: Make sure to select `job template` and not `workflow template`
 | Workshop Project
 
 | Execution Environment
-| network workshop execution environment
+| Network EE
 
 | Playbook
 | playbooks/network_backup.yml
@@ -80,7 +80,7 @@ image::controller_cred.png[Switch credential type,align="center",link=self,windo
 +
 image::controller_rocket.png[Rocket button,align="center",link=self,window=blank,width=600]
 +
-When the rocket button is clicked this will launch the job. The job will open in a new window called the **Job Details View**. More info about link:https://docs.redhat.com/en/documentation/red_hat_ansible_automation_platform/latest/html/automation_controller_user_guide/controller-jobs[Automation controller jobs^] can be found in the documentation.
+When the rocket button is clicked this will launch the job. The job will open in a new window called the **Job Details View**.
 
 == Step 3: Examine the Job
 
@@ -161,7 +161,10 @@ vrf definition clab-mgmt
  exit-address-family
 !
 no aaa new-model
+... output truncated ...
 ----
++
+NOTE: The output above is a snippet. The full running configuration is much longer and will include interfaces, routing protocols, access lists, and more.
 
 * Examine the remaining routers (`rtr2.txt`, `rtr3.txt`, `rtr4.txt`). This lab includes multiple vendors (Cisco, Arista, and Juniper). Ansible Playbooks can be written to be vendor agnostic -- in this case we provided the Ansible Playbook via the GitHub repo: link:https://github.com/network-automation/toolkit[https://github.com/network-automation/toolkit^]
 
@@ -170,7 +173,7 @@ no aaa new-model
 In this module, you learned how to:
 
 * Create a **Job Template** in Ansible Automation Platform for backing up network configurations
-* Launch a Job Template from the Automation controller UI and monitor its execution
+* Launch a Job Template from the Ansible Automation Platform UI and monitor its execution
 * Examine the **Standard Out pane** and **Details pane** to review job output and metadata
 * Navigate the **Jobs** window to view job history and status
 * Verify that network configuration backups are correctly stored on the containerlab host with timestamps
