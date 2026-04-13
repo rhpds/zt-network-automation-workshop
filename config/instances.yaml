@@ -60,16 +60,16 @@ virtualmachines:
             protocol: TCP
             targetPort: 8484
             name: port8484
-      - name: containerlab-report
+      - name: clab-report
         ports:
           - port: 8088
             protocol: TCP
             targetPort: 8088
-            name: containerlab-report
+            name: clab-report
     routes:
-      - name: containerlab-report
-        host: containerlab-report
-        service: containerlab-report
+      - name: clab-report
+        host: clab-report
+        service: clab-report
         targetPort: 8088
         tls: true
         tls_termination: Edge

@@ -37,5 +37,5 @@ tabs:
     url: https://control-${guid}.${domain}/
     external: false
   - name: Network Report
-    url: https://containerlab-report-${guid}.${domain}/
+    url: https://clab-report-${guid}.${domain}/
     external: false
