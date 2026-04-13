@@ -33,7 +33,7 @@ image::automation_controller_about.png[About button link,align="center",link=sel
 
 . A window will pop up similar to the following:
 +
-image::automation_controller_about_info.png[Version info window,align="center",link=self,window=blank,width=600]
+image::automation_controller_about_info.png[Version info window,align="center",link=self,window=_blank,width=600]
 
 == Step 2: Examine the Ansible Automation Platform Inventory
 
