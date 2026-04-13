@@ -7,7 +7,7 @@ Explore and understand the lab environment. These first few lab exercises will b
 
 * link:https://github.com/ansible/ansible-navigator[ansible-navigator^] -- a command line utility and text-based user interface (TUI) for running and developing Ansible automation content.
 * link:https://docs.ansible.com/core.html[ansible-core^] -- the base executable that provides the framework, language and functions that underpin the Ansible Automation Platform. It also includes various CLI tools like `ansible`, `ansible-playbook` and `ansible-doc`. Ansible Core acts as the bridge between the upstream community with the free and open source Ansible and connects it to the downstream enterprise automation offering from Red Hat, the Ansible Automation Platform.
-* link:https://docs.ansible.com/automation-controller/latest/html/userguide/execution_environments.html[Execution Environments^] -- container images that can be utilized as Ansible execution.
+* link:https://docs.redhat.com/en/documentation/red_hat_ansible_automation_platform/latest/html/using_automation_execution/controller-execution-environments[Execution Environments^, window=_blank] -- container images that can be utilized as Ansible execution.
 
 
 == Learning objectives

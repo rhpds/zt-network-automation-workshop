@@ -5,7 +5,7 @@
 
 In this module you will create and launch a network backup configuration job template with Ansible Automation Platform. This job template will save the running configuration from all four routers and store them under `/backup` on the containerlab host (which acts as the backup server) with a timestamp.
 
-To run an Ansible Playbook in Automation controller we need to create a **Job Template**. A **Job Template** requires:
+To run an Ansible Playbook in Ansible Automation Platform we need to create a **Job Template**. A **Job Template** requires:
 
 * An **Inventory** to run the job against
 * A **Credential** to login to devices
@@ -66,7 +66,7 @@ image::controller_backup.png[Backup job template,align="center",link=self,window
 
 * Add a second credential to the Job Template.
 +
-The **Controller Credential** also must be added to this particular Job Template. This is so Automation controller can update the pool of backups the **Network-Restore** Job Template will use. Automation controller can be programmatically updated with Job Templates to add or update configurations dynamically. Select the 2nd credential:
+The **Controller Credential** also must be added to this particular Job Template. This is so Ansible Automation Platform can update the pool of backups the **Network-Restore** Job Template will use. Ansible Automation Platform can be programmatically updated with Job Templates to add or update configurations dynamically. Select the 2nd credential:
 +
 image::controller_cred.png[Switch credential type,align="center",link=self,window=blank,width=600]
 
@@ -118,7 +118,7 @@ The Jobs link displays a list of jobs and their status -- shown as completed suc
 +
 image::controller_jobs_link.png[Jobs link,align="center",link=self,window=blank,width=600]
 +
-The **Backup network configurations** job was the most recent (unless you have been launching more jobs). Click on this job to return to the **Standard Out pane**. Automation controller will save the history of every job launched.
+The **Backup network configurations** job was the most recent (unless you have been launching more jobs). Click on this job to return to the **Standard Out pane**. Ansible Automation Platform will save the history of every job launched.
 
 == Step 5: Verify the backups were created
 

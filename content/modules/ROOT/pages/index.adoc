@@ -36,7 +36,7 @@ Your lab environment includes:
 
 * A containerlab host with `ansible-navigator`, VS Code, and a pre-built execution environment
 * Four network devices: Cisco IOS-XE (rtr1), Arista EOS (rtr2, rtr4), and Juniper Junos (rtr3)
-* An Ansible Automation Platform controller for the web-based exercises
+* An Ansible Automation Platform instance for the web-based exercises
 
 All environment details and credentials are available in the lab interface tabs.
 

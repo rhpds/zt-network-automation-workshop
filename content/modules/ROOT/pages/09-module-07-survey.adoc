@@ -3,7 +3,7 @@
 :toc: macro
 :toclevels: 1
 
-This module demonstrates the use of Automation controller link:https://docs.redhat.com/en/documentation/red_hat_ansible_automation_platform/latest/html/using_automation_execution/controller-job-templates#controller-surveys-in-job-templates[survey feature^]. Surveys set extra variables for the playbook similar to "Prompt for Extra Variables" does, but in a user-friendly question and answer way. Surveys also allow for validation of user input.
+This module demonstrates the use of Ansible Automation Platform link:https://docs.redhat.com/en/documentation/red_hat_ansible_automation_platform/latest/html/using_automation_execution/controller-job-templates#controller-surveys-in-job-templates[survey feature^]. Surveys set extra variables for the playbook similar to "Prompt for Extra Variables" does, but in a user-friendly question and answer way. Surveys also allow for validation of user input.
 
 == Learning objectives
 

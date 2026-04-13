@@ -45,7 +45,7 @@ Participants have access to:
 
 * **AAP terminal** -- Web-based shell on the **control** VM (the host where Automation Platform runs)
 * **Containerlab terminal** -- Web-based shell on the **containerlab** VM (bastion: `ansible-navigator`, lab tooling, and access toward the network topology)
-* **Ansible Automation Platform** -- Controller web UI (`https://control-...`)
+* **Ansible Automation Platform** -- Web UI (`https://control-...`)
 
 All credentials are provided in the lab interface.
 
@@ -62,7 +62,7 @@ The VMs are defined in the lab config by these **names** (they are the `virtualm
 | Where most command-line exercises run; matches the **Containerlab terminal** tab and the **VS Code** tab. Workshop modules often show prompts with a bastion user and hostname supplied by the live lab (not fixed in this doc).
 
 | **control**
-| Automation Platform controller host (AnsibleGroup `isolated`)
+| Ansible Automation Platform host (AnsibleGroup `isolated`)
 | Matches the **AAP terminal** tab and the **Ansible Automation Platform** web UI. Cloud-init in the lab commonly creates user `rhel` with password `ansible123!` unless your instructor says otherwise.
 |===
 
