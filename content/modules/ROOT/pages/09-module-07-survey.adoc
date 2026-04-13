@@ -28,7 +28,7 @@ image::controller_templates.png[Templates link,align="center",link=self,window=b
 | Job Type | Run
 | Inventory | Workshop Inventory
 | Project | Workshop Project
-| Execution Environment | network workshop execution environment
+| Execution Environment | Network EE
 | Playbook | `playbooks/network_banner.yml`
 | Credential | Workshop Credential
 |===
