@@ -126,7 +126,7 @@ The **Backup network configurations** job was the most recent (unless you have b
 
 [source,bash]
 ----
-[{bastion_user}@{bastion_hostname} ~]$ ls /backup
+[{user}@{hostname} ~]$ ls /backup
 2021-08-31-12-58  2021-08-31-13-04  2021-08-31-13-11
 ----
 
@@ -136,7 +136,7 @@ The **Backup network configurations** job was the most recent (unless you have b
 
 [source,bash]
 ----
-[{bastion_user}@{bastion_hostname} ~]$ cat /backup/2021-08-31-12-58/rtr1.txt
+[{user}@{hostname} ~]$ cat /backup/2021-08-31-12-58/rtr1.txt
 Building configuration...
 
 Current configuration : 5072 bytes
