@@ -70,7 +70,21 @@ The **Controller Credential** also must be added to this particular Job Template
 +
 image::controller_cred.png[Switch credential type,align="center",link=self,window=blank,width=600]
 
-* Scroll down and click the blue `Save job template` button.
+* Scroll down to the **Variables** section and add the following extra variables (in YAML format):
++
+[source,yaml]
+----
+restore_inventory: Workshop Inventory
+restore_project: Workshop Project
+restore_credential: Workshop Credential
+restore_ee: Default execution environment
+----
++
+These variables tell the backup playbook how to configure the **Network-Restore** Job Template that it dynamically creates after each backup run.
++
+image::controller_extra_vars.png[Extra variables,align="center",link=self,window=blank,width=600]
+
+* Click the blue `Save job template` button.
 
 == Step 2: Launch the Job Template
 
