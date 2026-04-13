@@ -173,7 +173,7 @@ image::step6_complete_workflow.png[Complete workflow,align="center",link=self,wi
 
 . Click Save, then click on the **X** to exit the visualizer.
 +
-image::save.png[Save button,align="center",link=self,window=blank,width=600]
+image::step6_complete_workflow.png[Save button,align="center",link=self,window=blank,width=600]
 
 == Step 7: Run the Workflow
 
