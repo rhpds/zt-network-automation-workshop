@@ -711,3 +711,42 @@
   loop_control:
     label: "{{ item.item.username }}"
   when: item.json.count > 0
+
+# ── RBAC — pre-wire roles so the workshop RBAC exercise works ────────────────
+# Organization Admin alone (set manually in Step 3) does NOT cascade to
+# job-template-level admin in AAP 2.5+. network-admin needs explicit Admin
+# on the job templates to be able to assign Execute permissions to others.
+
+- name: "RBAC — network-admin gets Admin on all network job templates"
+  ansible.controller.role:
+    users:
+      - "network-admin"
+    role: admin
+    job_templates:
+      - "Network-Commands"
+      - "Network-Reload"
+      - "Network-User"
+      - "Network-Time"
+      - "Network-Report"
+      - "Network-System"
+      - "Network-Facts"
+      - "Network-Backup"
+    state: present
+    controller_host: "{{ controller_endpoint.rstrip('/') }}"
+    controller_username: "{{ controller_username }}"
+    controller_password: "{{ controller_password }}"
+    validate_certs: "{{ controller_verify_ssl | default(false) }}"
+
+- name: "RBAC — network-admin and network-operator are members of the network org"
+  ansible.controller.role:
+    users:
+      - "network-admin"
+      - "network-operator"
+    role: member
+    organizations:
+      - "Red Hat network organization"
+    state: present
+    controller_host: "{{ controller_endpoint.rstrip('/') }}"
+    controller_username: "{{ controller_username }}"
+    controller_password: "{{ controller_password }}"
+    validate_certs: "{{ controller_verify_ssl | default(false) }}"
