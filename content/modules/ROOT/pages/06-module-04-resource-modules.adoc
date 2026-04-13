@@ -299,16 +299,12 @@ rtr4                       : ok=2    changed=1    unreachable=0    failed=0    s
 
 * The two files were saved to `~/network-workshop/rtr2_vlan.yml` and `~/network-workshop/rtr4_vlan.yml` for the two Arista devices.
 
-* Here is a screenshot:
-
-image::step8_examine.png[Examine VLAN YAML files,align="center",link=self,window=blank,width=600]
-
 == Solution
 
 The finished Ansible Playbooks are provided here for reference:
 
-* link:https://github.com/network-automation/toolkit[resource.yml^]
-* link:https://github.com/network-automation/toolkit[gathered.yml^]
+* link:https://github.com/rhpds/zt-network-automation-workshop/blob/main/network-workshop/4-resource-module/resource.yml[resource.yml^]
+* link:https://github.com/rhpds/zt-network-automation-workshop/blob/main/network-workshop/4-resource-module/gathered.yml[gathered.yml^]
 
 == Module summary
 
