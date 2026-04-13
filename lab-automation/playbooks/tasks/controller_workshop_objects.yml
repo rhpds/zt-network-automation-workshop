@@ -6,11 +6,32 @@
 # Included from aap_bootstrap.yml after the base project is created.
 # All controller_* auth vars come from group_vars/all.yml.
 
+# ── Organizations (must exist before objects that reference them) ────────────
+- name: "Organization — Red Hat network organization"
+  ansible.controller.organization:
+    name: "Red Hat network organization"
+    description: "Red Hat Network Organization"
+    state: present
+    controller_host: "{{ controller_endpoint.rstrip('/') }}"
+    controller_username: "{{ controller_username }}"
+    controller_password: "{{ controller_password }}"
+    validate_certs: "{{ controller_verify_ssl | default(false) }}"
+
+- name: "Organization — Red Hat compute organization"
+  ansible.controller.organization:
+    name: "Red Hat compute organization"
+    description: "Red Hat Compute Organization"
+    state: present
+    controller_host: "{{ controller_endpoint.rstrip('/') }}"
+    controller_username: "{{ controller_username }}"
+    controller_password: "{{ controller_password }}"
+    validate_certs: "{{ controller_verify_ssl | default(false) }}"
+
 # ── Workshop Credential (Machine) ───────────────────────────────────────────
 - name: Workshop Credential — SSH to routers and hosts
   ansible.controller.credential:
     name: "Workshop Credential"
-    organization: Default
+    organization: "Red Hat network organization"
     credential_type: Machine
     inputs:
       username: "{{ containerlab_ansible_user }}"
@@ -52,7 +73,7 @@
 - name: Workshop Inventory
   ansible.controller.inventory:
     name: "Workshop Inventory"
-    organization: Default
+    organization: "Red Hat network organization"
     state: present
     controller_host: "{{ controller_endpoint.rstrip('/') }}"
     controller_username: "{{ controller_username }}"
@@ -260,7 +281,7 @@
     name: "Network EE"
     image: "quay.io/acme_corp/network-ee"
     pull: missing
-    organization: Default
+    organization: "Red Hat network organization"
     state: present
     controller_host: "{{ controller_endpoint.rstrip('/') }}"
     controller_username: "{{ controller_username }}"
@@ -271,7 +292,7 @@
 - name: "Project — Workshop Project (network-automation/toolkit)"
   ansible.controller.project:
     name: "Workshop Project"
-    organization: Default
+    organization: "Red Hat network organization"
     scm_type: git
     scm_url: "https://github.com/network-automation/toolkit"
     state: present
@@ -297,7 +318,7 @@
     name: "Network-Commands"
     description: "adhoc cisco commands"
     job_type: run
-    organization: Default
+    organization: "Red Hat network organization"
     project: "Workshop Project"
     playbook: "playbooks/network_commands.yml"
     inventory: "Workshop Inventory"
@@ -329,7 +350,7 @@
   ansible.controller.job_template:
     name: "Network-Reload"
     job_type: run
-    organization: Default
+    organization: "Red Hat network organization"
     project: "Workshop Project"
     playbook: "playbooks/network_reload.yml"
     inventory: "Workshop Inventory"
@@ -345,7 +366,7 @@
   ansible.controller.job_template:
     name: "Network-User"
     job_type: run
-    organization: Default
+    organization: "Red Hat network organization"
     project: "Workshop Project"
     playbook: "playbooks/network_user.yml"
     inventory: "Workshop Inventory"
@@ -397,7 +418,7 @@
   ansible.controller.job_template:
     name: "Network-Time"
     job_type: run
-    organization: Default
+    organization: "Red Hat network organization"
     project: "Workshop Project"
     playbook: "playbooks/network_time.yml"
     inventory: "Workshop Inventory"
@@ -429,7 +450,7 @@
   ansible.controller.job_template:
     name: "Network-Report"
     job_type: run
-    organization: Default
+    organization: "Red Hat network organization"
     project: "Workshop Project"
     playbook: "playbooks/network_report.yml"
     inventory: "Workshop Inventory"
@@ -446,7 +467,7 @@
   ansible.controller.job_template:
     name: "Network-System"
     job_type: run
-    organization: Default
+    organization: "Red Hat network organization"
     project: "Workshop Project"
     playbook: "playbooks/network_system.yml"
     inventory: "Workshop Inventory"
@@ -499,7 +520,7 @@
   ansible.controller.job_template:
     name: "Network-Facts"
     job_type: run
-    organization: Default
+    organization: "Red Hat network organization"
     project: "Workshop Project"
     playbook: "playbooks/network_facts.yml"
     inventory: "Workshop Inventory"
@@ -515,7 +536,7 @@
   ansible.controller.job_template:
     name: "Network-Backup"
     job_type: run
-    organization: Default
+    organization: "Red Hat network organization"
     project: "Workshop Project"
     playbook: "playbooks/network_backup.yml"
     inventory: "Workshop Inventory"
@@ -545,27 +566,6 @@
     - "Network-Restore"
     - "Network Automation - Restore"
 
-# ── Organizations ────────────────────────────────────────────────────────────
-- name: "Organization — Red Hat network organization"
-  ansible.controller.organization:
-    name: "Red Hat network organization"
-    description: "Red Hat Network Organization"
-    state: present
-    controller_host: "{{ controller_endpoint.rstrip('/') }}"
-    controller_username: "{{ controller_username }}"
-    controller_password: "{{ controller_password }}"
-    validate_certs: "{{ controller_verify_ssl | default(false) }}"
-
-- name: "Organization — Red Hat compute organization"
-  ansible.controller.organization:
-    name: "Red Hat compute organization"
-    description: "Red Hat Compute Organization"
-    state: present
-    controller_host: "{{ controller_endpoint.rstrip('/') }}"
-    controller_username: "{{ controller_username }}"
-    controller_password: "{{ controller_password }}"
-    validate_certs: "{{ controller_verify_ssl | default(false) }}"
-
 # ── Teams ────────────────────────────────────────────────────────────────────
 - name: Create teams
   ansible.controller.team:
@@ -584,9 +584,9 @@
     - { name: "Compute T2", description: "Computer T2 Team", organization: "Red Hat compute organization" }
 
 # ── Users ────────────────────────────────────────────────────────────────────
-# AAP 2.6: gateway handles authentication, so users must exist at the
-# platform/gateway level to log in.  Create there first, then mirror into
-# Controller for RBAC object ownership.
+# AAP 2.6: ansible.controller.user creates Controller-level users that sync
+# to the gateway with "Password Disabled".  We must PATCH the gateway copy
+# via /api/gateway/v1/ to set a real password so users can log in.
 
 - name: Workshop user list
   ansible.builtin.set_fact:
@@ -599,24 +599,7 @@
       - { username: "libelcher", email: "libelcher@redhat.com", first_name: "Linda", last_name: "Belcher" }
       - { username: "gbelcher", email: "gbelcher@redhat.com", first_name: "Gene", last_name: "Belcher" }
 
-- name: Create workshop users (gateway — required for AAP 2.6 login)
-  ansible.platform.user:
-    username: "{{ item.username }}"
-    password: "{{ workshop_admin_password }}"
-    email: "{{ item.email }}"
-    first_name: "{{ item.first_name }}"
-    last_name: "{{ item.last_name }}"
-    is_superuser: "{{ item.superuser | default(false) }}"
-    state: present
-    aap_host: "{{ controller_endpoint.rstrip('/') }}"
-    aap_username: "{{ controller_username }}"
-    aap_password: "{{ controller_password }}"
-    aap_verify_ssl: "{{ controller_verify_ssl | default(false) }}"
-  loop: "{{ workshop_users }}"
-  loop_control:
-    label: "{{ item.username }}"
-
-- name: Create workshop users (controller — for RBAC object ownership)
+- name: Create workshop users (controller)
   ansible.controller.user:
     username: "{{ item.username }}"
     password: "{{ workshop_admin_password }}"
@@ -632,3 +615,33 @@
   loop: "{{ workshop_users }}"
   loop_control:
     label: "{{ item.username }}"
+
+- name: Look up workshop users in gateway
+  ansible.builtin.uri:
+    url: "{{ controller_endpoint.rstrip('/') }}/api/gateway/v1/users/?username={{ item.username | urlencode }}"
+    method: GET
+    url_username: "{{ controller_username }}"
+    url_password: "{{ controller_password }}"
+    force_basic_auth: true
+    validate_certs: "{{ controller_verify_ssl | default(false) }}"
+  loop: "{{ workshop_users }}"
+  loop_control:
+    label: "{{ item.username }}"
+  register: gateway_user_lookup
+
+- name: Set gateway password for workshop users (required for AAP 2.6 login)
+  ansible.builtin.uri:
+    url: "{{ controller_endpoint.rstrip('/') }}{{ item.json.results[0].url }}"
+    method: PATCH
+    url_username: "{{ controller_username }}"
+    url_password: "{{ controller_password }}"
+    force_basic_auth: true
+    validate_certs: "{{ controller_verify_ssl | default(false) }}"
+    body_format: json
+    body:
+      password: "{{ workshop_admin_password }}"
+    status_code: 200
+  loop: "{{ gateway_user_lookup.results }}"
+  loop_control:
+    label: "{{ item.item.username }}"
+  when: item.json.count > 0
