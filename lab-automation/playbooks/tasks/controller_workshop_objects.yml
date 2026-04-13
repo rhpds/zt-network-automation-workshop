@@ -27,6 +27,72 @@
     controller_password: "{{ controller_password }}"
     validate_certs: "{{ controller_verify_ssl | default(false) }}"
 
+# ── Clean up stale Default-org copies (org change = new object, not move) ────
+- name: "Remove Default-org job templates"
+  ansible.controller.job_template:
+    name: "{{ item }}"
+    organization: Default
+    state: absent
+    controller_host: "{{ controller_endpoint.rstrip('/') }}"
+    controller_username: "{{ controller_username }}"
+    controller_password: "{{ controller_password }}"
+    validate_certs: "{{ controller_verify_ssl | default(false) }}"
+  loop:
+    - "Network-Commands"
+    - "Network-Reload"
+    - "Network-User"
+    - "Network-Time"
+    - "Network-Report"
+    - "Network-System"
+    - "Network-Facts"
+    - "Network-Backup"
+  failed_when: false
+
+- name: "Remove Default-org Workshop Project"
+  ansible.controller.project:
+    name: "Workshop Project"
+    organization: Default
+    state: absent
+    controller_host: "{{ controller_endpoint.rstrip('/') }}"
+    controller_username: "{{ controller_username }}"
+    controller_password: "{{ controller_password }}"
+    validate_certs: "{{ controller_verify_ssl | default(false) }}"
+  failed_when: false
+
+- name: "Remove Default-org Workshop Inventory"
+  ansible.controller.inventory:
+    name: "Workshop Inventory"
+    organization: Default
+    state: absent
+    controller_host: "{{ controller_endpoint.rstrip('/') }}"
+    controller_username: "{{ controller_username }}"
+    controller_password: "{{ controller_password }}"
+    validate_certs: "{{ controller_verify_ssl | default(false) }}"
+  failed_when: false
+
+- name: "Remove Default-org Workshop Credential"
+  ansible.controller.credential:
+    name: "Workshop Credential"
+    organization: Default
+    credential_type: Machine
+    state: absent
+    controller_host: "{{ controller_endpoint.rstrip('/') }}"
+    controller_username: "{{ controller_username }}"
+    controller_password: "{{ controller_password }}"
+    validate_certs: "{{ controller_verify_ssl | default(false) }}"
+  failed_when: false
+
+- name: "Remove Default-org Network EE"
+  ansible.controller.execution_environment:
+    name: "Network EE"
+    organization: Default
+    state: absent
+    controller_host: "{{ controller_endpoint.rstrip('/') }}"
+    controller_username: "{{ controller_username }}"
+    controller_password: "{{ controller_password }}"
+    validate_certs: "{{ controller_verify_ssl | default(false) }}"
+  failed_when: false
+
 # ── Workshop Credential (Machine) ───────────────────────────────────────────
 - name: Workshop Credential — SSH to routers and hosts
   ansible.controller.credential:
