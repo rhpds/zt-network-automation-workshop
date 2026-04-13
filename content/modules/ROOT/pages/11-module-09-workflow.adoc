@@ -184,6 +184,8 @@ image::step7_launch.png[Launch workflow,align="center",link=self,window=blank,wi
 . Watch the **Workshop Workflow**.
 At any time during the workflow job you can select an individual job template by clicking on the node to see the status.
 
+You now have a workflow that handles multi-step network changes with built-in rollback -- the kind of safety net that makes automation trustworthy enough for production.
+
 == Module summary
 
 In this module, you successfully:
