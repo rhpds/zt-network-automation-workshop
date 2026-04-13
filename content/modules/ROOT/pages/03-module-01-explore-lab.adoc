@@ -32,15 +32,11 @@ It is highly encouraged to use Visual Studio Code to complete the workshop exerc
 
 Direct SSH access is available as a backup, or if Visual Studio Code is not sufficient to the student.
 
-TIP: For the best experience (especially copy/paste in the terminal), open VS Code in its own browser tab instead of using the embedded Showroom frame. Click the **VS Code** tab in Showroom, then right-click and copy the URL, or navigate directly to `https://vscode-{guid}.{domain}/`
+Click the **VS Code** tab at the top of the Showroom window to open the editor. No login is required -- it opens directly.
 
-Connect to Visual Studio Code from the Workshop launch page (provided by your instructor). The password is provided below the WebUI link.
+image::launch_page.png[VS Code tab,align="center",link=self,window=_blank,width=600]
 
-image::launch_page.png[Launch page,align="center",link=self,window=blank,width=600]
-
-Type in the provided password to connect.
-
-image::vscode_login.png[Login to VS Code,align="center",link=self,window=blank,width=600]
+TIP: For the best experience (especially copy/paste in the terminal), open VS Code in its own browser tab. Right-click the **VS Code** tab and copy the link, or navigate directly to link:https://vscode-{guid}.{domain}/[https://vscode-{guid}.{domain}/^].
 
 Open the `network-workshop` directory in Visual Studio Code:
 
