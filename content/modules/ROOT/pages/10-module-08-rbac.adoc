@@ -123,9 +123,9 @@ image::network_commands.png[Network commands,align="center",link=self,window=bla
 +
 image::user_access.png[User access,align="center",link=self,window=blank,width=600]
 
-. Click on the blue **Add roles** button
+. Click on the blue **Assign users** button
 +
-image::add_roles.png[Add roles button,align="center",link=self,window=blank,width=600]
+image::assign_users.png[Assign users button,align="center",link=self,window=blank,width=600]
 
 . Click **network-operator** then click the blue **Next** button at the bottom
 +
