@@ -1,130 +1,220 @@
-=== Getting Started
+= Zero Trust Network Automation Workshop
+:toc: macro
+:toc-title: Table of Contents
+:icons: font
 
-* Create a git repo from this template
-* Clone the repo and *cd* into it
+image:https://img.shields.io/badge/License-MIT-yellow.svg[License: MIT,link=LICENSE]
 
-=== Understanding the Basic Template Directory Structure
+A hands-on workshop for learning **network automation with Ansible Automation Platform**. Participants configure multi-vendor routers (Cisco IOS-XE, Arista EOS, Juniper Junos) running on link:https://containerlab.dev/[Containerlab^], then graduate to managing those devices through **AAP job templates, surveys, RBAC, and workflows**.
 
-. Content Directory
-+
-.tree output
+Designed for link:https://demo.redhat.com[Red Hat Demo Platform (RHDP)^] but adaptable to any environment with two Linux VMs and a container runtime.
+
+toc::[]
+
+== Quick start
+
 [source,shell]
+----
+# On the control VM, after AAP is up:
+cd lab-automation
+export CONTROLLER_PASSWORD='...'
+ansible-playbook -i inventory/lab.yml playbooks/site.yml
+----
+
+This deploys the Containerlab topology on the **containerlab** VM and bootstraps Automation Controller with the workshop's SCM project and job templates.
+
+For manual Containerlab CLI usage (no Ansible), see link:README-containerlab.md[README-containerlab.md].
+For detailed lab-automation docs, see link:lab-automation/README.md[lab-automation/README.md].
+
+== Features
+
+* **Multi-vendor network lab** -- Cisco IOS-XE, Arista EOS, and Juniper Junos virtual routers on Containerlab
+* **Ansible Automation Platform integration** -- pre-provisioned Controller with SCM project, job templates, surveys, RBAC roles, and workflows
+* **Auto-resume on boot** -- a systemd service (`containerlab-resume`) automatically re-deploys the last active topology when the VM restarts (see <<auto-resume>>)
+* **Network report dashboard** -- Podman-hosted web report accessible via a dedicated browser tab
+* **VS Code in-browser** -- code-server with syntax highlighting and integrated terminal
+* **RHDP-native** -- one-click provisioning on Red Hat Demo Platform with Showroom UI tabs
+
+== Workshop modules
+
+[cols="1,3",options="header"]
+|===
+| Module | Topic
+
+| 1-1 | Explore the lab environment
+| 1-2 | First network automation playbook
+| 1-3 | Ansible facts on network devices
+| 1-4 | Network resource modules
+| 2-1 | Explore Ansible Automation Platform
+| 2-2 | Create a job template
+| 2-3 | Create a survey
+| 2-4 | Role Based Access Control (RBAC)
+| 2-5 | Create a workflow
+|===
+
+== Architecture
+
+----
+┌──────────────────┐        ┌──────────────────────────┐
+│   control VM     │  SSH   │   containerlab VM        │
+│                  │───────▶│                          │
+│  AAP Controller  │        │  Containerlab            │
+│  Execution Env   │        │  ┌─────┐ ┌─────┐        │
+│                  │        │  │ rtr1 │ │ rtr2 │ ...   │
+│                  │        │  └─────┘ └─────┘        │
+└──────────────────┘        │  Podman (report)         │
+                            └──────────────────────────┘
+----
+
+Both VMs run RHEL. **control** hosts Ansible Automation Platform. **containerlab** hosts the network topology (virtual routers) and tooling (VS Code, Containerlab CLI, network report container).
+
+== Directory structure
+
+[source]
 ----
 .
-├── README.adoc                 # Readme file
-├── config                      # Defines VMs, network and firewall
-├── lab-automation              # Ansible: containerlab up/down, optional router checks, Controller bootstrap
-├── runtime-automation          # Scripts directory for setup/next/solve modules 
-├── setup-automation            # Scripts directory when provisioning
-├── ui-config.yml               # Configuration file
-├── site.yml                    # Theme config
-└── content                     # Content directory
-    ├── antora.yml              # Antora configuration file. You can add "inline vars" here to render within your content
-    └── modules/ROOT
-        ├── assets
-        │   └── images                       # Images used in your content 
-        │       └── example-image.png
-        ├── pages                            # Your content goes here
-        │   ├── module-01.adoc               # First module of your lab, e.g. overview etc 
-        │   ├── module-02.adoc               # Second module of your lab  
-        │   └── module-03.adoc               # Third module
+├── README.adoc                 # This file
+├── LICENSE                     # MIT License
+├── config/                     # RHDP VM, network, and firewall definitions
+│   ├── instances.yaml
+│   ├── firewall.yaml
+│   └── networks.yml
+├── content/                    # Antora documentation (workshop guide)
+│   ├── antora.yml
+│   └── modules/ROOT/pages/
+├── lab-automation/             # Ansible: containerlab deploy, AAP bootstrap
+│   ├── playbooks/
+│   ├── inventory/
+│   └── requirements.yml
+├── setup-automation/           # First-boot provisioning scripts
+│   ├── setup-control.sh
+│   ├── setup-containerlab.sh
+│   └── main.yml
+├── runtime-automation/         # Per-module setup/solve/validation scripts
+├── site.yml                    # Antora site config
+└── ui-config.yml               # Showroom tab definitions
 ----
 
-. Lab definition directory
-+
-.tree output
-[source,shell]
-----
-config/
-├── firewall.yaml                           # Define the egress/ingress rules to be allowed
-├── instances.yaml                          # Define the instances to be created
-└── networks.yml                            # Define the networks to be created
-----
+== Lab automation
 
+Playbooks under `lab-automation/` handle:
 
-. Runtime Scripts Directory Structure
-+
-.tree output
-[source,shell]
-----
-runtime-automation/
-├── module-01                           # Directory name matches the content module (e.g. module-01)
-│   ├── setup-control.sh                # Optional per-VM scripts; name must match `virtualmachines[].name`
-│   ├── setup-containerlab.sh           # in config/instances.yaml (e.g. control, containerlab)
-│   ├── solve-control.sh
-│   ├── solve-containerlab.sh
-│   ├── validation-control.sh
-│   └── validation-containerlab.sh
-├── ansible.cfg                         # Ansible configuration used with module playbooks
-└── main.yml                            # Playbook to be called in each step
-----
-
-. Setup Scripts Directory Structure
-+
-.tree output
-[source,shell]
-----
-setup-automation/
-├── setup-control.sh                    # Executed on VM `control` when provisioned (see instances.yaml)
-├── setup-containerlab.sh             # Executed on VM `containerlab` when provisioned
-├── ansible.cfg                         # Ansible configuration used with module playbooks
-└── main.yml                            # Playbook to be called in each step
-----
-
-
-== Understanding UI Configration file
-. Example: The *ui-config.yml* configuration file
-+
-.tree output
-[source,shell]
-----
-antora:
-  name: modules
-  dir: www
-  modules:
-    - name: 01-playbook-inventory               # Module Name
-      label: Playbook Inventory                 # Module Label
-      solveButton: true                         # Enable Solve button
-    - name: 02-playbook-directory-structure
-      label: Playbook Directory Structure
-      solveButton: true
-tabs:
-  - name: VSCode Editor                         # Tab name
-    port: 8443                                  # Port no of the service
-    path: /?folder=/home/rhel/ansible-files/    # Path suffix
-  - name: ">_control"                           # Tab name
-    port: 443                                   # Port of the tt1 terminal
-    path: /tty1                                 # Path to the tty1 terminal
-----
-
-=== Lab automation (containerlab + Controller API)
-
-Playbooks under `lab-automation/` mirror the GitLab `network_workshop_containerlab` helpers, with fixes (correct `register`, no brittle `inspect` line slicing, configurable wait). They also include an optional *Automation controller* bootstrap using `awx.awx` (SCM project) and an optional `ansible.platform.token` task when Gateway env vars are set.
-
-For a full walkthrough (inventory options, test order, router checks vs AAP, boot integration, troubleshooting), see link:lab-automation/README.md[lab-automation/README.md].
-
-To bring up Containerlab **without Ansible** (manual CLI on the containerlab VM), see link:README-containerlab.md[README-containerlab.md].
-
-* Run manually on the **control** node (after `ansible-galaxy collection install -r lab-automation/requirements.yml`):
+1. **Deploying** the multi-vendor router topology on the containerlab VM
+2. **Bootstrapping** AAP Controller -- waiting for the API, creating the Default organization, syncing the SCM project, and creating job templates with RBAC
+3. **Optionally** gathering facts from the virtual routers
 
 [source,shell]
 ----
 cd lab-automation
-export CONTROLLER_PASSWORD='...'   # admin password; omit to skip Controller API steps only
+export CONTROLLER_PASSWORD='...'
 ansible-playbook -i inventory/lab.yml playbooks/site.yml
 ----
 
-* `setup-automation/setup-control.sh` runs `playbooks/site.yml` automatically when it finds `lab-automation/playbooks/site.yml` under `/home/rhel/zt-network-automation-workshop`, `/home/rhel/workshop`, or `$WORKSHOP_REPO_ROOT`.
+`setup-automation/setup-control.sh` runs this automatically at first boot when it finds `lab-automation/` under the workshop repo.
 
-* Inventory defaults: SSH to **containerlab** as **lab-user**; Controller at **https://127.0.0.1**. Override with `-e` or edit `inventory/` and `inventory/group_vars/`.
+Logs: `/tmp/lab-automation-site.log`, `/tmp/lab-automation-collections.log`.
 
-* Router smoke test (optional): `ansible-playbook -i inventory/lab.yml playbooks/gather_facts.yml -e containerlab_fip=<LoadBalancer IP>` (requires network collections).
+[[auto-resume]]
+== Containerlab auto-resume on boot
 
-=== Development Cycle
+Virtual routers do not survive a VM reboot because Containerlab topologies run as containers. A **systemd service** automatically re-deploys the last active topology when the containerlab VM starts or resumes.
 
-. Edit your content in `content/modules/ROOT/pages/`
-. Use `git` to branch and commit your work
-. Push your work to your repo
-.. You should use `git tags` or `git branches` in production
-.. However development items default to the head of `main`
+=== How it works
 
+1. **State file** -- When a topology is deployed (via the Ansible playbook or at first boot), the topology directory path is written to `/etc/containerlab/last-topology`.
+2. **systemd service** -- `containerlab-resume.service` runs at boot (after `network-online.target`). It reads the state file and runs `containerlab deploy --reconfigure` in the recorded directory.
+3. **Startup time** -- After the service completes, routers report `health: starting` and need 1-3 minutes to fully boot before SSH is available. This is normal.
+
+=== Verifying the service
+
+[source,shell]
+----
+# Check service status
+sudo systemctl status containerlab-resume.service
+
+# View service logs
+journalctl -u containerlab-resume.service
+
+# See which topology is recorded
+cat /etc/containerlab/last-topology
+
+# Check router health
+sudo containerlab inspect
+----
+
+=== Implementation details
+
+* **Helper script**: `/usr/local/bin/containerlab-resume` -- reads the state file and runs the deploy
+* **Unit file**: `/etc/systemd/system/containerlab-resume.service` -- `Type=oneshot`, `RemainAfterExit=true`
+* **State file**: `/etc/containerlab/last-topology` -- single line containing the absolute path to the topology directory
+* **Installed by**: `setup-automation/setup-containerlab.sh` (`install_clab_resume_service` function)
+* **State written by**: `lab-automation/playbooks/1_multi_vendor_router_up.yml` (after successful `containerlab deploy`)
+
+== Setup automation
+
+First-boot scripts in `setup-automation/` run once when RHDP provisions the VMs:
+
+[cols="1,3",options="header"]
+|===
+| Script | Purpose
+
+| `setup-control.sh`
+| Installs collections, runs `lab-automation/playbooks/site.yml`, bootstraps AAP
+
+| `setup-containerlab.sh`
+| Clones the workshop repo, pushes SSH keys to control, configures router SSH access, installs the `containerlab-resume` systemd service
+
+| `setup-vscode.sh`
+| Registers with RHSM, installs Podman, configures code-server
+|===
+
+Logs are written to `/tmp/progress.log` on each VM.
+
+== Runtime automation
+
+Per-module scripts under `runtime-automation/` power the Showroom **Setup**, **Solve**, and **Validation** buttons:
+
+[source]
+----
+runtime-automation/
+├── module-01/
+│   ├── setup-control.sh
+│   ├── solve-control.sh
+│   └── validation-control.sh
+├── ansible.cfg
+└── main.yml
+----
+
+Script names must match the `virtualmachines[].name` in `config/instances.yaml` (e.g. `setup-control.sh` runs on the **control** VM).
+
+== UI configuration
+
+`ui-config.yml` defines the Showroom tabs:
+
+[source,yaml]
+----
+tabs:
+  - name: VSCode Editor
+    port: 8443
+    path: /?folder=/home/rhel/ansible-files/
+  - name: ">_control"
+    port: 443
+    path: /tty1
+----
+
+== Development
+
+. Edit content in `content/modules/ROOT/pages/`
+. Preview locally with Antora: `npx antora site.yml`
+. Branch, commit, and push
+. RHDP deployments default to the head of `main`
+
+== Authors
+
+**Adapted and maintained by**: link:https://github.com/IPvSean[Sean Cavanaugh (@IPvSean)^]
+
+**Based on**: link:https://github.com/ansible/workshops[Ansible Workshops^] by Red Hat
+
+== License
+
+This project is licensed under the link:LICENSE[MIT License].
