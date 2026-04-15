@@ -14,6 +14,13 @@
       become: true
       register: clab_deploy
 
+    - name: Record last-deployed topology for resume-on-boot
+      ansible.builtin.copy:
+        content: "{{ clab_dir }}"
+        dest: /etc/containerlab/last-topology
+        mode: "0644"
+      become: true
+
     - name: Wait for nodes to settle
       ansible.builtin.pause:
         seconds: 120

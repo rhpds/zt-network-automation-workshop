@@ -228,6 +228,54 @@ install_rpms() {
 }
 
 # ---------------------------------------------------------------------------
+# Containerlab auto-resume: systemd service that re-deploys the last topology
+# after the VM is paused and resumed. A state file tracks which topology was
+# last deployed so the service doesn't need a hardcoded path.
+# ---------------------------------------------------------------------------
+install_clab_resume_service() {
+  echo "Installing containerlab-resume systemd service..." >> /tmp/progress.log
+  mkdir -p /etc/containerlab
+
+  cat > /usr/local/bin/containerlab-resume <<'RESUME'
+#!/bin/bash
+STATE_FILE="/etc/containerlab/last-topology"
+if [[ ! -f "$STATE_FILE" ]]; then
+  echo "containerlab-resume: no state file at $STATE_FILE, nothing to do"
+  exit 0
+fi
+
+TOPO_DIR="$(cat "$STATE_FILE")"
+if [[ -z "$TOPO_DIR" || ! -d "$TOPO_DIR" ]]; then
+  echo "containerlab-resume: topology dir '$TOPO_DIR' not found, skipping"
+  exit 0
+fi
+
+echo "containerlab-resume: re-deploying topology in $TOPO_DIR"
+cd "$TOPO_DIR" && containerlab deploy --reconfigure
+RESUME
+  chmod 755 /usr/local/bin/containerlab-resume
+
+  cat > /etc/systemd/system/containerlab-resume.service <<'UNIT'
+[Unit]
+Description=Re-deploy last containerlab topology after resume
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/containerlab-resume
+RemainAfterExit=true
+
+[Install]
+WantedBy=multi-user.target
+UNIT
+
+  systemctl daemon-reload
+  systemctl enable containerlab-resume.service >> /tmp/progress.log 2>&1
+  echo "containerlab-resume service installed and enabled" >> /tmp/progress.log
+}
+
+# ---------------------------------------------------------------------------
 # Run each step independently — failures in one must not block the rest.
 # install_rpms runs before push_ssh_key_to_control because sshpass is needed.
 # ---------------------------------------------------------------------------
@@ -239,4 +287,5 @@ clone_repo
 install_rpms
 push_ssh_key_to_control || echo "push_ssh_key_to_control failed" >> /tmp/progress.log
 setup_router_access || echo "setup_router_access failed" >> /tmp/progress.log
+install_clab_resume_service || echo "install_clab_resume_service failed" >> /tmp/progress.log
 echo "setup-containerlab.sh complete" >> /tmp/progress.log
