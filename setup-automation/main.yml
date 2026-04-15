@@ -67,6 +67,8 @@
     environment:
       REG_USER: "{{ reg_user }}"
       REG_PASS: "{{ reg_pass }}"
+      REG_ORG: "{{ reg_org }}"
+      REG_ACTIVATION_KEY: "{{ reg_activation_key }}"
       GUID: "{{ guid }}"
       DOMAIN: "{{ domain }}"
 

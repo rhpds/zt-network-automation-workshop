@@ -62,15 +62,25 @@ rm -f /etc/motd.d/insights-client 2>/dev/null
 # Register with RHSM so dnf repos are available, then install packages.
 # Uses the same REG_USER/REG_PASS env vars as setup-control.sh.
 # ---------------------------------------------------------------------------
-if [[ -n "${REG_USER:-}" && -n "${REG_PASS:-}" ]]; then
-  echo "Registering with subscription-manager..." >> /tmp/progress.log
+if [[ -n "${REG_ORG:-}" && -n "${REG_ACTIVATION_KEY:-}" ]]; then
+  echo "Registering with subscription-manager (activation key)..." >> /tmp/progress.log
+  subscription-manager register --org="$REG_ORG" --activationkey="$REG_ACTIVATION_KEY" \
+    --force >> /tmp/progress.log 2>&1 \
+    && echo "RHSM registration successful" >> /tmp/progress.log \
+    || echo "WARNING: RHSM registration failed" >> /tmp/progress.log
+elif [[ -n "${REG_USER:-}" && -n "${REG_PASS:-}" ]]; then
+  echo "Registering with subscription-manager (username/password)..." >> /tmp/progress.log
   subscription-manager register --username "$REG_USER" --password "$REG_PASS" \
     --auto-attach --force >> /tmp/progress.log 2>&1 \
     && echo "RHSM registration successful" >> /tmp/progress.log \
     || echo "WARNING: RHSM registration failed" >> /tmp/progress.log
 else
-  echo "REG_USER/REG_PASS not set; skipping RHSM registration" >> /tmp/progress.log
+  echo "REG_ORG/REG_ACTIVATION_KEY and REG_USER/REG_PASS not set; skipping RHSM registration" >> /tmp/progress.log
 fi
+
+subscription-manager repos \
+  --enable=rhel-9-for-x86_64-baseos-rpms \
+  --enable=rhel-9-for-x86_64-appstream-rpms >> /tmp/progress.log 2>&1 || true
 
 echo "Installing packages via dnf (git, podman, sshpass)..." >> /tmp/progress.log
 dnf install -y git podman sshpass >> /tmp/progress.log 2>&1 \
