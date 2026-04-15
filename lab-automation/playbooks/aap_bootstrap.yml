@@ -69,6 +69,10 @@
         controller_username: "{{ controller_username }}"
         controller_password: "{{ controller_password }}"
         validate_certs: "{{ controller_verify_ssl | default(false) }}"
+      register: org_result
+      until: org_result is success
+      retries: 12
+      delay: 10
 
     - name: Ensure workshop project exists (SCM)
       ansible.controller.project:
