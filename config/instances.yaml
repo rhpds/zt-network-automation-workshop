@@ -3,7 +3,7 @@ containers: []
 virtualmachines:
   - name: "containerlab"
     image: "ansiblebu-containerlab-v2"
-    memory: "128"
+    memory: "128Gi"
     cores: 32
     image_size: "200Gi"
     tags:
