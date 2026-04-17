@@ -75,7 +75,7 @@ Run the `ansible-navigator` command with the `images` argument to look at execut
 
 [source,bash]
 ----
-$ ansible-navigator images
+ansible-navigator images
 ----
 
 image::navigator-images.png[ansible-navigator images,align="center",link=self,window=_blank,width=600]
@@ -96,7 +96,7 @@ Either use Visual Studio Code to open or use the `cat` command to view the conte
 
 [source,bash]
 ----
-$ cat ~/.ansible-navigator.yml
+cat ~/.ansible-navigator.yml
 ----
 
 [source,yaml]
@@ -131,7 +131,7 @@ In this lab you will work with a file based inventory written in the **ini** for
 
 [source,bash]
 ----
-$ cat ~/network-workshop/lab_inventory/hosts
+cat ~/network-workshop/lab_inventory/hosts
 ----
 
 [source,ini]
@@ -235,7 +235,7 @@ For example to connect to rtr1, type:
 
 [source,bash]
 ----
-$ ssh rtr1
+ssh rtr1
 ----
 
 For example:

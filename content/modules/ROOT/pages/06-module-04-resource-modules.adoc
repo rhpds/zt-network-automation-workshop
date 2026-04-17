@@ -144,7 +144,7 @@ Only two of these parameters will be covered in this exercise.
 
 [source,bash]
 ----
-$ ansible-navigator run resource.yml --mode stdout
+ansible-navigator run resource.yml --mode stdout
 ----
 
 * The output will look similar to the following:
@@ -269,7 +269,7 @@ As you can see, the resource module configured the Arista EOS network device wit
 
 [source,bash]
 ----
-$ ansible-navigator run gathered.yml --mode stdout
+ansible-navigator run gathered.yml --mode stdout
 ----
 
 * The output will look similar to the following:

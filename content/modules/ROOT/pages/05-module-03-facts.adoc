@@ -20,7 +20,7 @@ Enter the `ansible-navigator` interactive mode on the terminal:
 
 [source,bash]
 ----
-$ ansible-navigator
+ansible-navigator
 ----
 
 Screenshot of `ansible-navigator`:
@@ -131,7 +131,7 @@ Execute the Ansible Playbook by running `ansible-navigator`:
 
 [source,bash]
 ----
-$ ansible-navigator run facts.yml
+ansible-navigator run facts.yml
 ----
 
 This will open an interactive session while the playbook runs:
