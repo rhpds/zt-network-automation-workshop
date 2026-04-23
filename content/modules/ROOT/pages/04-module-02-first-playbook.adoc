@@ -21,13 +21,13 @@ Navigate to the `network-workshop` directory if you are not already there.
 
 [source,bash]
 ----
-[{bastion_user}@{bastion_hostname} ~]$ cd ~/network-workshop/
-[{bastion_user}@{bastion_hostname} network-workshop]$
-[{bastion_user}@{bastion_hostname} network-workshop]$ pwd
-/home/{bastion_user}/network-workshop
+[rhel@vscode ~]$ cd ~/network-workshop/
+[rhel@vscode network-workshop]$
+[rhel@vscode network-workshop]$ pwd
+/home/rhel/network-workshop
 ----
 
-Examine the provided Ansible Playbook named `playbook.yml`. Either open the file in Visual Studio Code or `cat` the file:
+Examine the provided link:https://www.redhat.com/en/topics/automation/what-is-an-ansible-playbook[Ansible Playbook^] named `playbook.yml`. Either open the file in Visual Studio Code or `cat` the file:
 
 [source,yaml]
 ----
@@ -66,7 +66,7 @@ ansible-navigator run playbook.yml --mode stdout
 
 [source,bash]
 ----
-[{bastion_user}@{bastion_hostname} network-workshop]$ ansible-navigator run playbook.yml --mode stdout
+[rhel@vscode network-workshop]$ ansible-navigator run playbook.yml --mode stdout
 
 PLAY [SNMP ro/rw string configuration] *****************************************
 
@@ -76,7 +76,7 @@ changed: [rtr1]
 PLAY RECAP *********************************************************************
 rtr1                       : ok=1    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
 
-[{bastion_user}@{bastion_hostname} network-workshop]$
+[rhel@vscode network-workshop]$
 ----
 
 * `--mode stdout` -- By default `ansible-navigator` will run in interactive mode. The default behavior can be modified by modifying the `ansible-navigator.yml`. As playbooks get longer and involve multiple hosts the interactive mode allows you to "zoom in" on data in real-time, filter it, and navigate between various Ansible components. Since this task only ran one task on one host the `stdout` is sufficient.
@@ -87,7 +87,7 @@ Verify that the Ansible Playbook worked. Login to `rtr1` and check the running c
 
 [source,bash]
 ----
-[{bastion_user}@{bastion_hostname} network-workshop]$ ssh rtr1
+[rhel@vscode network-workshop]$ ssh rtr1
 
 rtr1#show run | i snmp
 snmp-server community ansible-public RO
@@ -104,7 +104,7 @@ To validate the concept of idempotency, re-run the playbook:
 
 [source,bash]
 ----
-[{bastion_user}@{bastion_hostname} network-workshop]$ ansible-navigator run playbook.yml --mode stdout
+[rhel@vscode network-workshop]$ ansible-navigator run playbook.yml --mode stdout
 
 PLAY [SNMP ro/rw string configuration] *****************************************
 
@@ -156,7 +156,7 @@ This time however, instead of running the playbook to push the change to the dev
 
 [source,bash]
 ----
-[{bastion_user}@{bastion_hostname} network-workshop]$ ansible-navigator run playbook.yml --mode stdout --check -v
+[rhel@vscode network-workshop]$ ansible-navigator run playbook.yml --mode stdout --check -v
 Using /etc/ansible/ansible.cfg as config file
 
 PLAY [SNMP ro/rw string configuration] *****************************************
@@ -176,7 +176,7 @@ Verify that the Ansible Playbook did not apply the `ansible-test` community. Log
 
 [source,bash]
 ----
-[{bastion_user}@{bastion_hostname} network-workshop]$ ssh rtr1
+[rhel@vscode network-workshop]$ ssh rtr1
 
 rtr1#show run | i snmp
 snmp-server community ansible-public RO
@@ -189,7 +189,7 @@ Finally re-run this playbook again without the `-v` or `--check` flag to push th
 
 [source,bash]
 ----
-[{bastion_user}@{bastion_hostname} network-workshop]$ ansible-navigator run playbook.yml --mode stdout
+[rhel@vscode network-workshop]$ ansible-navigator run playbook.yml --mode stdout
 
 PLAY [SNMP ro/rw string configuration] *****************************************
 
@@ -206,7 +206,7 @@ Verify that the Ansible Playbook applied the **ansible-test** community. Login t
 
 [source,bash]
 ----
-[{bastion_user}@{bastion_hostname} network-workshop]$ ssh rtr1
+[rhel@vscode network-workshop]$ ssh rtr1
 
 rtr1#sh run | i snmp
 snmp-server community ansible-public RO
@@ -223,4 +223,4 @@ In this module, you learned how to:
 * Verify that the **config** modules (e.g. `cisco.ios.config`) are idempotent -- meaning they are stateful and only push changes when the desired configuration is not already present
 * Use **check mode** (`--check`) to preview changes without applying them to the remote device
 * Use **verbose mode** (`-v`) to see detailed output including which commands would be applied
-* This Ansible Playbook could be scheduled in **Automation controller** to enforce the configuration. For example, the playbook could run once a day for a particular network. In combination with check mode, this could be a read-only playbook that detects and reports missing or modified configuration on the network.
+* This Ansible Playbook could be scheduled in **Ansible Automation Platform** to enforce the configuration. For example, the playbook could run once a day for a particular network. In combination with check mode, this could be a read-only playbook that detects and reports missing or modified configuration on the network.

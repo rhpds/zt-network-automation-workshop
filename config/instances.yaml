@@ -3,8 +3,8 @@ containers: []
 virtualmachines:
   - name: "containerlab"
     image: "ansiblebu-containerlab-v2"
-    memory: "64Gi"
-    cores: 16
+    memory: "128Gi"
+    cores: 32
     image_size: "200Gi"
     tags:
       - key: "AnsibleGroup"
@@ -60,16 +60,16 @@ virtualmachines:
             protocol: TCP
             targetPort: 8484
             name: port8484
-      - name: containerlab-report
+      - name: clab-report
         ports:
           - port: 8088
             protocol: TCP
             targetPort: 8088
-            name: containerlab-report
+            name: clab-report
     routes:
-      - name: containerlab-report
-        host: containerlab-report
-        service: containerlab-report
+      - name: clab-report
+        host: clab-report
+        service: clab-report
         targetPort: 8088
         tls: true
         tls_termination: Edge

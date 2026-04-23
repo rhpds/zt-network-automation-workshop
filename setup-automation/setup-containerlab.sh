@@ -117,16 +117,16 @@ REMOTE
 setup_router_access() {
   echo "Setting up router name resolution and SSH config..." >> /tmp/progress.log
 
-  # /etc/hosts — system-wide, works for all users.
-  if ! grep -q "rtr1" /etc/hosts 2>/dev/null; then
-    cat >> /etc/hosts <<'HOSTS'
+  # /etc/hosts — system-wide. Always rewrite the block; the VM image may
+  # contain stale containerlab-managed entries that fool a simple grep check.
+  sed -i '/rtr[1-4]/d' /etc/hosts 2>/dev/null
+  cat >> /etc/hosts <<'HOSTS'
 172.20.20.10 rtr1
 172.20.20.20 rtr2
 172.20.20.30 rtr3
 172.20.20.40 rtr4
 HOSTS
-    echo "Added rtr1-4 to /etc/hosts" >> /tmp/progress.log
-  fi
+  echo "Written rtr1-4 to /etc/hosts (172.20.20.x)" >> /tmp/progress.log
 
   # SSH config for both rhel and lab-user.
   for u in rhel lab-user; do
@@ -135,7 +135,26 @@ HOSTS
     if id "${u}" &>/dev/null; then
       mkdir -p "${ussh}"
       cat > "${ussh}/config.d-routers" <<'SSHCFG'
-Host rtr1 rtr2 rtr3 rtr4
+Host rtr1
+  Hostname 172.20.20.10
+  User admin
+  StrictHostKeyChecking no
+  UserKnownHostsFile /dev/null
+
+Host rtr2
+  Hostname 172.20.20.20
+  User admin
+  StrictHostKeyChecking no
+  UserKnownHostsFile /dev/null
+
+Host rtr3
+  Hostname 172.20.20.30
+  User admin
+  StrictHostKeyChecking no
+  UserKnownHostsFile /dev/null
+
+Host rtr4
+  Hostname 172.20.20.40
   User admin
   StrictHostKeyChecking no
   UserKnownHostsFile /dev/null
@@ -202,16 +221,71 @@ install_rpms() {
   local rpm_dir="${REPO_DIR}/rpms"
   if [[ -d "${rpm_dir}" ]]; then
     echo "Installing bundled RPMs on containerlab..." >> /tmp/progress.log
-    rpm -ivh "${rpm_dir}"/*.rpm >> /tmp/progress.log 2>&1 || true
+    for rpm_file in "${rpm_dir}"/*.rpm; do
+      rpm -Uvh "${rpm_file}" >> /tmp/progress.log 2>&1 || true
+    done
   fi
+}
+
+# ---------------------------------------------------------------------------
+# Containerlab auto-resume: systemd service that re-deploys the last topology
+# after the VM is paused and resumed. A state file tracks which topology was
+# last deployed so the service doesn't need a hardcoded path.
+# ---------------------------------------------------------------------------
+install_clab_resume_service() {
+  echo "Installing containerlab-resume systemd service..." >> /tmp/progress.log
+  mkdir -p /etc/containerlab
+
+  cat > /usr/local/bin/containerlab-resume <<'RESUME'
+#!/bin/bash
+STATE_FILE="/etc/containerlab/last-topology"
+if [[ ! -f "$STATE_FILE" ]]; then
+  echo "containerlab-resume: no state file at $STATE_FILE, nothing to do"
+  exit 0
+fi
+
+TOPO_DIR="$(cat "$STATE_FILE")"
+if [[ -z "$TOPO_DIR" || ! -d "$TOPO_DIR" ]]; then
+  echo "containerlab-resume: topology dir '$TOPO_DIR' not found, skipping"
+  exit 0
+fi
+
+echo "containerlab-resume: re-deploying topology in $TOPO_DIR"
+cd "$TOPO_DIR" && containerlab deploy --reconfigure
+RESUME
+  chmod 755 /usr/local/bin/containerlab-resume
+
+  cat > /etc/systemd/system/containerlab-resume.service <<'UNIT'
+[Unit]
+Description=Re-deploy last containerlab topology after resume
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/containerlab-resume
+RemainAfterExit=true
+
+[Install]
+WantedBy=multi-user.target
+UNIT
+
+  systemctl daemon-reload
+  systemctl enable containerlab-resume.service >> /tmp/progress.log 2>&1
+  echo "containerlab-resume service installed and enabled" >> /tmp/progress.log
 }
 
 # ---------------------------------------------------------------------------
 # Run each step independently — failures in one must not block the rest.
 # install_rpms runs before push_ssh_key_to_control because sshpass is needed.
 # ---------------------------------------------------------------------------
+# Suppress the "Register this system with Red Hat Insights" MOTD.
+rm -f /etc/profile.d/insights-client.sh 2>/dev/null
+rm -f /etc/motd.d/insights-client 2>/dev/null
+
 clone_repo
 install_rpms
 push_ssh_key_to_control || echo "push_ssh_key_to_control failed" >> /tmp/progress.log
 setup_router_access || echo "setup_router_access failed" >> /tmp/progress.log
+install_clab_resume_service || echo "install_clab_resume_service failed" >> /tmp/progress.log
 echo "setup-containerlab.sh complete" >> /tmp/progress.log

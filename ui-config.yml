@@ -1,10 +1,4 @@
 ---
-type: showroom
-
-# Match RHDP showroom defaults so tabs resolve correctly (see showroom_template_zero).
-default_width: 30
-persist_url_state: true
-
 antora:
   name: modules
   dir: www
@@ -33,7 +27,7 @@ tabs:
   # Mixing default + explicit URL is fine. If the default is not control, switch AAP to url: /wetty_control.
   # Root: /wetty_control/ssh/root etc. Optional modules: list page stems on each tab.
   - name: AAP terminal
-    type: terminal
+    url: /wetty_control
   - name: Containerlab terminal
     url: /wetty_containerlab
   - name: VS Code
@@ -43,5 +37,5 @@ tabs:
     url: https://control-${guid}.${domain}/
     external: false
   - name: Network Report
-    url: https://containerlab-report-${guid}.${domain}/
+    url: https://clab-report-${guid}.${domain}/
     external: false

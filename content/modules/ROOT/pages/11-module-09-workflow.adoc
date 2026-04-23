@@ -19,16 +19,14 @@ By the end of this module, you will be able to:
 
 == Step 1: Create a workflow template
 
-. Make sure you are logged in as the **{controller_user}** user.
+. Make sure you are logged in as the **admin** user.
 
 . Click on the **Templates** link on the left menu.
 +
-// TODO: Copy image from ansible-workshops/exercises/ansible_network/9-controller-workflow/images/templates.png
 image::templates.png[Templates link,align="center",link=self,window=blank,width=600]
 
 . Click on the blue **Create template** button and select **Create workflow job template**.
 +
-// TODO: Copy image from ansible-workshops/exercises/ansible_network/9-controller-workflow/images/controller_add_workflow.png
 image::controller_add_workflow.png[Add workflow template button,align="center",link=self,window=blank,width=600]
 
 . Fill out the form as follows:
@@ -47,12 +45,10 @@ image::controller_add_workflow.png[Add workflow template button,align="center",l
 
 . When you clicked the **Create workflow job template** the **Workflow visualizer** should automatically open. If not, click on the **View workflow visualizer** button.
 +
-// TODO: Copy image from ansible-workshops/exercises/ansible_network/9-controller-workflow/images/visualizer_tab.png
 image::visualizer_tab.png[Visualizer tab link,align="center",link=self,window=blank,width=600]
 
 . By default only a blue **Add step** button will appear. Click on the **Add step** button.
 +
-// TODO: Copy image from ansible-workshops/exercises/ansible_network/9-controller-workflow/images/add_step.png
 image::add_step.png[Add step button,align="center",link=self,window=blank,width=600]
 
 . The **Add step** window will appear.
@@ -62,7 +58,6 @@ image::add_step.png[Add step button,align="center",link=self,window=blank,width=
 * Convergence can be left as **Any**
 * Node alias can be left blank
 +
-// TODO: Copy image from ansible-workshops/exercises/ansible_network/9-controller-workflow/images/add_backup_node.png
 image::add_backup_node.png[Add backup node,align="center",link=self,window=blank,width=600]
 +
 * Click the blue **Next** button.
@@ -70,14 +65,12 @@ image::add_backup_node.png[Add backup node,align="center",link=self,window=blank
 
 NOTE: The `Backup network configurations` job template is now a node. Job or workflow templates are linked together using a graph-like structure called nodes. These nodes can be approvals, jobs, project syncs, inventory syncs, or even other workflows. A template can be part of different workflows or used multiple times in the same workflow.
 
-// TODO: Copy image from ansible-workshops/exercises/ansible_network/9-controller-workflow/images/step2_workflow.png
 image::step2_workflow.png[Backup node configured,align="center",link=self,window=blank,width=600]
 
 == Step 3: Add the Configure Banner Job Template
 
 . Hover over the three dots on the `Backup network configurations` node and click the **Add step and link** link.
 +
-// TODO: Copy image from ansible-workshops/exercises/ansible_network/9-controller-workflow/images/new_add_step.png
 image::new_add_step.png[Add step link,align="center",link=self,window=blank,width=600]
 +
 The **Add Step** window will appear again.
@@ -94,21 +87,18 @@ The **Add Step** window will appear again.
 | Node alias |
 |===
 +
-// TODO: Copy image from ansible-workshops/exercises/ansible_network/9-controller-workflow/images/step3_add_node.png
 image::step3_add_node.png[Add second node,align="center",link=self,window=blank,width=600]
 
 NOTE: Workflows can be configured to run automation jobs when the previous node succeeds, fails, or have it always run no matter what the previous job did. This allows workflows to fix issues or revert the state of a device.
 
 . Click the blue **Next** button and fill out the survey field
 +
-// TODO: Copy image from ansible-workshops/exercises/ansible_network/9-controller-workflow/images/step3_add_network_banner.png
 image::step3_add_network_banner.png[Add network banner job template,align="center",link=self,window=blank,width=600]
 
 . Click the blue **Next** button again, review, and then click the blue **Finish** button.
 
 . A green line should exist between `Backup network configurations` and `Network-Banner`
 +
-// TODO: Copy image from ansible-workshops/exercises/ansible_network/9-controller-workflow/images/step3_final.png
 image::step3_final.png[Banner node,align="center",link=self,window=blank,width=600]
 
 == Step 4: Add the Configure Network-User Job Template
@@ -127,19 +117,16 @@ image::step3_final.png[Banner node,align="center",link=self,window=blank,width=6
 | Node alias |
 |===
 +
-// TODO: Copy image from ansible-workshops/exercises/ansible_network/9-controller-workflow/images/step4_add_node.png
 image::step4_add_node.png[Select network user job,align="center",link=self,window=blank,width=600]
 
 . Click the blue **Next** button and fill out the survey field (feel free to leave the defaults!)
 +
-// TODO: Copy image from ansible-workshops/exercises/ansible_network/9-controller-workflow/images/user-survey.png
 image::user-survey.png[User survey,align="center",link=self,window=blank,width=600]
 
 . Click **Next**, review then click **Finish**
 +
 Your workflow should now look similar to the following image:
 +
-// TODO: Copy image from ansible-workshops/exercises/ansible_network/9-controller-workflow/images/step4_final.png
 image::step4_final.png[Configure user node,align="center",link=self,window=blank,width=600]
 
 == Step 5: Add the Network-Restore Job Template
@@ -160,7 +147,6 @@ image::step4_final.png[Configure user node,align="center",link=self,window=blank
 +
 Your form should look similar to the following image:
 +
-// TODO: Copy image from ansible-workshops/exercises/ansible_network/9-controller-workflow/images/fill_out_restore.png
 image::fill_out_restore.png[Restore form,align="center",link=self,window=blank,width=600]
 
 . Click the blue **Next** button for the Survey step, then choose a rollback date (there may only be one choice if you only ran the backup one time)
@@ -169,49 +155,41 @@ image::fill_out_restore.png[Restore form,align="center",link=self,window=blank,w
 +
 Your workflow should now look similar to the following image:
 +
-// TODO: Copy image from ansible-workshops/exercises/ansible_network/9-controller-workflow/images/step5_final.png
 image::step5_final.png[Configure restore node,align="center",link=self,window=blank,width=600]
 
 == Step 6: Create a converged link
 
 . Hover over the `Network-User` node until a small arrow appears to the right.
 +
-// TODO: Copy image from ansible-workshops/exercises/ansible_network/9-controller-workflow/images/arrow.png
 image::arrow.png[Arrow,align="center",link=self,window=blank,width=600]
 
 . Click on the arrow (it will turn gray), and drag it over to the `Network Automation - Restore` node
 +
-// TODO: Copy image from ansible-workshops/exercises/ansible_network/9-controller-workflow/images/step6_on_fail.png
 image::step6_on_fail.png[On fail link,align="center",link=self,window=blank,width=600]
 
 . Now click on the **Run always** and change to **Run on fail**
 +
-// TODO: Copy image from ansible-workshops/exercises/ansible_network/9-controller-workflow/images/step6_complete_workflow.png
 image::step6_complete_workflow.png[Complete workflow,align="center",link=self,window=blank,width=600]
 
 . Click Save, then click on the **X** to exit the visualizer.
 +
-// TODO: Copy image from ansible-workshops/exercises/ansible_network/9-controller-workflow/images/save.png
-image::save.png[Save button,align="center",link=self,window=blank,width=600]
+image::step6_complete_workflow.png[Save button,align="center",link=self,window=blank,width=600]
 
 == Step 7: Run the Workflow
 
 . Click the **Launch** button.
 +
-// TODO: Copy image from ansible-workshops/exercises/ansible_network/9-controller-workflow/images/step7_launch.png
 image::step7_launch.png[Launch workflow,align="center",link=self,window=blank,width=600]
 
 . Watch the **Workshop Workflow**.
-+
-// TODO: Copy image from ansible-workshops/exercises/ansible_network/9-controller-workflow/images/step7_final.png
-image::step7_final.png[Workflow job launched,align="center",link=self,window=blank,width=600]
-+
 At any time during the workflow job you can select an individual job template by clicking on the node to see the status.
+
+You now have a workflow that handles multi-step network changes with built-in rollback -- the kind of safety net that makes automation trustworthy enough for production.
 
 == Module summary
 
 In this module, you successfully:
 
-* Created a **Workflow template** that creates a backup, then attempts to create a user and banner for all network nodes
-* Made the workflow **robust** -- if either job template fails it will restore to the specified backup
-* Launched the Workflow template and explored the **Workflow Visualizer**
+* Built a reusable automation workflow that orchestrates backup, user provisioning, and banner configuration across all network nodes in a single run
+* Made the workflow **self-healing** -- if any change fails, the network automatically rolls back to its last known-good state
+* Validated the end-to-end workflow and used the **Workflow Visualizer** to verify each stage completed as expected

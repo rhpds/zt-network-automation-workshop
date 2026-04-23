@@ -35,7 +35,7 @@ Build foundational Ansible skills on the command line:
 
 Move to the Ansible Automation Platform web interface:
 
-* **2-1** -- Explore the Automation controller: inventories, credentials, and projects
+* **2-1** -- Explore Ansible Automation Platform: inventories, credentials, and projects
 * **2-2** -- Create a job template for network configuration backup
 * **2-3** -- Add surveys for user-friendly input to job templates
 * **2-4** -- Configure RBAC for multi-user access control

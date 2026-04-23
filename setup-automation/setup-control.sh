@@ -31,14 +31,16 @@ registry_login() {
 }
 
 # ---------------------------------------------------------------------------
-# 2. Pull EE images.
+# 2. Pull EE images (each in its own background job).
 # ---------------------------------------------------------------------------
-pull_images() {
+pull_ee_image() {
   echo "Pulling EE image ${EE_IMAGE}..." >> /tmp/progress.log
   sudo -u rhel -H podman pull "${EE_IMAGE}" >> /tmp/progress.log 2>&1 \
     && echo "EE image pulled" >> /tmp/progress.log \
     || echo "WARNING: EE pull failed" >> /tmp/progress.log
+}
 
+pull_network_ee() {
   echo "Pulling Network EE image ${NETWORK_EE_IMAGE}..." >> /tmp/progress.log
   sudo -u rhel -H podman pull "${NETWORK_EE_IMAGE}" >> /tmp/progress.log 2>&1 \
     && echo "Network EE pulled" >> /tmp/progress.log \
@@ -82,12 +84,12 @@ wait_for_ssh_key() {
     return 0
   fi
   echo "Waiting for SSH key from containerlab..." >> /tmp/progress.log
-  for (( i=1; i<=60; i++ )); do
+  for (( i=1; i<=120; i++ )); do
     if ls "${RHEL_SSH}"/*.pem &>/dev/null 2>&1; then
       echo "SSH key arrived after ${i} checks" >> /tmp/progress.log
       return 0
     fi
-    sleep 10
+    sleep 5
   done
   echo "WARNING: SSH key never arrived (~10 min). Containerlab playbooks will fail." >> /tmp/progress.log
 }
@@ -118,13 +120,30 @@ run_lab_automation() {
 }
 
 # ---------------------------------------------------------------------------
-# Run everything sequentially. No backgrounding — keep it simple.
+# Run with parallelism where possible. All background jobs must finish
+# before run_lab_automation which needs the EE, repo, and SSH key.
 # ---------------------------------------------------------------------------
 registry_login
-pull_images
+
+# Start both EE pulls in parallel.
+pull_ee_image &
+EE_PID=$!
+pull_network_ee &
+NET_EE_PID=$!
+
+# Clone + RPMs can run while images pull.
 clone_repo
 install_rpms
+
+# Wait for SSH key (polls every 5s). This usually takes longer than
+# the EE pulls, so the images will be ready by the time the key arrives.
 wait_for_ssh_key
+
+# Ensure both pulls finished before running lab automation.
+echo "Waiting for EE image pulls to finish..." >> /tmp/progress.log
+wait $EE_PID 2>/dev/null
+wait $NET_EE_PID 2>/dev/null
+
 run_lab_automation
 
 echo "setup-control.sh complete" >> /tmp/progress.log

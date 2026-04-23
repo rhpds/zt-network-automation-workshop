@@ -27,7 +27,7 @@ By the end of this module, you will be able to:
 
 * Login to an Arista switch and verify the current VLAN configuration.
 
-* From the control node terminal, you can `ssh rtr2` and type `enable`
+* From the VS Code terminal, you can `ssh rtr2` and type `enable`
 
 [source,bash]
 ----
@@ -60,8 +60,7 @@ As you can see in the output above there is no VLAN configuration outside of the
 
 * Create a new file in Visual Studio Code named `resource.yml`
 
-// TODO: Copy image from ansible-workshops/exercises/ansible_network/4-resource-module/images/step1_blank_file.png
-image::step1_blank_file.png[New file in VS Code,align="center",link=self,window=blank,width=600]
+image::step1_new_file.png[New file in VS Code,align="center",link=self,window=blank,width=600]
 
 * Copy the following Ansible Playbook into your `resource.yml`
 
@@ -87,11 +86,6 @@ image::step1_blank_file.png[New file in VS Code,align="center",link=self,window=
           - name: DMZ
             vlan_id: 50
 ----
-
-* Setup will look similar to the following in Visual Studio Code:
-
-// TODO: Copy image from ansible-workshops/exercises/ansible_network/4-resource-module/images/setup_vs_code.png
-image::setup_vs_code.png[VS Code setup,align="center",link=self,window=blank,width=600]
 
 == Step 3: Examine the Ansible Playbook
 
@@ -140,7 +134,7 @@ image::setup_vs_code.png[VS Code setup,align="center",link=self,window=blank,wid
 ** gathered
 ** parsed
 +
-Only two of these parameters will be covered in this exercise, but additional are available in the supplemental exercises.
+Only two of these parameters will be covered in this exercise.
 
 * `config:` -- this is the supplied VLAN configuration. It is a list of dictionaries. The most important takeaway is that if the module was changed from `arista.eos.vlans` to `junipernetworks.junos.vlans` it would work identically. This allows network engineers to focus on the network (e.g. VLAN configuration) versus the vendor syntax and implementation.
 
@@ -150,7 +144,7 @@ Only two of these parameters will be covered in this exercise, but additional ar
 
 [source,bash]
 ----
-$ ansible-navigator run resource.yml --mode stdout
+ansible-navigator run resource.yml --mode stdout
 ----
 
 * The output will look similar to the following:
@@ -193,7 +187,7 @@ rtr4                       : ok=1    changed=0    unreachable=0    failed=0    s
 
 * Login to an Arista switch and verify the current VLAN configuration.
 
-* From the control node terminal, you can `ssh rtr2` and type `enable`
+* From the VS Code terminal, you can `ssh rtr2` and type `enable`
 
 [source,bash]
 ----
@@ -275,7 +269,7 @@ As you can see, the resource module configured the Arista EOS network device wit
 
 [source,bash]
 ----
-$ ansible-navigator run gathered.yml --mode stdout
+ansible-navigator run gathered.yml --mode stdout
 ----
 
 * The output will look similar to the following:
@@ -305,17 +299,12 @@ rtr4                       : ok=2    changed=1    unreachable=0    failed=0    s
 
 * The two files were saved to `~/network-workshop/rtr2_vlan.yml` and `~/network-workshop/rtr4_vlan.yml` for the two Arista devices.
 
-* Here is a screenshot:
-
-// TODO: Copy image from ansible-workshops/exercises/ansible_network/4-resource-module/images/step8_examine.png
-image::step8_examine.png[Examine VLAN YAML files,align="center",link=self,window=blank,width=600]
-
 == Solution
 
 The finished Ansible Playbooks are provided here for reference:
 
-* link:https://github.com/network-automation/toolkit[resource.yml^]
-* link:https://github.com/network-automation/toolkit[gathered.yml^]
+* link:https://github.com/rhpds/zt-network-automation-workshop/blob/main/network-workshop/4-resource-module/resource.yml[resource.yml^]
+* link:https://github.com/rhpds/zt-network-automation-workshop/blob/main/network-workshop/4-resource-module/gathered.yml[gathered.yml^]
 
 == Module summary
 

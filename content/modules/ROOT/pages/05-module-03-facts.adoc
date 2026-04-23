@@ -20,12 +20,11 @@ Enter the `ansible-navigator` interactive mode on the terminal:
 
 [source,bash]
 ----
-$ ansible-navigator
+ansible-navigator
 ----
 
 Screenshot of `ansible-navigator`:
 
-// TODO: Copy image from ansible-workshops/exercises/ansible_network/3-facts/images/ansible-navigator-interactive.png
 image::ansible-navigator-interactive.png[ansible-navigator interactive mode,align="center",link=self,window=blank,width=600]
 
 In the above screenshot we can see a line for module or plugin documentation:
@@ -44,7 +43,6 @@ Let's examine the `debug` module by typing `:doc debug`:
 
 Screenshot of `ansible-navigator :doc debug`:
 
-// TODO: Copy image from ansible-workshops/exercises/ansible_network/3-facts/images/ansible-navigator-doc.png
 image::ansible-navigator-doc.png[ansible-navigator doc mode,align="center",link=self,window=blank,width=600]
 
 The documentation for the `debug` module is now displayed in your interactive terminal session. This is a YAML representation of the same exact documentation you would see on link:https://docs.ansible.com/ansible/latest/collections/ansible/builtin/debug_module.html[docs.ansible.com^]. Examples can be cut and paste directly from the module documentation into your Ansible Playbook.
@@ -84,12 +82,10 @@ Ansible Playbooks are link:https://yaml.org/[YAML files^]. YAML is a structured 
 
 Create a new file in Visual Studio Code:
 
-// TODO: Copy image from ansible-workshops/exercises/ansible_network/3-facts/images/vscode_blank_file.png
-image::vscode_blank_file.png[VS Code new file,align="center",link=self,window=blank,width=600]
+image::vscode_new_file.png[VS Code new file,align="center",link=self,window=blank,width=600]
 
 For simplicity please name the playbook `facts.yml`:
 
-// TODO: Copy image from ansible-workshops/exercises/ansible_network/3-facts/images/vscode_save_as.png
 image::vscode_save_as.png[VS Code save as,align="center",link=self,window=blank,width=600]
 
 Enter the following play definition into `facts.yml`:
@@ -135,22 +131,19 @@ Execute the Ansible Playbook by running `ansible-navigator`:
 
 [source,bash]
 ----
-$ ansible-navigator run facts.yml
+ansible-navigator run facts.yml
 ----
 
 This will open an interactive session while the playbook runs:
 
-// TODO: Copy image from ansible-workshops/exercises/ansible_network/3-facts/images/ansible-navigator-facts.png
 image::ansible-navigator-facts.png[ansible-navigator run facts.yml,align="center",link=self,window=blank,width=600]
 
 To zoom into the playbook output we can press **0** which will show us a host-centric view. Since there is only one host, there is just one option.
 
-// TODO: Copy image from ansible-workshops/exercises/ansible_network/3-facts/images/ansible-navigator-hosts.png
 image::ansible-navigator-hosts.png[ansible-navigator zoom hosts,align="center",link=self,window=blank,width=600]
 
 To see the verbose output of **rtr1** press **0** one more time to zoom into the module return values.
 
-// TODO: Copy image from ansible-workshops/exercises/ansible_network/3-facts/images/ansible-navigator-module.png
 image::ansible-navigator-module.png[ansible-navigator zoom module,align="center",link=self,window=blank,width=600]
 
 You can scroll down to view any facts that were collected from the Cisco network device.
@@ -190,7 +183,6 @@ The full command is:
 ansible-navigator run facts.yml --mode stdout
 ----
 
-// TODO: Copy image from ansible-workshops/exercises/ansible_network/3-facts/images/ansible-navigator-facts-stdout.png
 image::ansible-navigator-facts-stdout.png[ansible-navigator stdout screenshot,align="center",link=self,window=blank,width=600]
 
 Using less than 20 lines of "code" you have just automated version and serial number collection. Imagine if you were running this against your production network! You have actionable data in hand that does not go out of date.
@@ -199,7 +191,7 @@ Using less than 20 lines of "code" you have just automated version and serial nu
 
 In this module, you learned how to:
 
-* Use `ansible-navigator :doc` to access module documentation directly from the terminal without an internet connection, with documentation that matches the version of Ansible on the control node
+* Use `ansible-navigator :doc` to access module documentation directly from the terminal without an internet connection
 * Build an Ansible Playbook from scratch to gather network device facts
 * Use the link:https://docs.ansible.com/ansible/latest/collections/cisco/ios/ios_facts_module.html[cisco.ios.ios_facts module^] to gather structured data specific to Cisco IOS -- with relevant modules available for each network platform (e.g. `junos_facts` for Juniper Junos, `eos_facts` for Arista EOS)
 * Use the link:https://docs.ansible.com/ansible/latest/modules/debug_module.html[debug module^] to display specific fact values such as OS version and serial number in the terminal output

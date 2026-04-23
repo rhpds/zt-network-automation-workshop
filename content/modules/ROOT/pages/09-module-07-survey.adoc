@@ -3,7 +3,7 @@
 :toc: macro
 :toclevels: 1
 
-This module demonstrates the use of Automation controller link:https://docs.redhat.com/en/documentation/red_hat_ansible_automation_platform/latest/html/using_automation_execution/controller-job-templates#controller-surveys-in-job-templates[survey feature^]. Surveys set extra variables for the playbook similar to "Prompt for Extra Variables" does, but in a user-friendly question and answer way. Surveys also allow for validation of user input.
+This module demonstrates the use of Ansible Automation Platform link:https://docs.redhat.com/en/documentation/red_hat_ansible_automation_platform/latest/html/using_automation_execution/controller-job-templates#controller-surveys-in-job-templates[survey feature^]. Surveys set extra variables for the playbook similar to "Prompt for Extra Variables" does, but in a user-friendly question and answer way. Surveys also allow for validation of user input.
 
 == Learning objectives
 
@@ -17,7 +17,6 @@ By the end of this module, you will be able to:
 
 . Open the web UI and click on the **Templates** link on the left menu.
 +
-// TODO: Copy image from ansible-workshops/exercises/ansible_network/7-controller-survey/images/controller_templates.png
 image::controller_templates.png[Templates link,align="center",link=self,window=blank,width=600]
 
 . Click on the blue **Create template** button and select **Create job template** to create a new job template (make sure to select `Job Template` and not `Workflow Template`)
@@ -29,7 +28,7 @@ image::controller_templates.png[Templates link,align="center",link=self,window=b
 | Job Type | Run
 | Inventory | Workshop Inventory
 | Project | Workshop Project
-| Execution Environment | network workshop execution environment
+| Execution Environment | Network EE
 | Playbook | `playbooks/network_banner.yml`
 | Credential | Workshop Credential
 |===
@@ -92,12 +91,10 @@ In this step you will create a "survey" of user input form to collect input from
 
 . Click on the **Survey** tab within the Network-Banner Job Template
 +
-// TODO: Copy image from ansible-workshops/exercises/ansible_network/7-controller-survey/images/controller_job_survey.png
 image::controller_job_survey.png[Survey tab,align="center",link=self,window=blank,width=600]
 
 . Click the blue **Create survey question** button
 +
-// TODO: Copy image from ansible-workshops/exercises/ansible_network/7-controller-survey/images/controller_add_survey.png
 image::controller_add_survey.png[Add survey button,align="center",link=self,window=blank,width=600]
 
 . Fill out the fields
@@ -114,14 +111,12 @@ image::controller_add_survey.png[Add survey button,align="center",link=self,wind
 +
 For example:
 +
-// TODO: Copy image from ansible-workshops/exercises/ansible_network/7-controller-survey/images/controller_survey_q_one.png
 image::controller_survey_q_one.png[Survey question one,align="center",link=self,window=blank,width=600]
 
 . Click **Save survey question**
 
 . Click the blue **Create survey question** button back in the **Survey** tab to create another question
 +
-// TODO: Copy image from ansible-workshops/exercises/ansible_network/7-controller-survey/images/controller_add_survey.png
 image::controller_add_survey.png[Add survey button,align="center",link=self,window=blank,width=600]
 
 . Next we will create a survey prompt to gather the `banner_type`. This will either be "motd" or "login" and will default to "login" per the playbook above.
@@ -140,14 +135,12 @@ image::controller_add_survey.png[Add survey button,align="center",link=self,wind
 +
 For example:
 +
-// TODO: Copy image from ansible-workshops/exercises/ansible_network/7-controller-survey/images/controller_survey_q_two.png
 image::controller_survey_q_two.png[Survey question two,align="center",link=self,window=blank,width=600]
 
 . Click **Save survey question**
 
 . Ensure the toggle switch is set to **Survey Enabled**
 +
-// TODO: Copy image from ansible-workshops/exercises/ansible_network/7-controller-survey/images/controller_survey_toggle.png
 image::controller_survey_toggle.png[Survey toggle,align="center",link=self,window=blank,width=600]
 
 . Click **Back to Templates**
@@ -156,7 +149,6 @@ image::controller_survey_toggle.png[Survey toggle,align="center",link=self,windo
 
 . Click on the rocket ship to launch the job template.
 +
-// TODO: Copy image from ansible-workshops/exercises/ansible_network/7-controller-survey/images/controller_launch_template.png
 image::controller_launch_template.png[Launch template,align="center",link=self,window=blank,width=600]
 +
 The job will immediately prompt the user to set the banner and the type.
@@ -167,12 +159,10 @@ The job will immediately prompt the user to set the banner and the type.
 
 . Click next to see how the survey rendered the input as extra vars for the Ansible Playbook. For this example the banner text is set as "This router was configured by Ansible".
 +
-// TODO: Copy image from ansible-workshops/exercises/ansible_network/7-controller-survey/images/controller_survey.png
 image::controller_survey.png[Survey screen,align="center",link=self,window=blank,width=600]
 
 . Click the blue **Launch template** button to kick off the job.
 +
-// TODO: Copy image from ansible-workshops/exercises/ansible_network/7-controller-survey/images/controller_launch.png
 image::controller_launch.png[Launch button,align="center",link=self,window=blank,width=600]
 
 Let the job run to completion. Let the instructor know if anything fails.
@@ -183,14 +173,14 @@ Let the job run to completion. Let the instructor know if anything fails.
 +
 [source,bash]
 ----
-[{bastion_user}@{bastion_hostname}]$ ssh rtr1
+ssh rtr1
 ----
 +
 The banner will appear on login. Here is an example from above:
 +
 [source,bash]
 ----
-[{bastion_user}@{bastion_hostname} ~]$ ssh rtr1
+[rhel@vscode ~]$ ssh rtr1
 Warning: Permanently added 'rtr1,3.237.253.154' (RSA) to the list of known hosts.
 
 This router was configured by Ansible
