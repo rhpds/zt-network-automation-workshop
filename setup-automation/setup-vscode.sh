@@ -86,4 +86,48 @@ if command -v podman &>/dev/null; then
     || echo "WARNING: Could not pull network EE" >> /tmp/progress.log
 fi
 
+# ---------------------------------------------------------------------------
+# Router SSH access — wrapper scripts so students can type `ssh rtr1` or `rtr1`
+# from the VS Code terminal. Routers are reachable via containerlab port forwarding.
+# ---------------------------------------------------------------------------
+setup_router_access() {
+  echo "Setting up router SSH access on vscode VM..." >> /tmp/progress.log
+
+  if ! command -v sshpass &>/dev/null; then
+    echo "WARNING: sshpass not available; router SSH wrappers will not work" >> /tmp/progress.log
+    return 0
+  fi
+
+  for rtr_entry in "rtr1 2222" "rtr2 2223" "rtr3 2225" "rtr4 2226"; do
+    local rtr_name="${rtr_entry% *}"
+    local rtr_port="${rtr_entry#* }"
+    cat > "/usr/local/bin/${rtr_name}" <<WRAPPER
+#!/bin/bash
+exec sshpass -p 'admin@123' ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -p ${rtr_port} admin@containerlab "\$@"
+WRAPPER
+    chmod 755 "/usr/local/bin/${rtr_name}"
+  done
+
+  cat > /etc/profile.d/router-ssh.sh <<'PROFILE'
+ssh() {
+  case "$1" in
+    rtr[1-4])
+      local port
+      case "$1" in
+        rtr1) port=2222 ;; rtr2) port=2223 ;; rtr3) port=2225 ;; rtr4) port=2226 ;;
+      esac
+      sshpass -p 'admin@123' /usr/bin/ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -p "$port" "admin@containerlab" "${@:2}"
+      ;;
+    *)
+      /usr/bin/ssh "$@"
+      ;;
+  esac
+}
+PROFILE
+  chmod 644 /etc/profile.d/router-ssh.sh
+
+  echo "Router access configured on vscode — rtr1/rtr2/rtr3/rtr4 via containerlab ports" >> /tmp/progress.log
+}
+setup_router_access
+
 echo "setup-vscode.sh complete" >> /tmp/progress.log
