@@ -5,7 +5,7 @@ virtualmachines:
     image: "ansiblebu-containerlab-v2"
     memory: "32Gi"
     cores: 12
-    image_size: "80Gi"
+    image_size: "200Gi"
     tags:
       - key: "AnsibleGroup"
         value: "isolated"
