@@ -180,7 +180,7 @@ no aaa new-model
 +
 NOTE: The output above is a snippet. The full running configuration is much longer and will include interfaces, routing protocols, access lists, and more.
 
-* Examine the remaining routers (`rtr2.txt`, `rtr3.txt`, `rtr4.txt`). This lab includes multiple vendors (Cisco, Arista, and Juniper). Ansible Playbooks can be written to be vendor agnostic -- in this case we provided the Ansible Playbook via the GitHub repo: link:https://github.com/network-automation/toolkit[https://github.com/network-automation/toolkit^]
+* Examine the remaining routers (`rtr2.txt`, `rtr3.txt`, `rtr4.txt`). This lab includes multiple vendors (Cisco, Arista, and Juniper). Ansible Playbooks can be written to be vendor agnostic -- in this case we provided the Ansible Playbook via the GitHub repo: link:https://github.com/rhpds/summit-2026-network-automation-toolkit[https://github.com/rhpds/summit-2026-network-automation-toolkit^]
 
 == Module summary
 

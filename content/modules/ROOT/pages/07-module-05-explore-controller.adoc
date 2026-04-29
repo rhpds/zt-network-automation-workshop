@@ -89,7 +89,7 @@ Note that `GIT` is listed for this project. This means this project is using Git
 +
 image::workshop_project_detail.png[Workshop Project Detail,align="center",link=self,window=blank,width=600]
 +
-NOTE: Source Control URL is set to link:https://github.com/network-automation/toolkit[https://github.com/network-automation/toolkit^].
+NOTE: Source Control URL is set to link:https://github.com/rhpds/summit-2026-network-automation-toolkit[https://github.com/rhpds/summit-2026-network-automation-toolkit^].
 
 == Step 4: Examine the Ansible Automation Platform Workshop Credential
 

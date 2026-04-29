@@ -55,7 +55,7 @@ Here is what the `network_banner.yml` Ansible Playbook looks like:
         name: "../roles/banner"
 ----
 
-NOTE: You can also view the Ansible Playbook here: link:https://github.com/network-automation/toolkit[https://github.com/network-automation/toolkit^]
+NOTE: You can also view the Ansible Playbook here: link:https://github.com/rhpds/summit-2026-network-automation-toolkit[https://github.com/rhpds/summit-2026-network-automation-toolkit^]
 
 The role **banner** has a very simple `main.yml` file:
 
