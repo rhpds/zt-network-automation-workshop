@@ -6,7 +6,7 @@ ansible-navigator:
       - /home/rhel/network-workshop/lab_inventory/hosts
 
   execution-environment:
-    image: quay.io/acme_corp/network-ee:latest
+    image: quay.io/rhpds/summit-2026-acme-corp-network-ee:summit-2026
     enabled: true
     container-engine: podman
     pull:

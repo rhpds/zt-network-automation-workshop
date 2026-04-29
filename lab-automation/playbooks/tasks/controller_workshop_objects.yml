@@ -279,7 +279,7 @@
 - name: "Execution Environment — Network EE"
   ansible.controller.execution_environment:
     name: "Network EE"
-    image: "quay.io/acme_corp/network-ee"
+    image: "quay.io/rhpds/summit-2026-acme-corp-network-ee:summit-2026"
     pull: missing
     organization: "Red Hat network organization"
     state: present
@@ -294,7 +294,7 @@
     name: "Workshop Project"
     organization: "Red Hat network organization"
     scm_type: git
-    scm_url: "https://github.com/network-automation/toolkit"
+    scm_url: "https://github.com/rhpds/summit-2026-network-automation-toolkit"
     state: present
     controller_host: "{{ controller_endpoint.rstrip('/') }}"
     controller_username: "{{ controller_username }}"

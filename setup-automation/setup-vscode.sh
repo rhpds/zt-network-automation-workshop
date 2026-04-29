@@ -95,7 +95,7 @@ chown -R $USER:$USER /home/$USER/.config /home/$USER/.local 2>/dev/null
 EE_PULL_PID=""
 if command -v podman &>/dev/null; then
   echo "Starting network EE pull in background..." >> /tmp/progress.log
-  nohup sudo -u $USER -H podman pull quay.io/acme_corp/network-ee:latest \
+  nohup sudo -u $USER -H podman pull quay.io/rhpds/summit-2026-acme-corp-network-ee:summit-2026 \
     >> /tmp/progress.log 2>&1 &
   EE_PULL_PID=$!
 fi

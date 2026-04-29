@@ -54,7 +54,7 @@ fi
 # ---------------------------------------------------------------------------
 if command -v podman &>/dev/null; then
   echo "Pulling network EE image for ansible-navigator..." >> /tmp/progress.log
-  timeout 180 sudo -u rhel -H podman pull quay.io/acme_corp/network-ee:latest >> /tmp/progress.log 2>&1 \
+  timeout 180 sudo -u rhel -H podman pull quay.io/rhpds/summit-2026-acme-corp-network-ee:summit-2026 >> /tmp/progress.log 2>&1 \
     && echo "Network EE pulled successfully" >> /tmp/progress.log \
     || echo "WARNING: Could not pull network EE (ansible-navigator will try at runtime)" >> /tmp/progress.log
 else
