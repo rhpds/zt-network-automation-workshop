@@ -83,7 +83,7 @@ subscription-manager repos \
   --enable=rhel-9-for-x86_64-appstream-rpms >> /tmp/progress.log 2>&1 || true
 
 echo "Installing packages via dnf (git, podman, sshpass)..." >> /tmp/progress.log
-dnf install -y git podman sshpass >> /tmp/progress.log 2>&1 \
+dnf install -y git podman sshpass python3-pip >> /tmp/progress.log 2>&1 \
   && echo "System packages installed" >> /tmp/progress.log \
   || echo "WARNING: dnf install failed (RHSM may not be registered)" >> /tmp/progress.log
 
@@ -102,11 +102,20 @@ fi
 
 PIP_PID=""
 (
-  curl -sL https://bootstrap.pypa.io/get-pip.py | python3 >> /tmp/progress.log 2>&1
-  chown -R $USER:$USER /home/$USER/.local 2>/dev/null
-  sudo -u $USER /usr/local/bin/pip3 install ansible-navigator --user >> /tmp/progress.log 2>&1 \
-    && echo "ansible-navigator installed" >> /tmp/progress.log \
-    || echo "WARNING: ansible-navigator install failed" >> /tmp/progress.log
+  for attempt in 1 2 3; do
+    echo "ansible-navigator install attempt ${attempt}..." >> /tmp/progress.log
+    if sudo -u $USER -H python3 -m pip install ansible-navigator --user >> /tmp/progress.log 2>&1; then
+      echo "ansible-navigator installed" >> /tmp/progress.log
+      break
+    else
+      echo "WARNING: ansible-navigator install attempt ${attempt} failed (exit $?)" >> /tmp/progress.log
+      if [[ $attempt -lt 3 ]]; then
+        sleep 5
+      else
+        echo "ERROR: ansible-navigator install failed after 3 attempts" >> /tmp/progress.log
+      fi
+    fi
+  done
 ) &
 PIP_PID=$!
 
