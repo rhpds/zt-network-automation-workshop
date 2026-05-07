@@ -13,7 +13,9 @@ This affects both AAP job templates and student CLI exercises from the VS Code t
 
 ## Root Cause
 
-The vrnetlab container image launches QEMU with **`-smp 1`** (single vCPU). The C8000v boot process is extremely CPU-intensive — it generates crypto keys, starts NETCONF/RESTCONF/IOX services, and applies the startup config via serial console. Each operation queues behind the others on a single core.
+**Primary: premature `end` in startup-config.cfg.** The rtr1 startup config on the containerlab image has an extra `end` keyword before the `line vty`, `netconf`, and `restconf` blocks. When vrnetlab replays the config via serial console, `end` drops IOS out of config mode back to enable mode. All subsequent lines (`line vty 0 4`, `netconf detailed-error`, etc.) are interpreted as exec commands, triggering DNS lookups, login prompts, and timeouts that add **7+ minutes** to boot. With the corrected config, boot time drops from ~12 minutes to **~5 minutes**.
+
+**Secondary: single vCPU.** The vrnetlab container image launches QEMU with **`-smp 1`** (single vCPU). The C8000v boot process is CPU-intensive — it generates crypto keys, starts NETCONF/RESTCONF/IOX services, and applies the startup config via serial console. Each operation queues behind the others on a single core.
 
 ## Evidence (collected 2026-05-07)
 
@@ -57,7 +59,57 @@ The full startup config application took over 20 minutes.
 
 The fastest fix (no image rebuild required) is to apply these changes on the containerlab VM at `/home/lab-user/1_multi_vendor_router/`.
 
-### 1. Give the C8000v more CPU and RAM in `routers.clab.yml`
+### 1. Fix the premature `end` in rtr1 startup config (biggest win — 12 min → 5 min)
+
+The baked-in `/home/lab-user/1_multi_vendor_router/configs/rtr1/startup-config.cfg` has an `end` before the `line vty`, `netconf-yang`, and `restconf` blocks. The `end` drops IOS out of config mode, and vrnetlab then sends the remaining config lines as exec commands, causing DNS lookup timeouts and login prompts.
+
+**Remove the premature `end`** so the config flows correctly. The `end` should only appear once, at the very end of the file after all config blocks:
+
+```
+! ... (earlier config) ...
+mgcp profile default
+!
+!
+netconf-yang
+restconf
+!                        ← DO NOT put 'end' here
+!
+line con 0
+ stopbits 1
+line aux 0
+line vty 0 4
+ login local
+ length 0
+ transport input ssh
+line vty 5 20
+ login
+ length 0
+ transport input ssh
+!
+!
+netconf detailed-error
+netconf max-sessions 16
+!
+!
+!
+!
+!
+netconf-yang
+restconf
+end                      ← only 'end' goes here, at the very bottom
+```
+
+To push this fix automatically before topology deploy, add an `ansible.builtin.copy` task in the deploy playbook that replaces the startup config before `containerlab deploy --reconfigure`.
+
+### 2. Disable PnP/ZTP in the rtr1 startup config
+
+Add this line to `configs/rtr1/startup-config.cfg` after `no aaa new-model`. The Cisco PnP agent runs a discovery loop at boot when no PnP server exists:
+
+```
+no pnp profile pnp-zero-touch
+```
+
+### 3. Give the C8000v more CPU and RAM in `routers.clab.yml`
 
 Add `cpu: 4` and `memory: 8192` to the `cisco_c8000v` kind definition, and set `ALREADY_CONFIGURED` to skip vrnetlab's slow serial console config replay:
 
