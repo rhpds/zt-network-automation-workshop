@@ -53,11 +53,78 @@ The full startup config application took over 20 minutes.
 
 **Host load during this time was only 2.90** — the 12 host CPUs are not saturated. The bottleneck is entirely the single QEMU vCPU.
 
-## Recommendation
+## Recommended Fix: Topology + Startup Config Changes
 
-**Rebuild the C8000v vrnetlab image with `-smp 2` (or `-smp 4`).** The host has 12 cores with plenty of headroom. Giving the C8000v 2 vCPUs should roughly halve boot time; 4 vCPUs would bring it closer to the 5-8 minute range.
+The fastest fix (no image rebuild required) is to apply these changes on the containerlab VM at `/home/lab-user/1_multi_vendor_router/`.
 
-The change is in the vrnetlab `launch.py` (or equivalent QEMU launch script) inside the container image `registry.gitlab.com/redhatautomation/cat8:17.13.01a`. Look for the `-smp 1` flag in the QEMU command line:
+### 1. Give the C8000v more CPU and RAM in `routers.clab.yml`
+
+Add `cpu: 4` and `memory: 8192` to the `cisco_c8000v` kind definition, and set `ALREADY_CONFIGURED` to skip vrnetlab's slow serial console config replay:
+
+```yaml
+name: routers
+topology:
+  kinds:
+    arista_veos:
+      image: registry.gitlab.com/redhatautomation/veos-ee:4.32.0F
+    cisco_c8000v:
+      image: registry.gitlab.com/redhatautomation/cat8:17.13.01a
+      cpu: 4
+      memory: 8192
+    juniper_vsrx:
+      image: registry.gitlab.com/redhatautomation/juniper-ee:23.2R2.21
+
+  nodes:
+    rtr1:
+      kind: cisco_c8000v
+      startup-config: configs/rtr1/startup-config.cfg
+      mgmt-ipv4: 172.20.20.10
+      env:
+        ALREADY_CONFIGURED: "true"
+      ports:
+        - "2222:22"
+
+    rtr2:
+      kind: arista_veos
+      startup-config: configs/rtr2/startup-config.cfg
+      mgmt-ipv4: 172.20.20.20
+      ports:
+        - "2223:22"
+
+    rtr3:
+      kind: juniper_vsrx
+      startup-config: configs/rtr3/startup-config.cfg
+      mgmt-ipv4: 172.20.20.30
+      ports:
+        - "2224:830"
+        - "2225:22"
+
+    rtr4:
+      kind: arista_veos
+      startup-config: configs/rtr4/startup-config.cfg
+      mgmt-ipv4: 172.20.20.40
+      ports:
+        - "2226:22"
+
+  links:
+    - endpoints: ["rtr1:eth1", "rtr2:eth1"]
+    - endpoints: ["rtr1:eth2", "rtr3:ge-0/0/0"]
+    - endpoints: ["rtr4:eth1", "rtr2:eth2"]
+```
+
+### 2. Disable PnP/ZTP in the rtr1 startup config
+
+Add this line to `configs/rtr1/startup-config.cfg`. The Cisco PnP agent runs a ~10-minute discovery loop at boot when no PnP server exists, which is wasted time in a lab environment:
+
+```
+no pnp profile pnp-zero-touch
+```
+
+Place it after the `no aaa new-model` line or near the end of the global config section.
+
+### 3. (Optional) Rebuild the vrnetlab image with `-smp 2`
+
+If the `cpu: 4` topology-level override doesn't propagate into the QEMU `-smp` flag (depends on how the vrnetlab `launch.py` is written), the image itself needs to be rebuilt. Look for `-smp 1` in the QEMU command line inside the container image `registry.gitlab.com/redhatautomation/cat8:17.13.01a`:
 
 ```
 qemu-system-x86_64 -enable-kvm ... -smp 1 -m 4096 ...
@@ -69,23 +136,21 @@ Change to:
 qemu-system-x86_64 -enable-kvm ... -smp 2 -m 4096 ...
 ```
 
-### Alternative / complementary mitigations
+### Other complementary mitigations
 
 1. **Increase the topology deploy wait time.** The `1_multi_vendor_router_up.yml` playbook waits 120 seconds after `containerlab deploy`. With the current single-vCPU image, this should be **600 seconds** (10 minutes) minimum. This doesn't fix the root cause but prevents students from hitting half-booted routers.
 
-2. **Simplify the startup config.** The C8000v config enables IOX, RESTCONF, NETCONF, crypto key generation, BGP, OSPF, and GRE tunnels. Each service adds boot time. If RESTCONF and IOX aren't needed for the workshop exercises, removing them from the startup config would reduce boot time.
-
-3. **Pre-boot the topology before students access the lab.** Deploy the containerlab topology as part of the provisioning pipeline (e.g., in `setup-containerlab.sh`) rather than as a separate AAP job, and add a health-check gate that waits for all nodes to reach `(healthy)` before marking the lab as ready.
+2. **Pre-boot the topology before students access the lab.** Deploy the containerlab topology as part of the provisioning pipeline (e.g., in `setup-containerlab.sh`) rather than as a separate AAP job, and add a health-check gate that waits for all nodes to reach `(healthy)` before marking the lab as ready.
 
 ## How to Verify the Fix
 
-After rebuilding the image, deploy the topology and time the boot:
+After applying the changes, redeploy the topology and time the boot:
 
 ```bash
 cd /home/lab-user/1_multi_vendor_router
 sudo containerlab deploy --reconfigure
 
-# Poll until healthy (should be under 10 min with -smp 2)
+# Poll until healthy (should be well under 10 min with cpu: 4 + PnP disabled)
 while true; do
   status=$(sudo containerlab inspect 2>/dev/null | grep rtr1 | grep -o '(healthy)')
   if [[ -n "$status" ]]; then
