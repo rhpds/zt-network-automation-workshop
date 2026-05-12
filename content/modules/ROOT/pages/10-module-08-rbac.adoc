@@ -155,7 +155,7 @@ image::survey-enabled.png[Survey enabled,align="center",link=self,window=blank,w
 +
 image::verify-survey.png[Verify survey questions,align="center",link=self,window=blank,width=600]
 
-. Click on the blue **Save survey question**
+. Click the blue **Create survey question** button
 
 == Step 7: Login as network-operator
 

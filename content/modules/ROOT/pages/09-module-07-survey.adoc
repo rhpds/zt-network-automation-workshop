@@ -113,9 +113,9 @@ For example:
 +
 image::controller_survey_q_one.png[Survey question one,align="center",link=self,window=blank,width=600]
 
-. Click **Save survey question**
+. Click the blue **Create survey question** button
 
-. Click the blue **Create survey question** button back in the **Survey** tab to create another question
+. Click the blue **Create survey question** button in the **Survey** tab to add another question
 +
 image::controller_add_survey.png[Add survey button,align="center",link=self,window=blank,width=600]
 
@@ -137,7 +137,7 @@ For example:
 +
 image::controller_survey_q_two.png[Survey question two,align="center",link=self,window=blank,width=600]
 
-. Click **Save survey question**
+. Click the blue **Create survey question** button
 
 . Ensure the toggle switch is set to **Survey Enabled**
 +
@@ -147,9 +147,11 @@ image::controller_survey_toggle.png[Survey toggle,align="center",link=self,windo
 
 == Step 4: Launch the Job Template
 
-. Click on the rocket ship to launch the job template.
+Launch the **Network-Banner** job template you created in Step 1. If you are not already on that template, open **Templates** in the left menu, find **Network-Banner** in the list, and open it—then follow the steps below.
+
+. Click the rocket ship icon next to **Network-Banner** to launch that job template (or open **Network-Banner** and use **Launch** from the template detail view).
 +
-image::controller_launch_template.png[Launch template,align="center",link=self,window=blank,width=600]
+image::controller_launch_template.png[Launch job template from Templates list,align="center",link=self,window=blank,width=600]
 +
 The job will immediately prompt the user to set the banner and the type.
 
@@ -161,15 +163,19 @@ The job will immediately prompt the user to set the banner and the type.
 +
 image::controller_survey.png[Survey screen,align="center",link=self,window=blank,width=600]
 
-. Click the blue **Launch template** button to kick off the job.
+. Click the blue **Finish** button to kick off the job. (Some AAP versions label this control differently; use the primary blue action that submits the survey and starts the run.)
 +
-image::controller_launch.png[Launch button,align="center",link=self,window=blank,width=600]
+image::controller_launch.png[Finish button to submit survey and start job,align="center",link=self,window=blank,width=600]
+
+NOTE: Workshop screenshots may still show **Launch template**; replace them when you capture the current UI so the button label matches what students see.
 
 Let the job run to completion. Let the instructor know if anything fails.
 
 == Step 5: Verify the banner
 
-. Login to one of the routers and see the banner setup
+The **Network-Banner** job applied the same banner intent across every router in the inventory—Cisco IOS-XE, Arista EOS, and Juniper Junos—without you choosing per-device syntax. Ansible used each host's `ansible_network_os` (and the shared `banner` role) so the right modules and CLI ran for each platform; that vendor-specific work stays in the role and is largely invisible to the person running the template.
+
+. Log in to one of the routers and confirm the banner appears as you set it in the survey
 +
 [source,bash]
 ----
