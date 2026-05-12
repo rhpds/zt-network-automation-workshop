@@ -117,6 +117,8 @@ image::step3_final.png[Banner node,align="center",link=self,window=blank,width=6
 | Node alias |
 |===
 +
+NOTE: The **Job template** list is long. If **Network-User** does not appear at first, scroll the list or click **Load More** until you can select it.
++
 image::step4_add_node.png[Select network user job,align="center",link=self,window=blank,width=600]
 
 . Click the blue **Next** button and fill out the survey field (feel free to leave the defaults!)
