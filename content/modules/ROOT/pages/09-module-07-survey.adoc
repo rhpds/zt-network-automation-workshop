@@ -163,11 +163,9 @@ The job will immediately prompt the user to set the banner and the type.
 +
 image::controller_survey.png[Survey screen,align="center",link=self,window=blank,width=600]
 
-. Click the blue **Finish** button to kick off the job. (Some AAP versions label this control differently; use the primary blue action that submits the survey and starts the run.)
+. Click the blue **Finish** button to submit the survey and start the job.
 +
-image::controller_launch.png[Finish button to submit survey and start job,align="center",link=self,window=blank,width=600]
-
-NOTE: Workshop screenshots may still show **Launch template**; replace them when you capture the current UI so the button label matches what students see.
+image::controller_launch.png[Finish button,align="center",link=self,window=blank,width=600]
 
 Let the job run to completion. Let the instructor know if anything fails.
 
