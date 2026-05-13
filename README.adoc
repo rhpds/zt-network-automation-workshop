@@ -125,6 +125,8 @@ Virtual routers do not survive a VM reboot because Containerlab topologies run a
 2. **systemd service** -- `containerlab-resume.service` runs at boot (after `network-online.target`). It reads the state file, runs `containerlab destroy` in that directory (best-effort, same idea as `lab-automation/playbooks/1_multi_vendor_router_down.yml`), then `containerlab deploy --reconfigure` so a cold restart does not leave stale nodes (for example Arista) conflicting with the new deploy.
 3. **Startup time** -- After the service completes, routers report `health: starting` and need 1-3 minutes to fully boot before SSH is available. This is normal.
 
+For **labs provisioned before** the resume script ran `containerlab destroy` before deploy, use manual `containerlab` steps or re-run `setup-containerlab.sh`; see link:README-containerlab.md[README-containerlab.md] (subsections _Clean redeploy after VM stop/start_ and _Refresh `containerlab-resume`_ under _Deploy the lab_).
+
 === Verifying the service
 
 [source,shell]

@@ -66,6 +66,32 @@ sudo containerlab deploy --reconfigure
 
 **Wait** until the command finishes. Nodes need time to boot (often **1–3+ minutes** depending on size).
 
+### Clean redeploy after VM stop/start or node conflicts
+
+If the lab acts broken after the containerlab VM was **powered off**, **suspended/resumed**, or `deploy --reconfigure` fights **stale containers** (sometimes seen with **Arista vEOS**), tear the topology down fully, then deploy again — same sequence as `lab-automation/playbooks/1_multi_vendor_router_down.yml` plus deploy:
+
+```bash
+TOPO_DIR="$(cat /etc/containerlab/last-topology 2>/dev/null || echo /home/lab-user/1_multi_vendor_router)"
+cd "$TOPO_DIR"
+sudo containerlab destroy
+sudo containerlab deploy --reconfigure
+```
+
+Use another directory if your topology is not under `1_multi_vendor_router` (the path in `/etc/containerlab/last-topology` is the one the workshop records after a successful deploy).
+
+### Refresh `containerlab-resume` on an older image
+
+New workshop images install a resume helper that runs **`containerlab destroy`** (ignored if nothing exists) **before** `containerlab deploy --reconfigure` on boot. If your VM still has the old helper (deploy only), either:
+
+- **Re-run setup** from a current copy of the repo (overwrites the script):
+
+  ```bash
+  curl -fsSL https://github.com/rhpds/zt-network-automation-workshop/archive/refs/heads/main.tar.gz | tar xz -C /tmp
+  sudo bash /tmp/zt-network-automation-workshop-main/setup-automation/setup-containerlab.sh
+  ```
+
+- **Or** replace `/usr/local/bin/containerlab-resume` manually so it matches [setup-containerlab.sh](https://github.com/rhpds/zt-network-automation-workshop/blob/main/setup-automation/setup-containerlab.sh) (`install_clab_resume_service` heredoc).
+
 ---
 
 ## 4. See what is running (build inventory hints)
