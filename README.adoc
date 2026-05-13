@@ -122,7 +122,7 @@ Virtual routers do not survive a VM reboot because Containerlab topologies run a
 === How it works
 
 1. **State file** -- When a topology is deployed (via the Ansible playbook or at first boot), the topology directory path is written to `/etc/containerlab/last-topology`.
-2. **systemd service** -- `containerlab-resume.service` runs at boot (after `network-online.target`). It reads the state file and runs `containerlab deploy --reconfigure` in the recorded directory.
+2. **systemd service** -- `containerlab-resume.service` runs at boot (after `network-online.target`). It reads the state file, runs `containerlab destroy` in that directory (best-effort, same idea as `lab-automation/playbooks/1_multi_vendor_router_down.yml`), then `containerlab deploy --reconfigure` so a cold restart does not leave stale nodes (for example Arista) conflicting with the new deploy.
 3. **Startup time** -- After the service completes, routers report `health: starting` and need 1-3 minutes to fully boot before SSH is available. This is normal.
 
 === Verifying the service
@@ -144,7 +144,7 @@ sudo containerlab inspect
 
 === Implementation details
 
-* **Helper script**: `/usr/local/bin/containerlab-resume` -- reads the state file and runs the deploy
+* **Helper script**: `/usr/local/bin/containerlab-resume` -- reads the state file, runs `containerlab destroy` (ignored if nothing to tear down), then `containerlab deploy --reconfigure`
 * **Unit file**: `/etc/systemd/system/containerlab-resume.service` -- `Type=oneshot`, `RemainAfterExit=true`
 * **State file**: `/etc/containerlab/last-topology` -- single line containing the absolute path to the topology directory
 * **Installed by**: `setup-automation/setup-containerlab.sh` (`install_clab_resume_service` function)

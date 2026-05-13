@@ -250,8 +250,13 @@ if [[ -z "$TOPO_DIR" || ! -d "$TOPO_DIR" ]]; then
   exit 0
 fi
 
+echo "containerlab-resume: destroying existing topology in $TOPO_DIR (if any)"
+cd "$TOPO_DIR" || exit 1
+# Clean slate after pause/resume or hard stop — avoids stale containers (e.g. vEOS)
+# conflicting with deploy --reconfigure. destroy may fail if nothing exists; ignore.
+containerlab destroy || true
 echo "containerlab-resume: re-deploying topology in $TOPO_DIR"
-cd "$TOPO_DIR" && containerlab deploy --reconfigure
+containerlab deploy --reconfigure
 RESUME
   chmod 755 /usr/local/bin/containerlab-resume
 
