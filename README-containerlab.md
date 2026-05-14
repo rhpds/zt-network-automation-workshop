@@ -183,7 +183,7 @@ You can paste **sanitized** `containerlab inspect` (or JSON) into a note when wo
 | `deploy` fails on bind / bridge | Another topology still running — **`destroy`** first, or fix conflicts in `.clab.yml`. |
 | Cannot SSH to router | Check **`inspect`** mgmt IP, lab credentials, and whether you must use **external LB IP:port** instead. |
 | Wrong topology file | `ls *.yml` in the lab folder and pass **`-t`** explicitly. |
-| **`docker logs clab-routers-rtr2`** shows **`failed to set MSR`** / QEMU assertion, **`Connection refused`** to mgmt IP | QEMU died before vEOS booted — **KVM / nested virt / host–QEMU mismatch** (see <<qemu-msr-troubleshooting>>). Not fixed by `destroy`+`deploy` alone; needs host/image/platform change. |
+| **`docker logs`** ends with **`QemuBroken`** / **`Unable to connect to qemu monitor`** (many retries) | Scroll to the **start** of the same log for **`failed to set MSR`** — the monitor errors are a **follow-on** after QEMU crashed. Same fix path as the MSR row above. |
 
 [[qemu-msr-troubleshooting]]
 ### QEMU / KVM: `failed to set MSR` (Arista vEOS container exits)
@@ -196,6 +196,8 @@ kvm_buf_set_msrs: Assertion `ret == cpu->kvm_msr_buf->nmsrs' failed.
 ```
 
 The vrnetlab image starts QEMU with **`-enable-kvm`** and **`-cpu host`**. On some **nested** KVM setups (VM inside OpenShift/KubeVirt, or certain cloud metal), passing through **host** CPU MSRs fails and QEMU aborts — so **no SSH listener** ever comes up.
+
+**Reading the logs:** The fatal lines (`failed to set MSR`, `kvm_buf_set_msrs`, STDERR from `qemu-system-x86_64`) usually appear **at the top** of `docker logs` right after launch. The long run of **`Unable to connect to qemu monitor (port 4000)`** is **not** a separate bug — vrnetlab keeps retrying because **QEMU never stayed running**, so nothing is listening on the monitor port. The traceback ends with **`vrnetlab.QemuBroken`**. In **`containerlab inspect`**, expect both **Arista** nodes (**rtr2**, **rtr4**) as **`exited`** with **N/A** mgmt IP while Cisco/Juniper may still show **running** (they use a different QEMU/CPU path).
 
 **Collect evidence (on the containerlab VM):**
 
