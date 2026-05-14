@@ -2,6 +2,14 @@
 
 Audience: platform, virtualization, or image owners (e.g. “Wilson”) who need to understand **what this lab runs on** and **why Arista vEOS sometimes dies with MSR / QEMU errors** under nested KVM.
 
+## Captured logs (2026-05-14 incident)
+
+These files are **verbatim** (or full-line reconstruction of the repeating monitor retries) from one failing lab so you can search or attach without re-scrolling chat:
+
+* link:wilson/docker-logs-clab-routers-rtr2.txt[`wilson/docker-logs-clab-routers-rtr2.txt`] — full `docker logs clab-routers-rtr2` including **`qemu cmd:`**, **MSR / kvm_buf_set_msrs** STDERR, all **60** monitor retry lines, and **`QemuBroken`** traceback.
+* link:wilson/containerlab-inspect.txt[`wilson/containerlab-inspect.txt`] — `sudo containerlab inspect` after failure (**Arista `exited`**, Cisco/Juniper still **running**).
+* link:wilson/host-kvm-sanity.txt[`wilson/host-kvm-sanity.txt`] — `uname -r` and `ls -la /dev/kvm` on the containerlab VM.
+
 ---
 
 ## 1. What stack this workshop runs on
@@ -92,9 +100,9 @@ On the containerlab VM, **`/dev/kvm`** exists and is typically mode `666` — so
 
 ## 5. Escalation packet (attach to ticket)
 
-1. Full **`docker logs clab-routers-rtr2`** from the **start** (include **`qemu cmd:`** and **MSR** lines, not only monitor retries).
-2. **`sudo containerlab inspect`** from topology dir (shows **exited** for both Arista nodes).
-3. **`uname -r`** and **`ls -la /dev/kvm`** from the **containerlab** VM.
+1. Full **`docker logs clab-routers-rtr2`** from the **start** (include **`qemu cmd:`** and **MSR** lines, not only monitor retries) — see link:wilson/docker-logs-clab-routers-rtr2.txt[`wilson/docker-logs-clab-routers-rtr2.txt`].
+2. **`sudo containerlab inspect`** from topology dir (shows **exited** for both Arista nodes) — link:wilson/containerlab-inspect.txt[`wilson/containerlab-inspect.txt`].
+3. **`uname -r`** and **`ls -la /dev/kvm`** from the **containerlab** VM — link:wilson/host-kvm-sanity.txt[`wilson/host-kvm-sanity.txt`].
 4. One-line summary: **Nested KVM: vEOS QEMU uses `-cpu host,level=9` + KVM; MSR 0x345 set fails; QEMU exits; need image CPU model or hypervisor nested-virt fix.**
 
 ---
@@ -105,5 +113,6 @@ On the containerlab VM, **`/dev/kvm`** exists and is typically mode `666` — so
 - `setup-automation/setup-containerlab.sh` — `containerlab-resume` (**destroy** then **deploy --reconfigure** on boot).
 - `lab-automation/playbooks/1_multi_vendor_router_up.yml` / `1_multi_vendor_router_down.yml` — topology deploy/destroy from Ansible.
 - `README-containerlab.md` — operator-facing notes including a **QEMU / MSR** troubleshooting subsection.
+- `wilson/` — captured **log attachments** linked from `wilson.md` (same incident).
 
 This file (`wilson.md`) is narrative documentation only; it is not executed by any automation.
