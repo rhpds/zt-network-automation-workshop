@@ -183,6 +183,43 @@ You can paste **sanitized** `containerlab inspect` (or JSON) into a note when wo
 | `deploy` fails on bind / bridge | Another topology still running — **`destroy`** first, or fix conflicts in `.clab.yml`. |
 | Cannot SSH to router | Check **`inspect`** mgmt IP, lab credentials, and whether you must use **external LB IP:port** instead. |
 | Wrong topology file | `ls *.yml` in the lab folder and pass **`-t`** explicitly. |
+| **`docker logs clab-routers-rtr2`** shows **`failed to set MSR`** / QEMU assertion, **`Connection refused`** to mgmt IP | QEMU died before vEOS booted — **KVM / nested virt / host–QEMU mismatch** (see <<qemu-msr-troubleshooting>>). Not fixed by `destroy`+`deploy` alone; needs host/image/platform change. |
+
+[[qemu-msr-troubleshooting]]
+### QEMU / KVM: `failed to set MSR` (Arista vEOS container exits)
+
+**Symptoms:** `ssh rtr2` (or `172.20.20.20`) → **Connection refused**. `docker logs clab-routers-rtr2` shows lines like:
+
+```
+qemu-system-x86_64: error: failed to set MSR 0x345 to 0x2000
+kvm_buf_set_msrs: Assertion `ret == cpu->kvm_msr_buf->nmsrs' failed.
+```
+
+The vrnetlab image starts QEMU with **`-enable-kvm`** and **`-cpu host`**. On some **nested** KVM setups (VM inside OpenShift/KubeVirt, or certain cloud metal), passing through **host** CPU MSRs fails and QEMU aborts — so **no SSH listener** ever comes up.
+
+**Collect evidence (on the containerlab VM):**
+
+```bash
+# Confirm the container is restarting or unhealthy
+sudo docker ps -a --filter name=rtr2
+sudo docker logs clab-routers-rtr2 2>&1 | tail -80
+
+# Host KVM and kernel
+ls -la /dev/kvm
+lsmod | grep kvm
+uname -r
+
+# Recent KVM / QEMU messages from the host
+sudo dmesg -T | tail -50
+```
+
+**What usually fixes it (platform / image owner, not students):**
+
+- Run lab nodes on **bare metal** or **L1 KVM** where nested MSR passthrough is supported, **or**
+- Rebuild the **vEOS vrnetlab** image to use a **fixed CPU model** (e.g. `-cpu IvyBridge` or similar) instead of `-cpu host` when `KVM` is nested, **or**
+- Hypervisor/kernel update so MSR `0x345` is handled correctly in nested mode.
+
+**What students can try:** redeploy after a clean **`containerlab destroy`** (rules out stale state). If logs still show **MSR** errors, escalate to whoever owns the **containerlab VM image** and the **Arista `veos-ee` registry image** — this is not an Ansible or workshop inventory bug.
 
 ---
 
