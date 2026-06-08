@@ -195,7 +195,7 @@ qemu-system-x86_64: error: failed to set MSR 0x345 to 0x2000
 kvm_buf_set_msrs: Assertion `ret == cpu->kvm_msr_buf->nmsrs' failed.
 ```
 
-The vrnetlab image starts QEMU with **`-enable-kvm`** and **`-cpu host`**. On some **nested** KVM setups (VM inside OpenShift/KubeVirt, or certain cloud metal), passing through **host** CPU MSRs fails and QEMU aborts — so **no SSH listener** ever comes up.
+The vrnetlab image starts QEMU with **`-enable-kvm`** and **`-cpu host`** (often **`host,level=9`** in logs). On some **nested** KVM setups (VM inside OpenShift/KubeVirt, or certain cloud metal), passing through **host** CPU MSRs fails and QEMU aborts — so **no SSH listener** ever comes up.
 
 **Reading the logs:** The fatal lines (`failed to set MSR`, `kvm_buf_set_msrs`, STDERR from `qemu-system-x86_64`) usually appear **at the top** of `docker logs` right after launch. The long run of **`Unable to connect to qemu monitor (port 4000)`** is **not** a separate bug — vrnetlab keeps retrying because **QEMU never stayed running**, so nothing is listening on the monitor port. The traceback ends with **`vrnetlab.QemuBroken`**. In **`containerlab inspect`**, expect both **Arista** nodes (**rtr2**, **rtr4**) as **`exited`** with **N/A** mgmt IP while Cisco/Juniper may still show **running** (they use a different QEMU/CPU path).
 
@@ -215,13 +215,9 @@ uname -r
 sudo dmesg -T | tail -50
 ```
 
-**What usually fixes it (platform / image owner, not students):**
+**What usually fixes it (OpenShift Virtualization / platform, not students):** The **vendor vEOS container image is used verbatim**; when the **same** image works on other clusters, treat this as **nested KVM / VMI CPU / worker** behavior on **this** cluster—not something students fix by editing the router image. Platform teams typically align **KubeVirt VM CPU mode**, **nested virt** on workers, and **scheduling** with a known-good site; worker **kernel/firmware** updates can also change MSR handling. See [wilson.md](wilson.md) for a concise admin brief, log attachments under `wilson/`, and an escalation one-liner.
 
-- Run lab nodes on **bare metal** or **L1 KVM** where nested MSR passthrough is supported, **or**
-- Rebuild the **vEOS vrnetlab** image to use a **fixed CPU model** (e.g. `-cpu IvyBridge` or similar) instead of `-cpu host` when `KVM` is nested, **or**
-- Hypervisor/kernel update so MSR `0x345` is handled correctly in nested mode.
-
-**What students can try:** redeploy after a clean **`containerlab destroy`** (rules out stale state). If logs still show **MSR** errors, escalate to whoever owns the **containerlab VM image** and the **Arista `veos-ee` registry image** — this is not an Ansible or workshop inventory bug.
+**What students can try:** redeploy after a clean **`containerlab destroy`** (rules out stale state). If logs still show **MSR** errors, escalate to whoever owns the **OpenShift cluster / KubeVirt VM** for the **containerlab** guest (attach `docker logs`, `containerlab inspect`, and VMI YAML as in `wilson.md`) — this is not an Ansible or workshop inventory bug.
 
 ---
 
