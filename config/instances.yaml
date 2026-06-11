@@ -2,9 +2,9 @@
 containers: []
 virtualmachines:
   - name: "containerlab"
-    image: "ansiblebu-containerlab-v2"
-    memory: "32Gi"
-    cores: 12
+    image: "ansiblebu-containerlab-v3"
+    memory: "64Gi"
+    cores: 20
     image_size: "200Gi"
     tags:
       - key: "AnsibleGroup"
