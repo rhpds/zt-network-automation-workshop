@@ -35,6 +35,7 @@
     credential_type: Machine
     inputs:
       username: "{{ containerlab_ansible_user }}"
+      password: "{{ workshop_admin_password }}"
       ssh_key_data: "{{ ssh_private_key_content | default(omit) }}"
     state: present
     controller_host: "{{ controller_endpoint.rstrip('/') }}"

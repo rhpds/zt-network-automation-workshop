@@ -108,8 +108,9 @@ image::workshop_credential.png[Workshop Credential Link,align="center",link=self
 . Under the `Workshop Credential` examine the following:
 +
 * The **Credential type** is a **Machine** credential.
-* The **Username** is set to `admin`.
-* The **Password** is already configured, and is **Encrypted**.
+* The **Username** is set to `rhel` (used when Ansible Automation Platform SSHs to the containerlab host, for example `backup-server` and `ansible-1`).
+* The **Password** is pre-configured and **Encrypted** (same value as the `rhel` user on the containerlab VM).
+* Router hosts (`rtr1` through `rtr4`) override login in **inventory host variables** with `ansible_user: admin` and `ansible_password: admin@123` — those are not stored in this credential.
 
 == Module summary
 

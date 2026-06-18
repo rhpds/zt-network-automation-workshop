@@ -36,38 +36,59 @@ push_ssh_key_to_control() {
   local ssh_dir="${key_home}/.ssh"
   local password="ansible123!"
 
+  # Ensure rhel password matches cloud-init / Workshop Credential even if userdata did not re-run.
+  echo "${key_user}:${password}" | chpasswd
+  echo "Ensured ${key_user} password matches workshop default" >> /tmp/progress.log
+
   mkdir -p "${ssh_dir}"
   chown "${key_user}:${key_user}" "${ssh_dir}"
   chmod 700 "${ssh_dir}"
 
   local privkey=""
-  for f in "${ssh_dir}"/*.pem "${ssh_dir}/id_rsa" "${ssh_dir}/id_ed25519"; do
-    if [[ -f "$f" ]]; then
-      privkey="$f"
-      break
-    fi
-  done
+  if [[ -f "${ssh_dir}/containerlab.pem" ]]; then
+    privkey="${ssh_dir}/containerlab.pem"
+    echo "Using existing containerlab.pem" >> /tmp/progress.log
+  else
+    for f in "${ssh_dir}"/*.pem "${ssh_dir}/id_rsa" "${ssh_dir}/id_ed25519"; do
+      if [[ -f "$f" ]]; then
+        privkey="$f"
+        echo "Using existing SSH key ${privkey}" >> /tmp/progress.log
+        break
+      fi
+    done
+  fi
 
   if [[ -z "$privkey" ]]; then
     echo "No existing key found; generating containerlab.pem..." >> /tmp/progress.log
     privkey="${ssh_dir}/containerlab.pem"
     sudo -u "${key_user}" ssh-keygen -t ed25519 \
       -f "${privkey}" -N "" -q -C "containerlab-to-control"
-    cat "${privkey}.pub" >> "${ssh_dir}/authorized_keys"
-    chmod 600 "${ssh_dir}/authorized_keys"
-    chown "${key_user}:${key_user}" "${ssh_dir}/authorized_keys"
-    echo "Generated ${privkey}, added pubkey to local authorized_keys" >> /tmp/progress.log
-  fi
-
-  if ! command -v sshpass &>/dev/null; then
-    echo "ERROR: sshpass not available; cannot push key to control" >> /tmp/progress.log
-    return 1
+    echo "Generated ${privkey}" >> /tmp/progress.log
   fi
 
   local pubkey=""
   for candidate in "${privkey%.pem}.pub" "${privkey}.pub"; do
     [[ -f "$candidate" ]] && pubkey="$candidate" && break
   done
+
+  if [[ -n "$pubkey" ]]; then
+    touch "${ssh_dir}/authorized_keys"
+    chown "${key_user}:${key_user}" "${ssh_dir}/authorized_keys"
+    chmod 600 "${ssh_dir}/authorized_keys"
+    if ! grep -qF "$(cat "${pubkey}")" "${ssh_dir}/authorized_keys" 2>/dev/null; then
+      cat "${pubkey}" >> "${ssh_dir}/authorized_keys"
+      echo "Added ${pubkey} to authorized_keys" >> /tmp/progress.log
+    else
+      echo "${pubkey} already in authorized_keys" >> /tmp/progress.log
+    fi
+  else
+    echo "WARNING: no public key found for ${privkey}" >> /tmp/progress.log
+  fi
+
+  if ! command -v sshpass &>/dev/null; then
+    echo "ERROR: sshpass not available; cannot push key to control" >> /tmp/progress.log
+    return 1
+  fi
 
   local keybase
   keybase="$(basename "${privkey}")"
