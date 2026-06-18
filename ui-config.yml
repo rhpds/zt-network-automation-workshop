@@ -41,4 +41,4 @@ tabs:
     external: false
   - name: Open an Issue
     url: https://github.com/rhpds/zt-network-automation-workshop/issues/new
-    external: true
+    external: false
