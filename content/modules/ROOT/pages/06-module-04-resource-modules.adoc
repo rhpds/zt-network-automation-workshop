@@ -162,7 +162,7 @@ image::step1_new_file.png[New file in VS Code,align="center",link=self,window=bl
 ** gathered
 ** parsed
 +
-Only two of these parameters will be covered in this exercise.
+Only two of these parameters will be covered in this exercise. You can read more about this in the link:https://docs.ansible.com/projects/ansible/latest/network/user_guide/network_resource_modules.html[Network Resource Modules documentation].
 
 * `config:` -- this is the supplied VLAN configuration. It is a list of dictionaries. The most important takeaway is that if the module was changed from `arista.eos.vlans` to `junipernetworks.junos.vlans` it would work identically. This allows network engineers to focus on the network (e.g. VLAN configuration) versus the vendor syntax and implementation.
 
