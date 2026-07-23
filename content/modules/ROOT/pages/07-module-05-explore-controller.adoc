@@ -41,6 +41,8 @@ An inventory is required for Ansible Automation Platform to be able to run jobs.
 
 NOTE: More info on Inventories in respect to Ansible Automation Platform can be found in the link:https://docs.redhat.com/en/documentation/red_hat_ansible_automation_platform/latest/html/automation_controller_user_guide/controller-inventories[documentation here^].
 
+TIP: Depending on your screen resolution, the menu options being described below could be hidden in a collapsible menu. You can open the menu by clicking the 3 lines to the left of the "Red Hat Ansible Automation Platform" logo in the top left of the page.
+
 . Click on **Infrastructure** link under **Automation Execution** on the left menu bar, then click the **Inventories** link.
 +
 image::automation_controller_inventories.png[Inventories Button,align="center",link=self,window=blank,width=600]
