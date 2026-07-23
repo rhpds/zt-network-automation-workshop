@@ -22,7 +22,7 @@ By the end of this module, you will be able to:
 
 == Step 1: Create a Job Template
 
-* Open the web UI at `{controller_url}` and click on the `Templates` link on the left menu under the Automation Execution section.
+* In the AAP web UI, and click on the `Templates` link on the left menu under the Automation Execution section.
 +
 image::controller_templates.png[Templates link,align="center",link=self,window=blank,width=600]
 
