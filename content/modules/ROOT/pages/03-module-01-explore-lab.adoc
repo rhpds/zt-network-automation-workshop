@@ -41,7 +41,7 @@ image::launch_page.png[VS Code tab,align="center",link=self,window=_blank,width=
 
 TIP: For the best experience (especially copy/paste in the terminal), open VS Code in its own browser tab. Right-click the **VS Code** tab and copy the link, or navigate directly to link:https://vscode-{guid}.{domain}/[https://vscode-{guid}.{domain}/^].
 
-Open the `network-workshop` directory in Visual Studio Code:
+In Visual Studio Code, under the *File* menu, choose *Open Folder...* and select the `network-workshop` directory to open the File Explorer:
 
 image::vscode-networkworkshop.png[File browser,align="center",link=self,window=_blank,width=600]
 
