@@ -92,6 +92,8 @@ Selecting `2` for `Ansible version and collections` will show us all Ansible Col
 
 image::navigator-ee-collections.png[EE collections info,align="center",link=self,window=_blank,width=600]
 
+Press the *ESC* key to back out of any interactive `ansible-navigator` screen. Pressing *ESC* on the Welcome screen will return you to your terminal prompt.
+
 == Step 4: Examining the ansible-navigator configuration
 
 Either use Visual Studio Code to open or use the `cat` command to view the contents of the `ansible-navigator.yml` file. The file is located in the home directory:
