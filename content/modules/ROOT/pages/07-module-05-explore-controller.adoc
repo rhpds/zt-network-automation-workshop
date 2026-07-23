@@ -16,7 +16,7 @@ By the end of this module, you will be able to:
 
 == Step 1: Login to Ansible Automation Platform
 
-. Open your browser and navigate to the Ansible Automation Platform web UI at `{controller_url}`. You should see a login screen similar to the following:
+. Click on the "Ansible Automation Platform" tab in the Showroom, or open your browser and navigate to the Ansible Automation Platform web UI at `{controller_url}`. You should see a login screen similar to the following:
 +
 image::automation_controller_login.png[Ansible Automation Platform login window,align="center",link=self,window=blank,width=600]
 +
