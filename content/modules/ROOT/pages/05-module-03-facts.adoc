@@ -123,8 +123,6 @@ Next, add the first `task`. This task will use the `cisco.ios.ios_facts` module 
 
 NOTE: A play is a list of tasks. Modules are pre-written code that perform the task.
 
-Save the playbook.
-
 == Step 4: Executing the playbook
 
 Execute the Ansible Playbook by running `ansible-navigator`:

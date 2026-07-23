@@ -148,7 +148,7 @@ The Ansible Playbook will now look like this:
           - snmp-server community ansible-test RO
 ----
 
-Make sure to save the `playbook.yml` with the change.
+TIP: This environment is set to automatically save files when you edit them. This behavior can be toggled under *File* -> *Auto Save*.
 
 == Step 6: Use check mode
 
