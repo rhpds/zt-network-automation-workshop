@@ -219,7 +219,12 @@ ansible_connection=network_cli
 
 We can also use the `ansible-navigator` TUI to explore inventory.
 
-Run the `ansible-navigator inventory` command to bring up inventory in the TUI:
+Run the command to bring up inventory in the TUI:
+
+[source,bash]
+----
+ansible-navigator inventory
+----
 
 image::ansible-navigator.png[ansible-navigator TUI,align="center",link=self,window=_blank,width=600]
 
