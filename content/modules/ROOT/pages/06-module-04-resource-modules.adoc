@@ -25,18 +25,46 @@ By the end of this module, you will be able to:
 
 == Step 1: Verify VLAN configuration
 
-* Login to an Arista switch and verify the current VLAN configuration.
+Login to an Arista switch and verify the current VLAN configuration. From the VS Code terminal, you can log into rtr2, and examine the configuration and running state.
 
-* From the VS Code terminal, you can `ssh rtr2` and type `enable`
+Run the following commands:
+
+[source,bash]
+----
+ssh rtr2
+----
+
+[source,bash]
+----
+enable
+----
+
+[source,bash]
+----
+show vlan
+----
+
+[source,bash]
+----
+show run | s vlan
+----
+
+[source,bash]
+----
+exit
+----
+
+Logging in:
 
 [source,bash]
 ----
 $ ssh rtr2
 Last login: Wed Sep  1 13:44:55 2021 from 44.192.105.112
 rtr2>enable
+rtr2#
 ----
 
-* Use the command `show vlan` to examine the VLAN configuration:
+Using the command `show vlan` to examine the VLAN configuration:
 
 [source,bash]
 ----
@@ -46,7 +74,7 @@ VLAN  Name                             Status    Ports
 1     default                          active
 ----
 
-* Use the `show run | s vlan` to examine the VLAN running-configuration on the Arista device:
+Using the `show run | s vlan` to examine the VLAN running-configuration on the Arista device:
 
 [source,bash]
 ----
@@ -185,9 +213,36 @@ rtr4                       : ok=1    changed=0    unreachable=0    failed=0    s
 
 == Step 5: Verify VLAN configuration
 
-* Login to an Arista switch and verify the current VLAN configuration.
+Login to an Arista switch and verify the current VLAN configuration.
 
-* From the VS Code terminal, you can `ssh rtr2` and type `enable`
+Run the following commands:
+
+[source,bash]
+----
+ssh rtr2
+----
+
+[source,bash]
+----
+enable
+----
+
+[source,bash]
+----
+show vlan
+----
+
+[source,bash]
+----
+sh run | s vlan
+----
+
+[source,bash]
+----
+exit
+----
+
+Logging in:
 
 [source,bash]
 ----
@@ -196,7 +251,7 @@ Last login: Wed Sep  1 13:44:55 2021 from 44.192.105.112
 rtr2>enable
 ----
 
-* Use the command `show vlan` to examine the VLAN configuration:
+Using the command `show vlan` to examine the VLAN configuration:
 
 [source,bash]
 ----
@@ -210,7 +265,7 @@ VLAN  Name                             Status    Ports
 50    DMZ                              active
 ----
 
-* Use the `show run | s vlan` to examine the VLAN running-configuration on the Arista device:
+Using the `show run | s vlan` to examine the VLAN running-configuration on the Arista device:
 
 [source,bash]
 ----

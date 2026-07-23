@@ -64,6 +64,8 @@ Run the playbook using the `ansible-navigator` command. The full command is:
 ansible-navigator run playbook.yml --mode stdout
 ----
 
+Example:
+
 [source,bash]
 ----
 [rhel@vscode network-workshop]$ ansible-navigator run playbook.yml --mode stdout
@@ -85,6 +87,25 @@ rtr1                       : ok=1    changed=1    unreachable=0    failed=0    s
 
 Verify that the Ansible Playbook worked. Login to `rtr1` and check the running configuration on the Cisco IOS-XE device.
 
+Run the commands:
+
+[source,bash]
+----
+ssh rtr1
+----
+
+[source,bash]
+----
+show run | i snmp
+----
+
+[source,bash]
+----
+exit
+----
+
+Example:
+
 [source,bash]
 ----
 [rhel@vscode network-workshop]$ ssh rtr1
@@ -92,6 +113,7 @@ Verify that the Ansible Playbook worked. Login to `rtr1` and check the running c
 rtr1#show run | i snmp
 snmp-server community ansible-public RO
 snmp-server community ansible-private RW
+rtr1#exit
 ----
 
 == Step 4: Validate idempotency
@@ -101,6 +123,13 @@ The `cisco.ios.config` module is idempotent. This means, a configuration change 
 TIP: Need help with Ansible Automation terminology? Check out the link:https://docs.ansible.com/ansible/latest/reference_appendices/glossary.html[glossary^] for more information on terms like idempotency.
 
 To validate the concept of idempotency, re-run the playbook:
+
+[source,bash]
+----
+ansible-navigator run playbook.yml --mode stdout
+----
+
+Example:
 
 [source,bash]
 ----
@@ -156,6 +185,13 @@ This time however, instead of running the playbook to push the change to the dev
 
 [source,bash]
 ----
+ansible-navigator run playbook.yml --mode stdout --check -v
+----
+
+Example:
+
+[source,bash]
+----
 [rhel@vscode network-workshop]$ ansible-navigator run playbook.yml --mode stdout --check -v
 Using /etc/ansible/ansible.cfg as config file
 
@@ -174,6 +210,24 @@ The `--check` mode in combination with the `--verbose` flag will display the exa
 
 Verify that the Ansible Playbook did not apply the `ansible-test` community. Login to `rtr1` and check the running configuration on the Cisco IOS-XE device.
 
+Run the commands:
+
+[source,bash]
+----
+ssh rtr1
+----
+
+[source,bash]
+----
+show run | i snmp
+----
+
+[source,bash]
+----
+exit
+----
+
+
 [source,bash]
 ----
 [rhel@vscode network-workshop]$ ssh rtr1
@@ -181,11 +235,19 @@ Verify that the Ansible Playbook did not apply the `ansible-test` community. Log
 rtr1#show run | i snmp
 snmp-server community ansible-public RO
 snmp-server community ansible-private RW
+rtr1#exit
 ----
 
 == Step 8: Re-run the Ansible Playbook
 
 Finally re-run this playbook again without the `-v` or `--check` flag to push the changes.
+
+[source,bash]
+----
+ansible-navigator run playbook.yml --mode stdout
+----
+
+Example:
 
 [source,bash]
 ----
@@ -206,12 +268,30 @@ Verify that the Ansible Playbook applied the **ansible-test** community. Login t
 
 [source,bash]
 ----
+ssh rtr1
+----
+
+[source,bash]
+----
+sh run | i snmp
+----
+
+[source,bash]
+----
+exit
+----
+
+Example:
+
+[source,bash]
+----
 [rhel@vscode network-workshop]$ ssh rtr1
 
 rtr1#sh run | i snmp
 snmp-server community ansible-public RO
 snmp-server community ansible-private RW
 snmp-server community ansible-test RO
+rtr1#exit
 ----
 
 == Module summary
