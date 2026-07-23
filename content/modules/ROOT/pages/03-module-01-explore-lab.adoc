@@ -80,6 +80,8 @@ Run the `ansible-navigator` command with the `images` argument to look at execut
 ansible-navigator images
 ----
 
+TIP: The Showroom environment has a copy icon to the left of the "BASH" designation, which you can use for any commands you are asked to run in a terminal.
+
 image::navigator-images.png[ansible-navigator images,align="center",link=self,window=_blank,width=600]
 
 NOTE: The output you see might differ from the above output.
