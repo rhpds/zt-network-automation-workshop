@@ -225,7 +225,7 @@ Pressing **0** or **1** on your keyboard will open groups or hosts respectively.
 
 image::ansible-navigator-groups.png[ansible-navigator groups,align="center",link=self,window=_blank,width=600]
 
-Press the **Esc** key to go up a level, or you can zoom in to an individual host. To exit Ansible Navigator all together simply typr q: or ctrl-Z.
+Press the **Esc** key to go up a level, or you can zoom in to an individual host. To exit Ansible Navigator all together simply type `q:` or `ctrl-Z`.
 
 image::ansible-navigator-rtr-1.png[ansible-navigator host,align="center",link=self,window=_blank,width=600]
 
