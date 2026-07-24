@@ -94,7 +94,7 @@ Selecting `2` for `Ansible version and collections` will show us all Ansible Col
 
 image::navigator-ee-collections.png[EE collections info,align="center",link=self,window=_blank,width=600]
 
-Press the *ESC* key to back out of any interactive `ansible-navigator` screen. Pressing *ESC* on the Welcome screen will return you to your terminal prompt.
+Press the *ESC* key to back out of any interactive `ansible-navigator` screen. Pressing *ESC* on the Welcome screen will return you to your terminal prompt, or you can type `:quit` on any screen.
 
 == Step 4: Examining the ansible-navigator configuration
 
