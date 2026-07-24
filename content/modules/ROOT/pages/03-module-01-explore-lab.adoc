@@ -7,7 +7,7 @@ Explore and understand the lab environment. These first few lab exercises will b
 
 * link:https://github.com/ansible/ansible-navigator[ansible-navigator^] -- a command line utility and text-based user interface (TUI) for running and developing Ansible automation content.
 * link:https://docs.ansible.com/core.html[ansible-core^] -- the base executable that provides the framework, language and functions that underpin the Ansible Automation Platform. It also includes various CLI tools like `ansible`, `ansible-playbook` and `ansible-doc`. Ansible Core acts as the bridge between the upstream community with the free and open source Ansible and connects it to the downstream enterprise automation offering from Red Hat, the Ansible Automation Platform.
-* link:https://docs.redhat.com/en/documentation/red_hat_ansible_automation_platform/latest/html/using_automation_execution/controller-execution-environments[Execution Environments^, window=_blank] -- container images that can be utilized as Ansible execution.
+* link:https://www.redhat.com/en/technologies/management/ansible/automation-execution-environments[Execution Environments^, window=_blank] -- container images that can be utilized as Ansible execution.
 
 
 == Learning objectives
@@ -41,7 +41,7 @@ image::launch_page.png[VS Code tab,align="center",link=self,window=_blank,width=
 
 TIP: For the best experience (especially copy/paste in the terminal), open VS Code in its own browser tab. Right-click the **VS Code** tab and copy the link, or navigate directly to link:https://vscode-{guid}.{domain}/[https://vscode-{guid}.{domain}/^].
 
-Open the `network-workshop` directory in Visual Studio Code:
+In Visual Studio Code, under the *File* menu, choose *Open Folder...* and select the `network-workshop` directory to open the File Explorer:
 
 image::vscode-networkworkshop.png[File browser,align="center",link=self,window=_blank,width=600]
 
@@ -55,7 +55,9 @@ Open a terminal in Visual Studio Code:
 
 image::vscode-new-terminal.png[New terminal,align="center",link=self,window=_blank,width=600]
 
-Navigate to the `network-workshop` directory in the VS Code terminal.
+TIP: Depending on your screen resolution, it's likely that the Terminal menu is hidden under the 3 dots `...` located to the right of the other menu options, as seen in the above screenshot.
+
+Your new terminal should already be in the right place. If it is, you'll see `network-workshop` as part of the prompt. If it isn't, navigate to the `network-workshop` directory in the VS Code terminal.
 
 [source,bash]
 ----
@@ -78,6 +80,8 @@ Run the `ansible-navigator` command with the `images` argument to look at execut
 ansible-navigator images
 ----
 
+TIP: The Showroom environment has a copy icon to the left of the "BASH" designation, which you can use for any commands you are asked to run in a terminal.
+
 image::navigator-images.png[ansible-navigator images,align="center",link=self,window=_blank,width=600]
 
 NOTE: The output you see might differ from the above output.
@@ -89,6 +93,8 @@ image::navigator-ee-menu.png[EE main menu,align="center",link=self,window=_blank
 Selecting `2` for `Ansible version and collections` will show us all Ansible Collections installed on that particular EE, and the version of `ansible-core`:
 
 image::navigator-ee-collections.png[EE collections info,align="center",link=self,window=_blank,width=600]
+
+Press the *ESC* key to back out of any interactive `ansible-navigator` screen. Pressing *ESC* on the Welcome screen will return you to your terminal prompt, or you can type `:quit` on any screen.
 
 == Step 4: Examining the ansible-navigator configuration
 
@@ -215,7 +221,12 @@ ansible_connection=network_cli
 
 We can also use the `ansible-navigator` TUI to explore inventory.
 
-Run the `ansible-navigator inventory` command to bring up inventory in the TUI:
+Run the command to bring up inventory in the TUI:
+
+[source,bash]
+----
+ansible-navigator inventory
+----
 
 image::ansible-navigator.png[ansible-navigator TUI,align="center",link=self,window=_blank,width=600]
 

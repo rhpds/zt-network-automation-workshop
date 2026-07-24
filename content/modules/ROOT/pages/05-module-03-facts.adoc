@@ -45,7 +45,7 @@ Screenshot of `ansible-navigator :doc debug`:
 
 image::ansible-navigator-doc.png[ansible-navigator doc mode,align="center",link=self,window=blank,width=600]
 
-The documentation for the `debug` module is now displayed in your interactive terminal session. This is a YAML representation of the same exact documentation you would see on link:https://docs.ansible.com/ansible/latest/collections/ansible/builtin/debug_module.html[docs.ansible.com^]. Examples can be cut and paste directly from the module documentation into your Ansible Playbook.
+The documentation for the `debug` module is now displayed in your interactive terminal session. This is a YAML representation of the same exact documentation you would see on link:https://docs.ansible.com/projects/ansible/latest/collections/ansible/builtin/debug_module.html[docs.ansible.com^]. Examples can be cut and paste directly from the module documentation into your Ansible Playbook.
 
 When referring to a non-built in module, there are three important fields:
 
@@ -122,8 +122,6 @@ Next, add the first `task`. This task will use the `cisco.ios.ios_facts` module 
 ----
 
 NOTE: A play is a list of tasks. Modules are pre-written code that perform the task.
-
-Save the playbook.
 
 == Step 4: Executing the playbook
 

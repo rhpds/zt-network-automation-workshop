@@ -16,7 +16,7 @@ By the end of this module, you will be able to:
 
 == Step 1: Login to Ansible Automation Platform
 
-. Open your browser and navigate to the Ansible Automation Platform web UI at `{controller_url}`. You should see a login screen similar to the following:
+. Click on the "Ansible Automation Platform" tab in the Showroom, or open your browser and navigate to the Ansible Automation Platform web UI at `{controller_url}`. You should see a login screen similar to the following:
 +
 image::automation_controller_login.png[Ansible Automation Platform login window,align="center",link=self,window=blank,width=600]
 +
@@ -40,6 +40,8 @@ image::automation_controller_about_info.png[Version info window,align="center",l
 An inventory is required for Ansible Automation Platform to be able to run jobs. An inventory is a collection of hosts against which jobs may be launched, the same as an Ansible inventory file. In addition, Ansible Automation Platform can make use of an existing configuration management data base (cmdb) such as ServiceNow or Infoblox DDI.
 
 NOTE: More info on Inventories in respect to Ansible Automation Platform can be found in the link:https://docs.redhat.com/en/documentation/red_hat_ansible_automation_platform/latest/html/automation_controller_user_guide/controller-inventories[documentation here^].
+
+TIP: Depending on your screen resolution, the menu options being described below could be hidden in a collapsible menu. You can open the menu by clicking the 3 lines to the left of the "Red Hat Ansible Automation Platform" logo in the top left of the page.
 
 . Click on **Infrastructure** link under **Automation Execution** on the left menu bar, then click the **Inventories** link.
 +
