@@ -120,12 +120,20 @@ PIP_PID=""
 PIP_PID=$!
 
 # ---------------------------------------------------------------------------
-# Download workshop repo and copy exercise + bundled RPM files.
+# Clone workshop repo and copy exercise + bundled RPM files.
 # ---------------------------------------------------------------------------
-TARBALL_URL="https://github.com/rhpds/zt-network-automation-workshop/archive/refs/heads/main.tar.gz"
-echo "Downloading workshop repo tarball..." >> /tmp/progress.log
-curl -sL "${TARBALL_URL}" | tar xz -C /tmp >> /tmp/progress.log 2>&1
-REPO_DIR="/tmp/zt-network-automation-workshop-main"
+REPO_URL="https://github.com/rhpds/zt-network-automation-workshop.git"
+REPO_DIR="/tmp/zt-network-automation-workshop"
+if [[ -d "${REPO_DIR}/.git" ]]; then
+  echo "Workshop repo already present at ${REPO_DIR}" >> /tmp/progress.log
+elif command -v git &>/dev/null; then
+  rm -rf "${REPO_DIR}"
+  if ! git clone "${REPO_URL}" "${REPO_DIR}" >> /tmp/progress.log 2>&1; then
+    echo "ERROR: git clone failed" >> /tmp/progress.log
+  fi
+else
+  echo "ERROR: git not installed; cannot clone workshop repo (check RHSM/dnf earlier in the log)" >> /tmp/progress.log
+fi
 
 if [[ -d "${REPO_DIR}/rpms" ]]; then
   echo "Installing any bundled RPMs..." >> /tmp/progress.log

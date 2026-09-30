@@ -92,6 +92,7 @@ wait_for_ssh_key() {
     sleep 5
   done
   echo "WARNING: SSH key never arrived (~10 min). Containerlab playbooks will fail." >> /tmp/progress.log
+  return 1
 }
 
 run_lab_automation() {
@@ -135,15 +136,17 @@ NET_EE_PID=$!
 clone_repo
 install_rpms
 
-# Wait for SSH key (polls every 5s). This usually takes longer than
-# the EE pulls, so the images will be ready by the time the key arrives.
-wait_for_ssh_key
-
-# Ensure both pulls finished before running lab automation.
-echo "Waiting for EE image pulls to finish..." >> /tmp/progress.log
-wait $EE_PID 2>/dev/null
-wait $NET_EE_PID 2>/dev/null
-
-run_lab_automation
+if wait_for_ssh_key; then
+  # Ensure both pulls finished before running lab automation.
+  echo "Waiting for EE image pulls to finish..." >> /tmp/progress.log
+  wait $EE_PID 2>/dev/null
+  wait $NET_EE_PID 2>/dev/null
+  run_lab_automation
+else
+  echo "SKIPPING lab-automation — SSH key to containerlab is missing." >> /tmp/progress.log
+  echo "Re-run setup-control.sh after fixing SSH connectivity." >> /tmp/progress.log
+  wait $EE_PID 2>/dev/null
+  wait $NET_EE_PID 2>/dev/null
+fi
 
 echo "setup-control.sh complete" >> /tmp/progress.log

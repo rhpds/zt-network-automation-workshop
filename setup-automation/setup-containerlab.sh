@@ -94,15 +94,30 @@ push_ssh_key_to_control() {
   keybase="$(basename "${privkey}")"
   echo "Pushing SSH key (${privkey}) to control..." >> /tmp/progress.log
 
-  sshpass -p "${password}" ssh -o StrictHostKeyChecking=no \
-    -o ConnectTimeout=30 "${key_user}@control" \
-    "mkdir -p ~/.ssh && chmod 700 ~/.ssh" 2>>/tmp/progress.log
-  if [[ $? -ne 0 ]]; then
-    echo "ERROR: SSH to control failed" >> /tmp/progress.log
+  local ssh_opts="-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
+
+  # Retry SSH to control — the control VM may still be booting.
+  local max_retries=12
+  local retry_delay=15
+  local connected=false
+  for (( attempt=1; attempt<=max_retries; attempt++ )); do
+    sshpass -p "${password}" ssh ${ssh_opts} \
+      -o ConnectTimeout=30 "${key_user}@control" \
+      "mkdir -p ~/.ssh && chmod 700 ~/.ssh" 2>>/tmp/progress.log
+    if [[ $? -eq 0 ]]; then
+      connected=true
+      echo "SSH to control succeeded on attempt ${attempt}" >> /tmp/progress.log
+      break
+    fi
+    echo "SSH to control failed (attempt ${attempt}/${max_retries}), retrying in ${retry_delay}s..." >> /tmp/progress.log
+    sleep "${retry_delay}"
+  done
+  if [[ "$connected" != "true" ]]; then
+    echo "ERROR: SSH to control failed after ${max_retries} attempts ($((max_retries * retry_delay / 60)) min)" >> /tmp/progress.log
     return 1
   fi
 
-  sshpass -p "${password}" scp -o StrictHostKeyChecking=no \
+  sshpass -p "${password}" scp ${ssh_opts} \
     "${privkey}" "${key_user}@control:${ssh_dir}/${keybase}" 2>>/tmp/progress.log
   if [[ $? -ne 0 ]]; then
     echo "ERROR: SCP private key to control failed" >> /tmp/progress.log
@@ -110,12 +125,12 @@ push_ssh_key_to_control() {
   fi
 
   if [[ -n "$pubkey" ]]; then
-    sshpass -p "${password}" scp -o StrictHostKeyChecking=no \
+    sshpass -p "${password}" scp ${ssh_opts} \
       "${pubkey}" "${key_user}@control:${ssh_dir}/$(basename "${pubkey}")" \
       2>>/tmp/progress.log || true
   fi
 
-  sshpass -p "${password}" ssh -o StrictHostKeyChecking=no \
+  sshpass -p "${password}" ssh ${ssh_opts} \
     "${key_user}@control" bash -s -- "${keybase}" <<'REMOTE'
     chmod 600 ~/.ssh/"$1" 2>/dev/null
     cat > ~/.ssh/config <<EOF
